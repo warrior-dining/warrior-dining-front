@@ -1,0 +1,128 @@
+/*===== 이달의 맛집 css =====*/
+
+.restaurant-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: center; /* 중앙 정렬 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.restaurant-container > h1 {
+    text-align: center; /* 텍스트 중앙 정렬 */
+    font-size: 28px;
+    margin: 20px 0;
+
+}
+
+.restaurant-item {
+    display: flex;
+    flex-direction: row;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 80%; /* 너비를 부모 요소의 80%로 설정 */
+    max-width: 1000px;
+    transition: transform 0.3s ease;
+    height: 300px;
+    box-sizing: border-box;
+    margin: 0 auto; /* 중앙 정렬 */
+}
+
+/* 카드 이미지 설정 */
+.restaurant-item img {
+    width: 40%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* 카드 내용 영역 설정 */
+.restaurant-details {
+    padding: 15px;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.restaurant-details h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #ff6f61;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.restaurant-details p {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* 맨 밑에 섹션과 푸터 사이의 간격 조정 */
+.featured-restaurants {
+    margin-bottom: 60px;
+}
+
+/* 카테고리 css */
+.category-list {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.category-list a {
+    color: #fff;
+    background-color: #ff6f61;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.category-list a:hover {
+    background-color: #e65b50;
+    transform: scale(1.05);
+}
+
+.category-list a:active {
+    background-color: #cc5248;
+    transform: scale(1);
+}
+
+/* 미디어 쿼리 추가 - 화면 크기가 작을 때 레이아웃 조정 */
+@media (max-width: 768px) {
+    .restaurant-item {
+        flex-direction: column;
+        width: 100%;
+        max-width: none;
+        margin-bottom: 20px;
+    }
+
+    .restaurant-item img {
+        width: 100%;
+        height: auto;
+    }
+
+    .restaurant-details {
+        width: 100%;
+    }
+
+    .restaurant-details h2,
+    .restaurant-details p {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+    }
+}
