@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Header from './components/Header';
+import NavBar from './components/NavBar';
+import Footer from './components/Footer';
+import Main from './containers/Main';
+import TopReservation from './containers/TopReservation';
+import MonthBest from './containers/MonthBest';
+import './css/home.css';
+import './css/default.css';
+
 
 function App() {
   return (
+    <Router>
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header />
+      <NavBar />
+      <Routes>
+        <Route path="/TopReservation" element={<TopReservation />} /> 
+        <Route path="/MonthBest" element={<MonthBest />} />
+        {/* 다른 경로들도 여기 추가할 수 있습니다. */}
+        <Route path="/" element={<Main />} />
+      </Routes>
+      <Footer />
     </div>
+  </Router>
   );
 }
 
