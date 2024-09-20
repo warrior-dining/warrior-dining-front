@@ -1,0 +1,47 @@
+/* 레스토랑 순위 */
+.restaurant-item {
+    position: relative;
+}
+
+/* 레스토랑 순위 */
+.restaurant-rank {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    padding: 15px; /* 여백을 늘리기 */
+    border-radius: 50%;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+    width: 60px; /* 크기 조정 */
+    height: 60px; /* 크기 조정 */
+    line-height: 60px; /* 수직 정렬을 위해 line-height 조정 */
+    z-index: 1;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
+    color: #333; /* 텍스트 색상 기본 설정 */
+}
+
+/* 1위 - 금색 */
+.restaurant-item:nth-child(1) .restaurant-rank {
+    background-color: #ffd700; /* 금색 */
+    color: #333; /* 어두운 회색 텍스트 */
+}
+
+/* 2위 - 은색 */
+.restaurant-item:nth-child(2) .restaurant-rank {
+    background-color: #c0c0c0; /* 은색 */
+    color: #333; /* 어두운 회색 텍스트 */
+}
+
+/* 3위 - 동색 */
+.restaurant-item:nth-child(3) .restaurant-rank {
+    background-color: #cd7f32; /* 동색 */
+    color: #333; /* 흰색 텍스트 */
+}
+
+/* 4위부터 10위까지 - 회색 */
+.restaurant-item:nth-child(n+4) .restaurant-rank {
+    background-color: #dcdcdc; /* 연한 회색 */
+    color: #333; /* 어두운 회색 텍스트 */
+}
+
