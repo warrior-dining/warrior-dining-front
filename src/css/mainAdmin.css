@@ -111,11 +111,12 @@ h2 {
     padding-bottom: 10px;
 }
 
-.summary-cards {
+.dashboard-summary .summary-cards {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: nowrap;
     gap: 20px;
     margin-top: 20px;
+    overflow-x: auto; /* 카드가 가로로 넘치면 스크롤 가능 */
 }
 
 .summary-card {

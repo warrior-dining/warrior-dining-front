@@ -3,22 +3,22 @@ import { useNavigate } from 'react-router-dom'; // useNavigate 훅 import
 
 const DashboardSection = () => {
     return (
-        <section class="dashboard-summary">
+        <section className="dashboard-summary">
             <h2>대시보드 요약</h2>
-            <div class="summary-cards">
-                <div class="summary-card">
+            <div className="summary-cards">
+                <div className="summary-card">
                     <h3>예약 현황</h3>
                     <p>최근 30일간 예약 건수: 123건</p>
                 </div>
-                <div class="summary-card">
+                <div className="summary-card">
                     <h3>리뷰 요약</h3>
                     <p>최근 리뷰 평균 별점: 4.5</p>
                 </div>
-                <div class="summary-card">
+                <div className="summary-card">
                     <h3>회원 동향</h3>
                     <p>최근 30일간 신규 회원 수: 20명</p>
                 </div>
-                <div class="summary-card">
+                <div className="summary-card">
                     <h3>문의 사항</h3>
                     <p>답변 미완료: 15건</p>
                     <p>답변 완료: 45건</p>
@@ -30,22 +30,22 @@ const DashboardSection = () => {
 
 const StatisticsSection = () => {
     return (
-        <section class="statistics">
+        <section className="statistics">
             <h2>주요 통계</h2>
-            <div class="stat-card-container">
-                <div class="stat-card">
+            <div className="stat-card-container">
+                <div className="stat-card">
                     <h3>총 예약 수</h3>
                     <p>1,234건</p>
                 </div>
-                <div class="stat-card">
+                <div className="stat-card">
                     <h3>총 리뷰 수</h3>
                     <p>567건</p>
                 </div>
-                <div class="stat-card">
+                <div className="stat-card">
                     <h3>회원 수</h3>
                     <p>89명</p>
                 </div>
-                <div class="stat-card">
+                <div className="stat-card">
                     <h3>최근 방문</h3>
                     <p>12명</p>
                 </div>
@@ -56,7 +56,7 @@ const StatisticsSection = () => {
 
 const NoticeSection = () => {
     return (
-        <section class="announcements">
+        <section className="announcements">
             <h2>관리자 공지사항</h2>
             <ul>
                 <li>8월 21일 - 새로운 기능 업데이트가 진행되었습니다.</li>
@@ -69,7 +69,7 @@ const NoticeSection = () => {
 
 const RecentSection = () => {
     return (
-        <section class="recent-activities">
+        <section className="recent-activities">
             <h2>최근 활동</h2>
             <ul>
                 <li>8월 20일 - 새로운 예약이 생성되었습니다.</li>
@@ -115,7 +115,7 @@ const MainAdmin = () => {
     return (
         <>
             <main>
-                <div class="container">
+                <div className="container">
                     <MainContent />
                 </div>
             </main>
