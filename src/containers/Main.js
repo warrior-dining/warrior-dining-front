@@ -1,9 +1,11 @@
+// import HeroSection from './components/HeroSection';
+// import MainContent from './components/MainContent';
+// import ReviewSection from './components/ReviewSection';
 import React, { useEffect, useRef } from 'react';
-import { useNavigate ,Link} from 'react-router-dom'; 
+import { useNavigate, Link} from 'react-router-dom'; // useNavigate 훅 import
 import { initReviewSlider } from '../components/ReviewSlider';
 
-
-
+// 데이터를 상위에서 직접 정의하거나 외부에서 가져오는 방법도 있습니다.
 const topRestaurants = [
   { name: '레스토랑 이름 1', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다.' },
   { name: '레스토랑 이름 2', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다.' },
@@ -30,11 +32,17 @@ const reviews = [
   ];
 
 const HeroSection = () => {
+    const navigate = useNavigate();
+
+    const RestaurantListClick = () => {
+      navigate('/restaurantlist'); 
+    };
+
     return (
       <section className="hero">
         <h1>한국 최고의 레스토랑을 찾아보세요</h1>
         <p>예약 및 리뷰를 통해 완벽한 식사를 경험하세요.</p>
-        <button type='button' className="cta-button"><Link to="/RestaurantList">메뉴 보기</Link></button>
+        <button type='button' className="cta-button" onClick={RestaurantListClick}>메뉴 보기</button>
       </section>
     );
 }
@@ -56,20 +64,20 @@ const RestaurantSection = ({ title, items, onMoreClick }) => (
     </div>
   </section>
 );
-// 리뷰 슬라이더 추가
-const ReviewSection = () => { 
-  const reviewWrapperRef = useRef(null); 
-  const reviewSlidesRef = useRef([]); 
+
+const ReviewSection = () => { //리뷰 페이지 슬라이더
+  const reviewWrapperRef = useRef(null); // 리뷰 래퍼에 대한 ref
+  const reviewSlidesRef = useRef([]); // 슬라이드에 대한 ref 배열
 
   useEffect(() => {
-      const reviewSlides = reviewSlidesRef.current; 
-      const reviewWrapper = reviewWrapperRef.current; 
+      const reviewSlides = reviewSlidesRef.current; // 슬라이드 DOM 요소
+      const reviewWrapper = reviewWrapperRef.current; // 리뷰 래퍼 DOM 요소
 
-     
+      // 슬라이더 초기화
       const cleanup = initReviewSlider(reviewWrapper, reviewSlides);
 
       return () => {
-          cleanup(); 
+          cleanup(); // 컴포넌트 언마운트 시 클린업 함수 호출
       };
   }, []);
 
@@ -95,15 +103,14 @@ const ReviewSection = () => {
   );
 };
 
-
 const MainContent = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate(); // navigate 함수 사용
 
   const handleMoreClick = (title) => {
     if (title === '예약 TOP 순위') {
-      navigate('/TopReservation'); 
+      navigate('/TopReservation'); // 예약 TOP으로 이동
     } else if (title === '이달의 맛집') {
-      navigate('/MonthBest'); 
+      navigate('/MonthBest'); // 이달의 맛집으로 이동 (원하는 경로로 수정)
     }
   };
 
@@ -113,12 +120,12 @@ const MainContent = () => {
         <RestaurantSection 
           title="예약 TOP 순위" 
           items={topRestaurants} 
-          onMoreClick={handleMoreClick} 
+          onMoreClick={handleMoreClick} // 클릭 이벤트 핸들러 전달
         />
         <RestaurantSection 
           title="이달의 맛집" 
           items={monthBestRestaurants} 
-          onMoreClick={handleMoreClick} 
+          onMoreClick={handleMoreClick} // 클릭 이벤트 핸들러 전달
         />
         
         <ReviewSection />
