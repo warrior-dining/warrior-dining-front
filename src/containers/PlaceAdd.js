@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../css/restaurantCreate.css';
 
 const PlaceAdd = () => {
     const [uploadedImages, setUploadedImages] = useState([]);
