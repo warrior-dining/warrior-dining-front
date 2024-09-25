@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import '../css/default.css';
 import '../css/home.css';
-import '../css/restaurantList.css';
-
+import '../css/restaurantTotal.css';
 
 const RestaurantSidbar = () => {
     return (
         <aside className="sidebar">
             <form action="">
-                <h2>검색</h2>
+                <h2>필터</h2>
                 <h3>지역 선택</h3>
                 <select id="location" name="location">
                     <option value="">지역을 선택하세요</option>
@@ -32,9 +31,7 @@ const RestaurantSidbar = () => {
                     <option value="veryhigh">80,000 ~ 110,000원</option>
                     <option value="superhigh">110,000원 이상</option>
                 </select>
-                <h3>레스토랑 이름 검색</h3>
-                <input type="text" id="keyword" placeholder="레스토랑 검색" />
-                <button type="submit">검색</button>
+
             </form>
         </aside>
     );
@@ -51,6 +48,7 @@ const RestaurantList = () => {
         }
     };
 
+    
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
