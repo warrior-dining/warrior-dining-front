@@ -17,7 +17,7 @@ function NavBarAdmin() {
                 <a href="#">음식점 관리</a>
                 <div className="sub-menu">
                     <Link to="/admin/places">음식점 목록</Link>
-                    <a href="#">음식점 추가</a>
+                    <Link to="/admin/places/add">음식점 추가</Link>
                 </div>
             </li>
             <li className='nav-item'>

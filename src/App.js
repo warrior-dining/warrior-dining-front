@@ -18,6 +18,8 @@ import NavBarAdmin from './components/NavBarAdmin';
 import MainAdmin from './containers/MainAdmin';
 import './css/memberList.css';
 import './css/restaurantManagement.css';
+import PlaceAdd from './containers/PlaceAdd';
+import './css/restaurantCreate.css';
 
 
 function App() {
@@ -33,7 +35,8 @@ function App() {
             <Route path="/admin/places" element={<PlacesAdmin />} />
             <Route path="/admin/reviews" element={<ReviewsAdmin />} />
             <Route path="/admin/reservations" element={<ReviewsAdmin/>} />
-            <Route path="/admin/inquiries" element={<InquiriesAdmin />} />  
+            <Route path="/admin/inquiries" element={<InquiriesAdmin />} />
+            <Route path="/admin/places/add" element={<PlaceAdd />} />  
             <Route path="/" element={<MainAdmin />} />
           </Routes>
           <Footer />
