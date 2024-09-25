@@ -1,7 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Link를 import
+import { Link , useNavigate } from 'react-router-dom'; // Link를 import
 
-function Header() {
+const Header = ({adminClick}) => {
+  const navigate = useNavigate();
+  const changeAdminClick = () => {
+    adminClick(true);
+    navigate('/admin');
+  }
   return (
     <header>
       <div className="container">
@@ -10,6 +15,7 @@ function Header() {
           <div className="auth-buttons">
             <a href="#">로그인</a>
             <a href="#">회원 가입</a>
+            <a onClick={changeAdminClick}>관리자 페이지</a>
           </div>
         </div>
       </div>
