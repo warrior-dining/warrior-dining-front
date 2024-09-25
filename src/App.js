@@ -8,6 +8,7 @@ import TopReservation from './containers/TopReservation';
 import MonthBest from './containers/MonthBest';
 
 import './css/default.css';
+import './css/home.css';
 import './css/mainAdmin.css';
 import MembersAdmin from './containers/MembersAdmin';
 import PlacesAdmin from './containers/PlacesAdmin';
@@ -15,7 +16,8 @@ import ReviewsAdmin from './containers/ReviewsAdmin';
 import InquiriesAdmin from './containers/InquiriesAdmin';
 import NavBarAdmin from './components/NavBarAdmin';
 import MainAdmin from './containers/MainAdmin';
-
+import './css/memberList.css';
+import './css/restaurantManagement.css';
 
 
 function App() {
