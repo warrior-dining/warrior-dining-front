@@ -1,0 +1,155 @@
+/* 음식점 전체 리스트 */
+.sidebar {
+    width: 250px; /* 고정 너비 */
+    background-color: #fff;
+    padding: 15px; /* 상하좌우 여백 */
+    border: 1px solid #ddd; /* 테두리 */
+    margin: 0; /* 사이드바와 리스트 사이의 간격 */
+    display: flex;
+    flex-direction: column; /* 수직 방향으로 정렬 */
+    box-sizing: border-box; /* 패딩과 테두리를 너비 계산에 포함 */
+}
+
+.sidebar h2 {
+    margin: 0 0 15px; /* 제목 아래 여백 추가 */
+    font-size: 24px; /* 제목 크기 조정 */
+}
+
+.sidebar h3 {
+    background-color: #f8f8f8;
+    margin: 10px 0; /* 위아래 여백 */
+    padding: 10px 12px; /* 패딩 */
+    border-radius: 4px; /* 모서리 둥글게 */
+}
+
+.sidebar select,
+.sidebar input {
+    width: 100%; /* 전체 너비 사용 */
+    margin: 8px 0; /* 위아래 여백 */
+    padding: 10px; /* 패딩 */
+    border: 1px solid #ddd; /* 테두리 */
+    border-radius: 4px; /* 모서리 둥글게 */
+    box-sizing: border-box; /* 패딩과 테두리 포함 */
+}
+
+.sidebar button {
+    width: 100%; /* 전체 너비 사용 */
+    padding: 10px; /* 패딩 */
+    margin-top: 10px; /* 위 여백 */
+    border: none; /* 기본 테두리 제거 */
+    background-color: #ff6f61; /* 버튼 배경색 */
+    color: #fff; /* 버튼 글자색 */
+    border-radius: 4px; /* 모서리 둥글게 */
+    cursor: pointer; /* 클릭 가능 */
+    transition: background-color 0.3s; /* 배경색 변경 시 애니메이션 */
+}
+
+.sidebar button:hover {
+    background-color: #e63946; /* 마우스 오버 시 색상 변경 */
+}
+
+.restaurant-list-container {
+    display: flex; /* 내부 요소를 나란히 배치 */
+    margin: 20px auto; /* 여백 조정 */
+    padding: 0;
+}
+
+.restaurant-wrapper {
+    display: flex; /* 사이드바와 리스트를 나란히 배치 */
+    flex: 1; /* 가능한 너비를 모두 사용 */
+    margin: 0 20px; /* 양쪽 여백 */
+}
+
+.restaurant-list {
+    flex: 1; /* 사이드바 외의 나머지 공간 사용 */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.restaurant-list h1 {
+    margin: 0;
+    width: 100%;
+    padding-left: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px; /* 제목과 리스트 사이의 간격 조정 */
+}
+
+.restaurant-item2 {
+    display: flex;
+    align-items: flex-start;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    background-color: #fff;
+    cursor: pointer; /* 클릭할 수 있음을 나타냄 */
+}
+
+.restaurant-item2 img {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.restaurant-details2 {
+    padding: 15px;
+    flex: 1;
+}
+
+.restaurant-details2 h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.restaurant-details2 p {
+    margin: 10px 0 0;
+    color: #555;
+}
+
+/* 맨 위로 가기 버튼 */
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ff6f61; /* 버튼 배경색 */
+    color: #fff; /* 버튼 글자색 */
+    border: none;
+    border-radius: 50%; /* 둥근 버튼 */
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000; /* 다른 요소 위에 위치하도록 설정 */
+    transition: background-color 0.3s; /* 배경색 변경 시 애니메이션 */
+}
+
+.scroll-to-top:hover {
+    opacity: 0.8; /* 버튼에 마우스를 올렸을 때 투명도를 조정하여 시각적인 피드백 제공 */
+    background-color: #e63946; /* 마우스 오버 시 색상 변경 */
+}
+
+/* 반응형 디자인 추가 */
+@media (max-width: 768px) {
+    .restaurant-wrapper {
+        flex-direction: column; /* 모바일에서는 세로로 쌓이게 */
+    }
+    
+    .restaurant-list-container {
+        flex-direction: column; /* 모바일에서는 세로로 쌓이게 */
+    }
+
+    .sidebar {
+        width: 100%; /* 전체 너비를 사용 */
+        margin: 0; /* 여백 제거 */
+        margin-bottom: 20px; /* 리스트와의 간격 추가 */
+    }
+
+    .restaurant-list {
+        width: 100%; /* 리스트도 전체 너비를 사용 */
+        margin: 0; /* 리스트 위아래에 여백 제거 */
+    }
+}
