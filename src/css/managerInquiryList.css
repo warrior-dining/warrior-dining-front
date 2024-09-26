@@ -1,0 +1,74 @@
+.search-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-bar select {
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+}
+
+.search-bar input {
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    width: 200px;
+    background-color: #ffffff;
+}
+
+.search-bar button {
+    padding: 10px 15px;
+    border: none;
+    background-color: #ff6f61;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    background-color: #f4f4f4;
+    color: #ff6f61; /* 식욕을 돋우는 오렌지색 */
+}
+
+tbody tr:hover {
+    cursor: pointer;
+    background-color: #f9f9f9;
+}
+
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination a {
+    text-decoration: none;
+    color: #ff6f61;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    margin: 0 5px;
+    border-radius: 4px;
+}
+
+.pagination a:hover {
+    background-color: #f4f4f4;
+}
+
+.pagination .active {
+    background-color: #ff6f61;
+    color: #fff;
+    border: 1px solid #ff6f61;
+}
