@@ -13,6 +13,7 @@ import Admin from './adminContainers/Admin';
 import NavBarAdmin from './adminContainers/NavBarAdmin';
 import './css/home.css';
 import './css/default.css';
+import Mypage from './containers/mypage';
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
           <Route path="/inquiryfaq" element={<InquiryFaq />} />
           <Route path="/inquirycreate" element={<InquiryCreate />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/mypage" element={<Mypage />} />
           {/* 다른 경로들도 여기 추가할 수 있습니다. */}
         <Route path="/" element={<Main />} />
       </Routes>
