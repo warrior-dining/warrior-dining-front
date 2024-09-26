@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅 import
+import { useNavigate } from 'react-router-dom'; 
 
 
 const DashboardSection = () => {

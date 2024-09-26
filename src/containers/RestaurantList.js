@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../css/default.css';
 import '../css/home.css';
-import '../css/restaurantTotal.css';
+import '../css/restaurantList.css';
 
 const RestaurantSidbar = () => {
     return (

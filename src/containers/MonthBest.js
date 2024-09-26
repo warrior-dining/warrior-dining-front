@@ -1,5 +1,5 @@
 import React from 'react';
-import '../css/default.css'; // 스타일 시트 연결
+import '../css/default.css'; 
 import '../css/home.css';
 import '../css/monthBest.css';
 

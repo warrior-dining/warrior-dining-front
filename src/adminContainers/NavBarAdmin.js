@@ -12,7 +12,7 @@ function NavBarAdmin() {
                     <Link to="/admin/members">회원 목록</Link>
                     <a href="#">뭔가 메뉴가 더 있겟지</a>
                 </div>
-            </li> {/* Link로 수정 */}
+            </li> 
             <li className='nav-item'>
                 <a href="#">음식점 관리</a>
                 <div className="sub-menu">

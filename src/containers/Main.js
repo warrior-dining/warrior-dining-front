@@ -1,11 +1,9 @@
-// import HeroSection from './components/HeroSection';
-// import MainContent from './components/MainContent';
-// import ReviewSection from './components/ReviewSection';
+
 import React, { useEffect, useRef } from 'react';
-import { useNavigate, Link} from 'react-router-dom'; // useNavigate 훅 import
+import { useNavigate, Link} from 'react-router-dom'; 
 import { initReviewSlider } from '../components/ReviewSlider';
 
-// 데이터를 상위에서 직접 정의하거나 외부에서 가져오는 방법도 있습니다.
+
 const topRestaurants = [
   { name: '레스토랑 이름 1', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다.' },
   { name: '레스토랑 이름 2', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다.' },
@@ -65,19 +63,19 @@ const RestaurantSection = ({ title, items, onMoreClick }) => (
   </section>
 );
 
-const ReviewSection = () => { //리뷰 페이지 슬라이더
-  const reviewWrapperRef = useRef(null); // 리뷰 래퍼에 대한 ref
-  const reviewSlidesRef = useRef([]); // 슬라이드에 대한 ref 배열
+const ReviewSection = () => { 
+  const reviewWrapperRef = useRef(null); 
+  const reviewSlidesRef = useRef([]); 
 
   useEffect(() => {
-      const reviewSlides = reviewSlidesRef.current; // 슬라이드 DOM 요소
-      const reviewWrapper = reviewWrapperRef.current; // 리뷰 래퍼 DOM 요소
+      const reviewSlides = reviewSlidesRef.current; 
+      const reviewWrapper = reviewWrapperRef.current; 
 
-      // 슬라이더 초기화
+
       const cleanup = initReviewSlider(reviewWrapper, reviewSlides);
 
       return () => {
-          cleanup(); // 컴포넌트 언마운트 시 클린업 함수 호출
+          cleanup(); 
       };
   }, []);
 
@@ -104,13 +102,13 @@ const ReviewSection = () => { //리뷰 페이지 슬라이더
 };
 
 const MainContent = () => {
-  const navigate = useNavigate(); // navigate 함수 사용
+  const navigate = useNavigate();
 
   const handleMoreClick = (title) => {
     if (title === '예약 TOP 순위') {
-      navigate('/TopReservation'); // 예약 TOP으로 이동
+      navigate('/TopReservation'); 
     } else if (title === '이달의 맛집') {
-      navigate('/MonthBest'); // 이달의 맛집으로 이동 (원하는 경로로 수정)
+      navigate('/MonthBest');
     }
   };
 
@@ -120,12 +118,12 @@ const MainContent = () => {
         <RestaurantSection 
           title="예약 TOP 순위" 
           items={topRestaurants} 
-          onMoreClick={handleMoreClick} // 클릭 이벤트 핸들러 전달
+          onMoreClick={handleMoreClick}
         />
         <RestaurantSection 
           title="이달의 맛집" 
           items={monthBestRestaurants} 
-          onMoreClick={handleMoreClick} // 클릭 이벤트 핸들러 전달
+          onMoreClick={handleMoreClick} 
         />
         
         <ReviewSection />

@@ -1,6 +1,6 @@
 import React from 'react';
-import '../css/default.css'; // 스타일 시트 연결
-import '../css/reservationTop10.css'; // 예약 TOP 10 스타일 시트 연결
+import '../css/default.css'; 
+import '../css/reservationTop10.css'; 
 import '../css/home.css';
 import '../css/monthBest.css';
 
