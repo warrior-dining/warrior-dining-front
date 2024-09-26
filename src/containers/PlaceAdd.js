@@ -1,7 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/restaurantCreate.css';
 
 const PlaceAdd = () => {
+    const [daum, setDaum] = useState(null);
+
+    useEffect(() => {
+        const loadDaumPostcode = () => {
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+                script.onload = () => {
+                    resolve(window.daum);
+                };
+                document.body.appendChild(script);
+            });
+        };
+
+        loadDaumPostcode().then((loadedDaum) => {
+            setDaum(loadedDaum);
+        });
+
+        // 클린업 함수 (스크립트 제거)
+        return () => {
+            const scripts = document.querySelectorAll('script[src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"]');
+            scripts.forEach((script) => script.remove());
+        };
+    }, []);
+
+    const openKakao = () => {
+        if (daum) {
+            new daum.Postcode({
+                oncomplete: function (data) {
+                    let addr = '';
+                    let extraAddr = '';
+
+                    if (data.userSelectedType === 'R') {
+                        addr = data.roadAddress;
+                    } else {
+                        addr = data.jibunAddress;
+                    }
+
+                    if (data.userSelectedType === 'R') {
+                        if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                            extraAddr += data.bname;
+                        }
+                        if (data.buildingName !== '' && data.apartment === 'Y') {
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        if (extraAddr !== '') {
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                    }
+
+                    document.getElementById("location").value = addr;
+                    document.getElementById("location").focus();
+                }
+            }).open();
+        }
+    }
+
     const [uploadedImages, setUploadedImages] = useState([]);
     const [menuItems, setMenuItems] = useState([{ id: 1, name: '', price: '' }]);
 
@@ -28,8 +85,8 @@ const PlaceAdd = () => {
     };
 
     const handleMenuItemChange = (id, field, value) => {
-        setMenuItems(prev => 
-            prev.map(item => 
+        setMenuItems(prev =>
+            prev.map(item =>
                 item.id === id ? { ...item, [field]: value } : item
             )
         );
@@ -68,7 +125,7 @@ const PlaceAdd = () => {
                                     ))}
                                 </div>
                             </div>
-                            
+
                             <div className="form-group menu-container-wrapper">
                                 <div className="menu-header">
                                     <label>메뉴 추가</label>
@@ -105,7 +162,7 @@ const PlaceAdd = () => {
                             <div className="form-group">
                                 <label htmlFor="location">위치</label>
                                 <input type="text" id="location" name="location" required />
-                                <button type="button" >주소찾기</button>
+                                <button type="button" onClick={openKakao}>주소찾기</button>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="phone">전화번호</label>

@@ -1,5 +1,6 @@
 import '../css/restaurantManagement.css';
 
+
 const PlacesAdmin = () => {
     return (
         <>
