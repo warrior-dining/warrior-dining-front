@@ -16,6 +16,7 @@ import './css/memberList.css';
 
 import PlaceAdd from './containers/PlaceAdd';
 import ReservationAdmin from "./containers/ReservationAdmin";
+import MemberDetail from "./containers/MemberDetail";
 
 
 
@@ -28,7 +29,8 @@ function App() {
           <NavBarAdmin />
           <Routes>
             {/* 다른 경로들도 여기 추가할 수 있습니다. */}
-            <Route path="/admin/members" element={<MembersAdmin />} /> 
+            <Route path="/admin/members" element={<MembersAdmin />} />
+            <Route path="/admin/members/info" element={<MemberDetail />} />
             <Route path="/admin/places" element={<PlacesAdmin />} />
             <Route path="/admin/reviews" element={<ReviewsAdmin />} />
             <Route path="/admin/reservations" element={<ReservationAdmin/>} />
