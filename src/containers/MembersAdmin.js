@@ -1,4 +1,6 @@
 import {Link, useNavigate} from "react-router-dom";
+import '../css/memberList.css';
+
 const MembersAdmin = () => {
 
     const data = [

@@ -10,7 +10,6 @@ function NavBarAdmin() {
                 <a href="#">회원 관리</a>
                 <div className="sub-menu">
                     <Link to="/admin/members">회원 목록</Link>
-                    <a href="#">뭔가 메뉴가 더 있겟지</a>
                 </div>
             </li> {/* Link로 수정 */}
             <li className='nav-item'>
@@ -23,22 +22,19 @@ function NavBarAdmin() {
             <li className='nav-item'>
                 <a href="#">리뷰 관리</a>
                 <div className="sub-menu">
-                    <a href="/admin/reviews">리뷰 목록</a>
-                    <a href="#">리뷰 필터</a>
+                    <Link to="/admin/reviews">리뷰 목록</Link>
                 </div>
             </li>
             <li className='nav-item'>
                 <a href="#">예약 관리</a>
                 <div className="sub-menu">
-                    <a href="/admin/reservations">예약 목록</a>
-                    <a href="#">예약 검색</a>
+                    <Link to="/admin/reservations">예약 목록</Link>
                 </div>
             </li>
             <li className='nav-item'>
                 <a href="#">문의사항 관리</a>
                 <div className="sub-menu">
-                    <a href="/admin/inquiries">문의 목록</a>
-                    <a href="#">미처리 문의</a>
+                    <Link to="/admin/inquiries">문의 목록</Link>
                 </div>
             </li>
         </ul>
