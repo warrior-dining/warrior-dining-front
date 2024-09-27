@@ -1,0 +1,63 @@
+/* 내정보 섹션의 너비 조정 */
+.mypage-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    height: calc(100vh - 100px); 
+    overflow-y: auto; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+}
+
+.mypage-content form {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.mypage-content fieldset {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.mypage-content legend {
+    font-weight: bold;
+    font-size: 18px; 
+}
+
+.mypage-content label {
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 16px; 
+}
+
+.mypage-content input[type="text"],
+.mypage-content input[type="email"],
+.mypage-content input[type="tel"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.mypage-content a.button {
+    display: inline-block;
+    background-color: #ff6f61; 
+    color: #fff; 
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 16px; 
+    margin: 10px 0;
+}

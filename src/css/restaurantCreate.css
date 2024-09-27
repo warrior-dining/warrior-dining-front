@@ -1,0 +1,269 @@
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-actions {
+    text-align: center;
+}
+
+.form-actions button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #ff6f61;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.form-actions button:hover {
+    background-color: #e63946;
+}
+/* 추가 스타일 */
+.menu-header {
+    display: flex;
+    align-items: center;
+}
+
+.menu-header label {
+    margin-right: 10px; /* "메뉴 추가" 라벨과 버튼 사이의 간격 조정 */
+}
+
+.add-menu-item {
+    background: none;
+    border: none;
+    font-size: 1.2em; /* 버튼 크기 조정 */
+    color: #ff6f61;
+    cursor: pointer;
+    margin-left: 10px; /* 버튼과 라벨 사이의 간격 조정 */
+}
+
+.delete-menu-item {
+    background: none;
+    border: none;
+    font-size: 1.2em; /* 버튼 크기 조정 */
+    color: #ff6f61;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.delete-menu-item:disabled {
+    color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.menu-item input[type="text"],
+.menu-item input[type="number"] {
+    width: calc(50% - 20px); /* 조정된 너비 */
+}
+
+.menu-container-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#menu-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* 메뉴 항목 간 간격 조정 */
+    width: 100%;
+}
+
+.menu-item-container {
+    display: flex;
+    width: 100%;
+}
+
+.image-preview {
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+}
+.image-preview img {
+    max-width: 150px;
+    max-height: 150px;
+}
+.remove-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: none;
+    border: none;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+}
+.remove-btn:hover {
+    color: red; /* X 버튼을 호버할 때 빨간색으로 변경 */
+}
+
+/* 모바일 기기 및 작은 화면용 스타일 */
+@media (max-width: 600px) {
+    .form-container {
+        padding: 10px;
+        box-shadow: none; /* 작은 화면에서는 그림자를 제거 */
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 8px;
+    }
+
+    .form-actions button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    .menu-item {
+        flex-direction: column; /* 메뉴 항목을 세로 방향으로 정렬 */
+        align-items: stretch; /* 메뉴 항목을 전체 너비로 확장 */
+        gap: 10px; /* 메뉴 항목 간 간격 조정 */
+    }
+
+    .menu-item input[type="text"],
+    .menu-item input[type="number"] {
+        width: 100%; /* 입력란을 전체 너비로 확장 */
+        margin-right: 0; /* 오른쪽 여백 제거 */
+    }
+
+    .menu-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .menu-header label {
+        margin-bottom: 5px;
+    }
+
+    .add-menu-item {
+        font-size: 1.5em; /* 모바일에서는 버튼을 더 크게 */
+    }
+
+    .delete-menu-item {
+        font-size: 1.5em;
+    }
+}
+
+/* 모바일 기기 및 작은 화면용 스타일 */
+@media (max-width: 738px) {
+    .form-container {
+        padding: 10px;
+        box-shadow: none; /* 작은 화면에서는 그림자를 제거 */
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 8px;
+    }
+
+    .form-actions button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    .menu-item {
+        flex-direction: column; /* 메뉴 항목을 세로 방향으로 정렬 */
+        align-items: stretch; /* 메뉴 항목을 전체 너비로 확장 */
+        gap: 10px; /* 메뉴 항목 간 간격 조정 */
+    }
+
+    .menu-item input[type="text"],
+    .menu-item input[type="number"] {
+        width: 100%; /* 입력란을 전체 너비로 확장 */
+        margin-right: 0; /* 오른쪽 여백 제거 */
+    }
+
+    .menu-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .menu-header label {
+        margin-bottom: 5px;
+    }
+
+    .add-menu-item {
+        font-size: 1.5em; /* 모바일에서는 버튼을 더 크게 */
+    }
+
+    .delete-menu-item {
+        font-size: 1.5em;
+    }
+}
+
+/* 중간 화면 크기용 스타일 */
+@media (min-width: 739px) and (max-width: 959px) {
+    .menu-item {
+        flex-direction: row; /* 메뉴 항목을 가로 방향으로 정렬 */
+        align-items: center;
+        gap: 10px; /* 메뉴 항목 간 간격 조정 */
+    }
+
+    .menu-item input[type="text"],
+    .menu-item input[type="number"] {
+        width: 190px; /* 입력란 너비를 중간 크기로 조정 */
+    }
+
+    .menu-header {
+        flex-direction: row; /* "메뉴 추가"와 버튼을 가로 방향으로 정렬 */
+    }
+}
+
+/* 큰 화면 및 데스크톱용 스타일 */
+@media (min-width: 960px) {
+    .menu-item {
+        flex-direction: row; /* 메뉴 항목을 가로 방향으로 정렬 */
+        align-items: center;
+        gap: 10px; /* 메뉴 항목 간 간격 조정 */
+    }
+
+    .menu-item input[type="text"],
+    .menu-item input[type="number"] {
+        width: 300px; /* 입력란 너비를 큰 화면에 맞게 조정 */
+    }
+
+    .menu-header {
+        flex-direction: row; /* "메뉴 추가"와 버튼을 가로 방향으로 정렬 */
+    }
+}

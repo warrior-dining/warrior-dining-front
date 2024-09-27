@@ -1,0 +1,89 @@
+.filter-bar, .search-bar {
+    display: inline-block;
+    flex-wrap: wrap; /* 화면 크기가 작아질 때 줄 바꿈 */
+    gap: 1px; /* 요소 간의 간격 */
+    margin-bottom: 20px;
+}
+
+.filter-bar select, .search-bar input, .search-bar button {
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background: #f9f9f9;
+    margin-right: 5px; /* 오른쪽 여백 */
+}
+
+.filter-bar select {
+    flex: 1; /* 가변 너비 */
+}
+
+.search-bar input {
+    width: 250px; /* 검색 입력 필드가 버튼보다 넓게 */
+    border: 1px solid #e0e0e0;
+}
+
+.search-bar button {
+    flex: 0; /* 버튼 크기 고정 */
+    background-color: #ff6f61;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background-color: #e63946;
+}
+
+.review-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.review-table th, .review-table td {
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+}
+
+.review-table th {
+    background-color: #f4f4f4;
+    color: #ff6f61;
+}
+.review-table tr:hover{
+    background-color: #fff;
+}
+
+.review-table td.actions button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.review-table td .delete {
+    background-color: #f44336;
+    color: #fff;
+}
+
+.review-table td button:hover {
+    opacity: 0.8;
+}
+
+/* 상세내용 스타일 */
+.review-detail {
+    display: table-row;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    margin: 0;
+}
+
+.review-detail p {
+    margin: 5px 0;
+}
+
+.review-detail .detail-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}

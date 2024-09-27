@@ -1,0 +1,71 @@
+.details-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.details-container h3 {
+    color: #ff6f61;
+    border-bottom: 2px solid #ff6f61;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.details-container p {
+    margin: 10px 0;
+}
+
+.details-container .info {
+    margin-bottom: 20px;
+}
+
+.details-container .info label {
+    font-weight: bold;
+}
+
+.details-container .info .content {
+    margin-left: 10px;
+}
+
+.details-container .content {
+    margin-bottom: 20px;
+}
+
+.reply-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.reply-container h4 {
+    color: #ff6f61;
+    border-bottom: 2px solid #ff6f61;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.reply-container textarea {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    resize: vertical;
+    box-sizing: border-box; /* padding 포함하여 전체 크기 조정 */
+}
+
+.reply-container button {
+    padding: 10px 15px;
+    border: none;
+    background-color: #ff6f61;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.reply-container button:hover {
+    background-color: #e63946;
+}

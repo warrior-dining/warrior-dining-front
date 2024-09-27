@@ -1,0 +1,162 @@
+.reservation-list {
+    margin: 20px 0;
+}
+
+.reservation-item {
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.reservation-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.reservation-item h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.reservation-item p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.reservation-item .status {
+    font-weight: bold;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.reservation-item .status.확정 {
+    background-color: #28a745; /* Green for confirmed */
+}
+
+.reservation-item .status.대기 {
+    background-color: #ffc107; /* Yellow for pending */
+}
+
+.reservation-item .status.취소 {
+    background-color: #6c757d; /* Gray for canceled */
+}
+
+.reservation-details {
+    display: none;
+    overflow: hidden;
+    padding: 15px;
+    border-top: 1px solid #eee;
+    background-color: #f9f9f9;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+    max-height: 0;
+    padding: 0 15px;
+}
+
+.reservation-details.open {
+    display: block;
+    max-height: 300px; /* Adjust to fit your content */
+    padding: 15px;
+}
+
+.cancel-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+    background-color: #c82333;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.pagination button {
+    border: none;
+    background-color: #ff6f61;
+    color: white;
+    padding: 12px 24px;
+    margin: 0 5px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: #ff6f61;
+}
+
+.pagination button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.filter-search-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    align-content: space-around;
+    flex-wrap: wrap;
+}
+
+.filter-buttons button {
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-buttons button {
+    background-color: #ff6f61;
+    color: white;
+}
+
+.filter-buttons button:hover {
+    background-color: #ff6f61;
+}
+
+.reservation-search-bar {
+    display: flex;
+    gap: 10px;
+    border-radius: 20px;
+}
+
+.reservation-search-bar input {
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+}
+
+.reservation-search-bar button {
+    background-color: #ff6f61;
+    color: white;
+}
+
+.reservation-search-bar button:hover {
+    background-color: #ff6f61;
+}

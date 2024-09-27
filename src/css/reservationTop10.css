@@ -1,0 +1,38 @@
+.restaurant-item {
+    position: relative;
+}
+
+.restaurant-rank {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    padding: 15px;
+    border-radius: 50%;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    z-index: 1;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    color: #333;
+}
+
+/* 순위별 배경색 정의 */
+.restaurant-item:nth-child(1) .restaurant-rank {
+    background-color: #ffd700; 
+}
+
+.restaurant-item:nth-child(2) .restaurant-rank {
+    background-color: #9c9c9c; 
+}
+
+.restaurant-item:nth-child(3) .restaurant-rank {
+    background-color: #cd7f32; 
+}
+
+
+.restaurant-item:nth-child(n+4) .restaurant-rank {
+    background-color: #dcdcdc; 
+}
