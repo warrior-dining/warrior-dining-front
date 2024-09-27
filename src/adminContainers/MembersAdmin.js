@@ -25,7 +25,7 @@ const MembersAdmin = () => {
         console.log(data);
         return (
             <>
-                <table>
+                <table className="member-list-table">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -60,7 +60,7 @@ const MembersAdmin = () => {
             <main>
                 <div className="container">
                     <h2>회원 목록</h2>
-                    <div className="search-bar">
+                    <div className="member-search-bar">
                     <select>
                             <option value="id">회원 ID</option>
                             <option value="name">이름</option>

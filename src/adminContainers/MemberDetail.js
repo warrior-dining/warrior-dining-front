@@ -74,7 +74,7 @@ const MemberDetail = () => {
         <>
             <main>
                 <div className="container">
-                    <div className="details-container">
+                    <div className="member-details-container">
                         <h2>회원 상세정보</h2>
                         <div className="info">
                             <p><label>회원 ID :</label> {data.id}</p>
@@ -84,8 +84,8 @@ const MemberDetail = () => {
                             <p><label>권한 :</label> {data.role}</p>
                             <p><label>상태 :</label> {data.status}</p>
                         </div>
-                        <div className="btn-container">
-                        <button onClick={ ()=> { openModal('grant') }}>권한 부여</button>
+                        <div className="member-btn-container">
+                            <button onClick={ ()=> { openModal('grant') }}>권한 부여</button>
                             <button onClick={ () => { openModal('revoke') }}>권한 제거</button>
                         </div>
                     </div>

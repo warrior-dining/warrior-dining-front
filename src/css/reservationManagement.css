@@ -122,7 +122,7 @@
     flex-wrap: wrap;
 }
 
-.filter-buttons button, .search-bar input, .search-bar button {
+.filter-buttons button {
     border: none;
     border-radius: 20px;
     padding: 10px 20px;
