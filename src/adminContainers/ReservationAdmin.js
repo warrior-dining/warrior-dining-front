@@ -71,7 +71,9 @@ const ReservationAdmin = () => {
         <main>
             <div className="container">
                 <section className="reservation-list">
+
                     <h2 className="main-title">예약 목록</h2>
+
                     <div className="filter-search-container">
                         <div className="filter-buttons">
                             <button onClick={() => filterReservations('전체')}>전체</button>

@@ -56,7 +56,9 @@ const PlacesAdmin = () => {
         <>
             <main>
                 <div className="container">
+
                     <h2 className="main-title">음식점 목록</h2>
+
                     <div className="header-container">
                         <button type="button" onClick={()=>{
                             navigate('/admin/places/add');

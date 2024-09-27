@@ -60,7 +60,9 @@ const InquiriesAdmin = () => {
         <>
             <main>
                 <div className="container">
+
                     <h2 className="main-title">문의 사항 목록</h2>
+
                     <div className="search-container">
                         <div className="search-bar">
                             <select>

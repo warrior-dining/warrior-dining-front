@@ -1,15 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function NavBar() {
+const NavBar = () => {
   return (
     <div className="nav-bar">
       <div className="container">
         <ul>
-        <li><Link to="/TopReservation">예약 TOP</Link></li> {/* Link로 수정 */}
-          <li><Link to="/MonthBest">이달의 맛집</Link></li>
-          <li><a href="/reservation">예약</a></li>
-          <li><a href="#">문의</a></li>
+        <li><Link to="/topreservation">예약 TOP</Link></li> 
+          <li><Link to="/monthbest">이달의 맛집</Link></li>
+          <li><Link to="/restaurantlist">음식점 찾기</Link></li>
+          <li><Link to="/inquiryfaq">문의</Link></li>
           <li className="search-bar">
             <input type="text" placeholder="지역 또는 레스토랑 검색" />
             <button>검색</button>

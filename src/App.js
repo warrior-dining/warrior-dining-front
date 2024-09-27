@@ -27,25 +27,24 @@ import NavBar from "./components/NavBar";
 
 
 function App() {
-  const [isAdmin, setIsAdmin] = useState(false);
-
+   const [isAdmin, setIsAdmin] = useState(false);
+ 
   useEffect(()=> {
 
   }, []);
+
   return (
-    <>
-      <Router>
-        <div className="App">
-          <Header adminClick={setIsAdmin} />
-          {isAdmin ? (
-              <NavBarAdmin />
-          ) : (
-              <>
-                <NavBar />
-              </>
-          )}
-          <Routes>
-            {/* 다른 경로들도 여기 추가할 수 있습니다. */}
+    <Router>
+    <div className="App">
+      <Header adminClick={setIsAdmin} />
+      {isAdmin ? (
+        <NavBarAdmin />
+      ) : (
+        <>      
+        <NavBar />      
+      </>
+    )}
+        <Routes>
             <Route path="/admin/members" element={<MembersAdmin />} />
             <Route path="/admin/members/info" element={<MemberDetail />} />
             <Route path="/admin/places" element={<PlacesAdmin />} />
@@ -54,20 +53,19 @@ function App() {
             <Route path="/admin/inquiries" element={<InquiriesAdmin />} />
             <Route path="/admin/inquiries/detail" element={<InquirieDtailsAdmin />} />
             <Route path="/admin/places/add" element={<PlaceAdd />} />
-            <Route path="/topreservation" element={<TopReservation />} />
-            <Route path="/monthbest" element={<MonthBest />} />
-            <Route path="/restaurantlist" element={<RestaurantList />} />
-            <Route path="/inquiryfaq" element={<InquiryFaq />} />
-            <Route path="/inquirycreate" element={<InquiryCreate />} />
-            <Route path="/admin" element={<MainAdmin />} />
-            <Route path="/mypage" element={<Mypage />} />
-            {/* 다른 경로들도 여기 추가할 수 있습니다. */}
-            <Route path="/" element={<Main />} />
-          </Routes>
-          <Footer />
-        </div>
-      </Router>
-  </>
+          <Route path="/topreservation" element={<TopReservation />} /> 
+          <Route path="/monthbest" element={<MonthBest />} />
+          <Route path="/restaurantlist" element={<RestaurantList />} />
+          <Route path="/inquiryfaq" element={<InquiryFaq />} />
+          <Route path="/inquirycreate" element={<InquiryCreate />} />
+          <Route path="/admin" element={<MainAdmin />} />
+          <Route path="/mypage" element={<Mypage />} />
+          {/* 다른 경로들도 여기 추가할 수 있습니다. */}
+        <Route path="/" element={<Main />} />
+      </Routes>
+      <Footer />
+    </div>
+  </Router>
   );
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import '../css/default.css'; // 스타일 시트 연결
-import '../css/reservationTop10.css'; // 예약 TOP 10 스타일 시트 연결
+import '../css/default.css'; 
+import '../css/reservationTop10.css'; 
 import '../css/home.css';
 import '../css/monthBest.css';
 
@@ -18,6 +18,7 @@ const TopReservation = () => {
             <a href="#">일식</a>
             <a href="#">중식</a>
             <a href="#">기타</a>
+            <a>전체보기</a>
           </div>
 
           <div className="restaurant-list">

@@ -75,6 +75,7 @@ const MemberDetail = () => {
             <main>
                 <div className="container">
                     <div className="member-details-container">
+
                         <h2 className="main-title">회원 상세정보</h2>
                         <div className="info">
                             <p><label>회원 ID :</label> {data.id}</p>

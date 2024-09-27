@@ -59,7 +59,9 @@ const MembersAdmin = () => {
         <>
             <main>
                 <div className="container">
+
                     <h2 className="main-title">회원 목록</h2>
+
                     <div className="member-search-bar">
                     <select>
                             <option value="id">회원 ID</option>
