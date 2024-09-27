@@ -12,16 +12,15 @@ const ReservationAdmin = () => {
         { id: '0007', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
     ]);
 
-    const itemsPerPage = 5; // 페이지당 표시할 항목 수
-    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-    const [currentStatusFilter, setCurrentStatusFilter] = useState('전체'); // 현재 필터 상태
-    const [searchQuery, setSearchQuery] = useState(''); // 현재 검색어
-    const [filteredReservations, setFilteredReservations] = useState([]); // 필터링된 예약 목록
-    const [openDetailIndex, setOpenDetailIndex] = useState(null); // 열린 상세 정보의 인덱스
+    const itemsPerPage = 5;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [currentStatusFilter, setCurrentStatusFilter] = useState('전체');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredReservations, setFilteredReservations] = useState([]);
 
     useEffect(() => {
         renderReservations();
-    }, [currentPage, currentStatusFilter, searchQuery]);
+    }, [currentPage, currentStatusFilter, searchQuery, reservations]);
 
     const renderReservations = () => {
         const filtered = reservations.filter(reservation => {
@@ -42,6 +41,8 @@ const ReservationAdmin = () => {
                     reservation.id === id ? { ...reservation, status: '취소' } : reservation
                 )
             );
+            setCurrentStatusFilter('취소'); // 상태 변경 후 취소된 예약 목록으로 필터링
+            setCurrentPage(1); // 페이지를 첫 번째 페이지로 초기화
         }
     };
 
@@ -55,15 +56,6 @@ const ReservationAdmin = () => {
         setCurrentPage(1);
     };
 
-    const toggleDetails = (index) => {
-        if (openDetailIndex === index) {
-            setOpenDetailIndex(null); // 이미 열린 항목을 클릭하면 닫기
-        } else {
-            setOpenDetailIndex(index); // 새로운 항목을 클릭하면 열기
-        }
-    };
-
-    // 현재 페이지에 맞는 예약 항목 추출
     const startIndex = (currentPage - 1) * itemsPerPage;
     const pageReservations = filteredReservations.slice(startIndex, startIndex + itemsPerPage);
 
@@ -71,9 +63,7 @@ const ReservationAdmin = () => {
         <main>
             <div className="container">
                 <section className="reservation-list">
-
                     <h2 className="main-title">예약 목록</h2>
-
                     <div className="filter-search-container">
                         <div className="filter-buttons">
                             <button onClick={() => filterReservations('전체')}>전체</button>
@@ -87,22 +77,12 @@ const ReservationAdmin = () => {
                         </div>
                     </div>
                     <div id="reservation-container">
-                        {pageReservations.map((reservation, index) => (
-                            <div className="reservation-item" key={reservation.id} onClick={() => toggleDetails(startIndex + index)}>
+                        {pageReservations.map((reservation) => (
+                            <div className="reservation-item" key={reservation.id}>
                                 <h3>예약 ID: {reservation.id}</h3>
                                 <p>고객 이름: {reservation.customer} <span className={`status ${reservation.status}`}>{reservation.status}</span></p>
                                 {reservation.status === '대기' && (
                                     <button className="cancel-button" onClick={() => cancelReservation(reservation.id)}>예약 취소</button>
-                                )}
-                                {openDetailIndex === startIndex + index && (
-                                    <div className="reservation-details open">
-                                        <p><strong>상세 정보:</strong></p>
-                                        <p>음식점 이름: {reservation.restaurant}</p>
-                                        <p>예약 날짜: {reservation.date}</p>
-                                        <p>예약 시간: {reservation.time}</p>
-                                        <p>인원 수: {reservation.guests}</p>
-                                        <p>상태: {reservation.status}</p>
-                                    </div>
                                 )}
                             </div>
                         ))}
@@ -115,6 +95,6 @@ const ReservationAdmin = () => {
             </div>
         </main>
     );
-}
+};
 
 export default ReservationAdmin;
