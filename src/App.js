@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import './css/default.css';
 import './css/home.css';
-import './css/mainAdmin.css';
+
 import MembersAdmin from './adminContainers/MembersAdmin';
 import PlacesAdmin from './adminContainers/PlacesAdmin';
 import ReviewsAdmin from './adminContainers/ReviewsAdmin';
