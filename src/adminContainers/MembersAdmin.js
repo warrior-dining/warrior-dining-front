@@ -1,59 +1,70 @@
 import {Link, useNavigate} from "react-router-dom";
 import '../css/memberList.css';
+import {useEffect, useState} from "react";
+import axios from "axios";
+
+async function getUser(url) {
+    try {
+        const res = await axios.get(url);
+        console.log(res.data.result);
+        return res.data.result;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+}
+
+const FindByAll = (url) => {
+    const [list, setList] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await getUser(url);
+            setList(data);
+        }
+        fetchData();
+    }, [url]);
+    return list;
+}
+
+
+const MemberList = () => {
+    const navigate = useNavigate();
+    const list = FindByAll("http://localhost:3000/members.json");
+
+    return (
+        <>
+            <table className="member-list-table">
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>회원 ID</th>
+                    <th>이름</th>
+                    <th>가입일</th>
+                    <th>권한</th>
+                </tr>
+                </thead>
+                <tbody>
+                {
+                    list.map((row, index) => (
+                        <tr key={index} onClick={() => {
+                            navigate('/admin/members/info');
+                        }}>
+                            <td>{row.no}</td>
+                            <td>{row.id}</td>
+                            <td>{row.name}</td>
+                            <td>{row.createAt}</td>
+                            <td>{row.role}</td>
+                        </tr>
+                    ))
+                }
+                </tbody>
+            </table>
+        </>
+    );
+}
+
 
 const MembersAdmin = () => {
-
-    const data = [
-        {
-            no: '1',
-            id: 'hong@example.com',
-            name: '홍길동',
-            createAt: '2024-01-15',
-            role: '관리자, 사용자'
-        },
-        {
-            no: '2',
-            id: 'kim@example.com',
-            name: '김철수',
-            createAt: '2024-01-15',
-            role: '오너, 사용자'
-        }
-    ];
-
-    const MemberList = () => {
-        const navigate = useNavigate();
-        console.log(data);
-        return (
-            <>
-                <table className="member-list-table">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>회원 ID</th>
-                            <th>이름</th>
-                            <th>가입일</th>
-                            <th>권한</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                data.map((row, index) => (
-                                    <tr key={index} onClick={() => {
-                                        navigate('/admin/members/info');
-                                    }}>
-                                        <td>{row.no}</td>
-                                        <td>{row.id}</td>
-                                        <td>{row.name}</td>
-                                        <td>{row.createAt}</td>
-                                        <td>{row.role}</td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                </table>
-            </>
-        );
-    }
 
     return (
         <>
