@@ -1,0 +1,146 @@
+.member-details-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 900px;
+}
+
+.member-details-container h2 {
+    margin: 0;
+    font-size: 2.5em;
+    color: #ff6f61;
+    border-bottom: 2px solid #e63946;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.member-details-container .info {
+    width: 100%;
+    margin: 20px 0;
+    font-size: 1.125em;
+    color: #555;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+.member-details-container .info p {
+    margin: 15px 200px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.member-details-container .info p:last-child {
+    border-bottom: none;
+}
+
+.member-details-container .info label {
+    font-weight: bold;
+    color: #333;
+}
+
+.member-details-container .btn-container {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.member-btn-container button {
+    padding: 12px 25px;
+    margin: 10px;
+    background-color: #ff6f61;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.125em;
+    transition: background-color 0.3s ease;
+}
+
+.member-details-container .btn-container button:hover {
+    background-color: #e63946;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.modal-close {
+    background: #ff6f61;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    padding: 10px 15px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.2em;
+}
+
+.modal-close:hover {
+    background: #e63946;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.form-group button {
+    padding: 12px 25px;
+    background-color: #ff6f61;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.125em;
+    display: block;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.form-group button:hover {
+    background-color: #e63946;
+}

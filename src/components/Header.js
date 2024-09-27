@@ -7,11 +7,14 @@ const Header = ({adminClick}) => {
     adminClick(true);
     navigate('/admin');
   }
+  const changeMainClick = () => {
+    adminClick(false);
+  }
   return (
     <header>
       <div className="container">
         <div className="header-content">
-        <Link to="/" className="logo">WarriorDining</Link> 
+        <Link to="/" className="logo" onClick={changeMainClick}>WarriorDining</Link> 
           <div className="auth-buttons">
             <a href="#">로그인</a>
             <a href="#">회원 가입</a>
