@@ -102,7 +102,9 @@ const PlaceAdd = () => {
         <>
             <main>
                 <div className="container">
-                    <h2>음식점 등록</h2>
+
+                    <h2 className="main-title">음식점 등록</h2>
+
                     <div className="form-container">
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">

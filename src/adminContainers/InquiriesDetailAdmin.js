@@ -7,7 +7,9 @@ const InquirieDtailsAdmin = () => {
         <>
             <main>
                 <div class="container">
-                    <h2>문의 사항 상세</h2>
+
+                    <h2 className="main-title">문의 사항 상세</h2>
+
                     <div class="details-container">
                         <h3>문의 제목</h3>
                         <div class="info">

@@ -88,7 +88,9 @@ const ReviewsAdmin = () => {
       <>
         <main>
           <div className="container">
-            <h2>사용자 리뷰 전체 목록</h2>
+
+            <h2 className="main-title">사용자 리뷰 전체 목록</h2>
+
             <div className="filter-bar">
               <select>
                 <option>날짜</option>

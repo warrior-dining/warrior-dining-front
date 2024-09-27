@@ -1,5 +1,10 @@
-.reservation-list {
-    margin: 20px 0;
+.main-title {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #ff6f61; /* 식욕을 돋우는 오렌지색 */
+    border-bottom: 2px solid #ff6f61; /* 오렌지색 밑줄 */
+    padding-bottom: 10px;
 }
 
 .reservation-item {
