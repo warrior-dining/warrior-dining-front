@@ -17,6 +17,7 @@ const ReservationAdmin = () => {
     const [currentStatusFilter, setCurrentStatusFilter] = useState('전체');
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredReservations, setFilteredReservations] = useState([]);
+    const [expandedReservationId, setExpandedReservationId] = useState(null); // 상세 정보 상태
 
     useEffect(() => {
         renderReservations();
@@ -56,6 +57,10 @@ const ReservationAdmin = () => {
         setCurrentPage(1);
     };
 
+    const toggleDetails = (id) => {
+        setExpandedReservationId(expandedReservationId === id ? null : id);
+    };
+
     const startIndex = (currentPage - 1) * itemsPerPage;
     const pageReservations = filteredReservations.slice(startIndex, startIndex + itemsPerPage);
 
@@ -78,12 +83,27 @@ const ReservationAdmin = () => {
                     </div>
                     <div id="reservation-container">
                         {pageReservations.map((reservation) => (
-                            <div className="reservation-item" key={reservation.id}>
+                            <div className="reservation-item" key={reservation.id} onClick={() => toggleDetails(reservation.id)} style={{ cursor: 'pointer' }}>
                                 <h3>예약 ID: {reservation.id}</h3>
-                                <p>고객 이름: {reservation.customer} <span className={`status ${reservation.status}`}>{reservation.status}</span></p>
+                                <p>
+                                    고객 이름: {reservation.customer} 
+                                    <span className={`status ${reservation.status}`}>{reservation.status}</span>
+                                </p>
                                 {reservation.status === '대기' && (
-                                    <button className="cancel-button" onClick={() => cancelReservation(reservation.id)}>예약 취소</button>
+                                    <button className="cancel-button" onClick={(e) => { e.stopPropagation(); cancelReservation(reservation.id); }}>
+                                        예약 취소
+                                    </button>
                                 )}
+                                <div className={`reservation-details ${expandedReservationId === reservation.id ? 'open' : ''}`}>
+                                    {expandedReservationId === reservation.id && (
+                                        <>
+                                            <p>식당: {reservation.restaurant}</p>
+                                            <p>예약 날짜: {reservation.date}</p>
+                                            <p>예약 시간: {reservation.time}</p>
+                                            <p>인원: {reservation.guests}</p>
+                                        </>
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>
