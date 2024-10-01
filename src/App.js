@@ -23,6 +23,11 @@ import InquiryCreate from "./containers/InquiryCreate";
 import Mypage from "./containers/Mypage";
 import Main from "./containers/Main";
 import NavBar from "./components/NavBar";
+import Reservationlist from './containers/ReservationList';
+import ReservationDetail from './containers/ReservationDetail';
+import MypageEdit from './containers/MypageEdit';
+import MypageDelete from './containers/MypageDelete';
+import ReviewComment from './containers/ReviewComment';
 
 
 
@@ -53,13 +58,18 @@ function App() {
             <Route path="/admin/inquiries" element={<InquiriesAdmin />} />
             <Route path="/admin/inquiries/detail" element={<InquirieDtailsAdmin />} />
             <Route path="/admin/places/add" element={<PlaceAdd />} />
-          <Route path="/topreservation" element={<TopReservation />} /> 
-          <Route path="/monthbest" element={<MonthBest />} />
-          <Route path="/restaurantlist" element={<RestaurantList />} />
-          <Route path="/inquiryfaq" element={<InquiryFaq />} />
-          <Route path="/inquirycreate" element={<InquiryCreate />} />
-          <Route path="/admin" element={<MainAdmin />} />
-          <Route path="/mypage" element={<Mypage />} />
+            <Route path="/topreservation" element={<TopReservation />} /> 
+            <Route path="/monthbest" element={<MonthBest />} />
+            <Route path="/restaurantlist" element={<RestaurantList />} />
+            <Route path="/inquiryfaq" element={<InquiryFaq />} />
+            <Route path="/inquirycreate" element={<InquiryCreate />} />
+            <Route path="/admin" element={<MainAdmin />} />
+            <Route path="/mypage/main" element={<Mypage />} />
+            <Route path="/mypage/reservationlist" element={<Reservationlist />} />
+            <Route path="/mypage/reservationdetail" element={<ReservationDetail />} />
+            <Route path="/mypage/edit" element={<MypageEdit />} />
+            <Route path="/mypage/delete" element={<MypageDelete />} />
+            <Route path="/reviewcomment" element={<ReviewComment />} />
           {/* 다른 경로들도 여기 추가할 수 있습니다. */}
         <Route path="/" element={<Main />} />
       </Routes>
