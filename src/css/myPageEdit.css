@@ -1,0 +1,146 @@
+
+.content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.content section {
+    margin-bottom: 20px;
+}
+
+.content h1 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.content form {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.content fieldset {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.content legend {
+    font-weight: bold;
+    padding: 0 5px;
+    font-size: 1.1em;
+}
+
+.content label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.content input[type="text"],
+.content input[type="email"],
+.content input[type="tel"],
+.content input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.content button[type="submit"] {
+    background-color: #ff6f61;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+.content button[type="submit"]:hover {
+    background-color: #e63946;
+}
+
+/* 설정 페이지 스타일 추가 */
+
+.settings-section {
+    margin-bottom: 30px;
+}
+
+.settings-section h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.settings-section form {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-section label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.settings-section input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.save-button {
+    background-color: #ff6f61;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.save-button:hover {
+    background-color: #e63946;
+}
+
+.settings-section input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* 회원 탈퇴 버튼 스타일 추가 */
+.delete-link {
+    display: inline-block;
+    padding: 0.7em 1.5em;
+    font-size: 1em;
+    color: #fff;
+    background-color: #e74c3c;
+    border: none;
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+    margin-top: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.delete-link:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}
+
+.delete-link:active {
+    background-color: #b03a2e;
+    transform: scale(0.98);
+}
