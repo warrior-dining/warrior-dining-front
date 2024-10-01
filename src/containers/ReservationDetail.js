@@ -47,7 +47,7 @@ const ReservationDetail = () => {
     
     const cancelEdit = () => {
         if (window.confirm('수정 내용을 취소하시겠습니까? 변경 사항이 저장되지 않습니다.')) {
-            window.location.href = '/reservationList';
+            window.location.href = '/mypage/reservationList';
         }
     };
     
