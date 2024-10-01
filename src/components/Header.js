@@ -23,7 +23,7 @@ const Header = ({adminClick}) => {
             <a href="#">로그인</a>
             <a href="#">회원 가입</a>
             <a onClick={changeAdminClick}>관리자 페이지</a>
-            <Link to="/mypage">마이페이지</Link>
+            <Link to="/mypage/main">마이페이지</Link>
           </div>
         </div>
       </div>
