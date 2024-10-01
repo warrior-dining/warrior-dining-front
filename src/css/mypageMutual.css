@@ -1,5 +1,6 @@
 /* sidebar.css */
 
+
 .mypage-sidebar {
     width: 250px;
     padding: 20px;
@@ -9,6 +10,7 @@
     margin-right: 20px;
     position: sticky;
     top: 0;
+    flex: 0 0 200px;
 }
 
 .mypage-sidebar h2 {
@@ -40,6 +42,8 @@
     margin: 20px auto;
     max-width: 1200px; 
     padding: 0 20px;
+    align-items: stretch;
+    height: 100vh;
 }
 
 .mypage-sidebar ul li a.active {
@@ -47,12 +51,3 @@
     font-weight: bold; 
 }
 
-.mypage-content {
-    flex: 1;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    height: calc(100vh - 100px); 
-    overflow-y: auto; 
-}

@@ -1,4 +1,10 @@
 /* 내정보 섹션의 너비 조정 */
+.mypage-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
 .mypage-content {
     flex: 1;
     padding: 20px;
@@ -7,7 +13,6 @@
     border-radius: 4px;
     height: calc(100vh - 100px); 
     overflow-y: auto; 
-    max-width: 1200px; 
     margin: 0 auto; 
 }
 

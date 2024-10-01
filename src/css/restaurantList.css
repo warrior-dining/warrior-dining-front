@@ -34,12 +34,15 @@
 .restaurant-list-container {
     display: flex;
     margin: 20px auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .restaurant-wrapper {
     display: flex;
     flex: 1;
     margin: 0 20px;
+    box-sizing: border-box;
 }
 
 .restaurant-list {
@@ -47,11 +50,14 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    overflow: hidden;
 }
 
 .restaurant-list h1 {
     margin: 0;
-    padding: 20px 40px 0;
+    padding: 20px;
+    width: calc(100% - 40px);
+    margin-left: 20px;
 }
 
 .restaurant-item2 {
@@ -112,6 +118,7 @@
 /* 반응형 디자인 추가 */
 @media (max-width: 768px) {
     .restaurant-wrapper {
+        
         flex-direction: column;
     }
     .sidebar {
