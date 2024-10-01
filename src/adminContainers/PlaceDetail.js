@@ -2,10 +2,28 @@ import React, { useState, useEffect } from 'react';
 import '../css/restaurantCreate.css';
 import {useNavigate} from "react-router-dom";
 
+const data = {
+    onwer: "test",
+    name: "강남불백 신촌점",
+    addr: "서울 서대문구 연세로4길 6",
+    phone: "02-313-5988",
+    runtime: "08:00 ~ 21:00",
+    comment: "맛있음당~"
+}
+const menuItems = [
+    {
+        menu: "불백정식",
+        price: "12,000"
+    },
+    {
+        menu: "우삼겹정식",
+        price: "13,000"
+    }
+];
+
 const PlaceDetail = () => {
     const navigate = useNavigate();
     const images = [];
-    const menuItems = [];
     const clickEvent = () => {
         navigate("/admin/places/edit");
     }
@@ -19,11 +37,11 @@ const PlaceDetail = () => {
                     <div className="form-container">
                             <div className="form-group">
                                 <label htmlFor="owner">아이디</label>
-                                <input type="text" id="owner" name="name" required />
+                                <input type="text" id="owner" name="name" value={data.onwer} readOnly />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="name">음식점 이름</label>
-                                <input type="text" id="name" name="name" required />
+                                <input type="text" id="name" name="name" value={data.name} readOnly />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="file">음식점 사진</label>
@@ -38,21 +56,21 @@ const PlaceDetail = () => {
 
                             <div className="form-group menu-container-wrapper">
                                 <div id="menu-container">
-                                    {menuItems.map(item => (
-                                        <div key={item.id} className="menu-item-container">
+                                    {menuItems.map((row, index) => (
+                                        <div key={index} className="menu-item-container">
                                             <div className="menu-item">
-                                                <label htmlFor={`menu-item-${item.id}`}>메뉴명</label>
+                                                <label htmlFor={`menu-item-${index}`}>메뉴명</label>
                                                 <input
                                                     type="text"
-                                                    id={`menu-item-${item.id}`}
-                                                    value={item.name}
+                                                    id={`menu-item-${index}`}
+                                                    value={row.menu}
                                                     readOnly
                                                 />
-                                                <label htmlFor={`menu-price-${item.id}`}>가격</label>
+                                                <label htmlFor={`menu-price-${index}`}>가격</label>
                                                 <input
-                                                    type="number"
-                                                    id={`menu-price-${item.id}`}
-                                                    value={item.price}
+                                                    type="text"
+                                                    id={`menu-price-${index}`}
+                                                    value={row.price}
                                                     readOnly
                                                 />
                                             </div>
@@ -62,19 +80,19 @@ const PlaceDetail = () => {
                             </div>
                             <div className="form-group">
                                 <label htmlFor="location">위치</label>
-                                <input type="text" id="location" name="location" readOnly />
+                                <input type="text" id="location" name="location" value={data.addr} readOnly />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="phone">전화번호</label>
-                                <input type="tel" id="phone" name="phone" readOnly />
+                                <input type="tel" id="phone" name="phone" value={data.phone} readOnly />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="opening-hours">운영 시간</label>
-                                <input type="text" id="opening-hours" name="opening-hours" readOnly />
+                                <input type="text" id="opening-hours" name="opening-hours" value={data.runtime} readOnly />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="description">설명</label>
-                                <textarea id="description" name="description" readOnly></textarea>
+                                <textarea id="description" name="description" value={data.comment} readOnly></textarea>
                             </div>
                             <div className="form-actions">
                                 <button type="button" onClick={clickEvent}>수정하기</button>

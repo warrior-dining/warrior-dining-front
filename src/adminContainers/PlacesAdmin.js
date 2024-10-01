@@ -29,7 +29,7 @@ const PlaceList = () => {
             <table>
                 <thead>
                 <tr>
-                    <th>음식점 ID</th>
+                    <th>No</th>
                     <th>음식점 이름</th>
                     <th>위치</th>
                     <th>전화번호</th>

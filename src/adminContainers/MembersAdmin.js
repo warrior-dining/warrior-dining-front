@@ -6,8 +6,8 @@ import axios from "axios";
 async function getUser(url) {
     try {
         const res = await axios.get(url);
-        console.log(res.data.result);
-        return res.data.result;
+        console.log(res.data.users);
+        return res.data.users;
     } catch (error) {
         console.log(error);
         return null;
@@ -29,7 +29,7 @@ const FindByAll = (url) => {
 
 const MemberList = () => {
     const navigate = useNavigate();
-    const list = FindByAll("http://localhost:3000/members.json");
+    const list = FindByAll("http://localhost:8080/api/admin/user/");
 
     return (
         <>
@@ -49,11 +49,11 @@ const MemberList = () => {
                         <tr key={index} onClick={() => {
                             navigate('/admin/members/info');
                         }}>
-                            <td>{row.no}</td>
-                            <td>{row.id}</td>
+                            <td>{index+1}</td>
+                            <td>{row.email}</td>
                             <td>{row.name}</td>
-                            <td>{row.createAt}</td>
-                            <td>{row.role}</td>
+                            <td>{row.createdAt}</td>
+                            <td>{row.roles[0].role}, {row.roles[1].role} </td>
                         </tr>
                     ))
                 }
