@@ -20,6 +20,10 @@ const data = [
 ]
 
 const PlaceList = () => {
+    const navigate = useNavigate();
+    const clickEvent = () => {
+        navigate("/admin/places/detail");
+    }
     return (
         <>
             <table>
@@ -35,7 +39,7 @@ const PlaceList = () => {
                 <tbody>
                 {
                     data.map((row,index) => (
-                        <tr key={index}>
+                        <tr key={index} onClick={clickEvent}>
                             <td>{row.id}</td>
                             <td>{row.name}</td>
                             <td>{row.addr}</td>

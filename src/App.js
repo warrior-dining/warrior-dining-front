@@ -23,6 +23,9 @@ import InquiryCreate from "./containers/InquiryCreate";
 import Mypage from "./containers/Mypage";
 import Main from "./containers/Main";
 import NavBar from "./components/NavBar";
+import PlaceDetail from "./adminContainers/PlaceDetail";
+import PlaceEdit from "./adminContainers/PlaceEdit";
+
 import Reservationlist from './containers/ReservationList';
 import ReservationDetail from './containers/ReservationDetail';
 import MypageEdit from './containers/MypageEdit';
@@ -63,7 +66,16 @@ function App() {
             <Route path="/admin/inquiries" element={<InquiriesAdmin />} />
             <Route path="/admin/inquiries/detail" element={<InquirieDtailsAdmin />} />
             <Route path="/admin/places/add" element={<PlaceAdd />} />
-            <Route path="/topreservation" element={<TopReservation />} /> 
+            <Route path="/admin/places/detail" element={<PlaceDetail />} />
+            <Route path="/admin/places/edit" element={<PlaceEdit />} />
+          <Route path="/topreservation" element={<TopReservation />} />
+          <Route path="/monthbest" element={<MonthBest />} />
+          <Route path="/restaurantlist" element={<RestaurantList />} />
+          <Route path="/inquiryfaq" element={<InquiryFaq />} />
+          <Route path="/inquirycreate" element={<InquiryCreate />} />
+          <Route path="/admin" element={<MainAdmin />} />
+          <Route path="/mypage" element={<Mypage />} />
+            <Route path="/topreservation" element={<TopReservation />} />
             <Route path="/monthbest" element={<MonthBest />} />
             <Route path="/restaurantlist" element={<RestaurantList />} />
             <Route path="/inquiryfaq" element={<InquiryFaq />} />
