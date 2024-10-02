@@ -45,7 +45,7 @@ const MypageSidebar = () => {
                 </li>
                 <li>
                     <NavLink 
-                        to="/mypage/inquiryhistory" 
+                        to="/mypage/inquiry" 
                         className={({ isActive }) => (isActive ? 'active' : '')}
                         exact
                     >
