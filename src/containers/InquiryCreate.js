@@ -11,10 +11,10 @@ const InquiryCreate = () => {
 
     <form action="/submit-contact-form" method="post" className="contact-form">
 
-        <label for="subject">제목</label>
+        <label htmlFor="subject">제목</label>
         <input type="text" id="subject" name="subject" required />
 
-        <label for="message">메시지</label>
+        <label htmlFor="message">메시지</label>
         <textarea id="message" name="message" required></textarea>
 
         <button type="submit">보내기</button>
