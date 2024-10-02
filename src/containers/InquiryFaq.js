@@ -9,6 +9,9 @@ const InquiryFaq = () => {
   const InquiryClick = () => {
     navigate('/inquirycreate'); 
   };
+  const InquiryDetailClick = () => {
+    navigate('/mypage/inquiry')
+  }
 
 
     return (
@@ -52,7 +55,7 @@ const InquiryFaq = () => {
 
     <div className="header-buttons">
       <a className="header-button" onClick={InquiryClick}>문의하기</a>
-      <a className="header-button">내 문의내역</a>
+      <a className="header-button" onClick={InquiryDetailClick}>내 문의내역</a>
     </div>
   </div>
 </main>
