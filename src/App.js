@@ -31,7 +31,8 @@ import ReviewComment from './containers/ReviewComment';
 import MypageReviewlist from './containers/MypageReviewlist';
 import MypageReviewEdit from './containers/MypageReviewEdit';
 import MypageBookmark from './containers/MypageBookmark';
-
+import MypageInquiry from './containers/MypageInquiry';
+import InquiryDetail from './containers/InquiryDetail';
 
 
 function App() {
@@ -76,6 +77,8 @@ function App() {
             <Route path="/mypage/reviewlist" element={<MypageReviewlist />} />
             <Route path="/mypage/reviewEdit" element={<MypageReviewEdit />} />
             <Route path="/mypage/bookmark" element={<MypageBookmark />} />
+            <Route path="/mypage/inquiry" element={<MypageInquiry />} />
+            <Route path="/inquiry/detail" element={<InquiryDetail />} />
           {/* 다른 경로들도 여기 추가할 수 있습니다. */}
         <Route path="/" element={<Main />} />
       </Routes>
