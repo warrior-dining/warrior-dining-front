@@ -1,5 +1,3 @@
-/* 문의하기 */
-
 .contact-section {
     background-color: #fff8f0;
     color: #333;
@@ -19,7 +17,7 @@
 .contact-form label {
     display: block;
     margin-bottom: 8px;
-    margin-top : 20px;
+    margin-top: 20px;
     font-weight: bold;
     text-align: left;
     color: #ff6f61;
@@ -32,14 +30,14 @@
     border: 1px solid #e0e0e0;
     border-radius: 4px;
     margin-bottom: 30px;
-    margin-top : 10px;
+    margin-top: 10px;
     font-size: 1em;
 }
 
 .contact-form textarea {
     resize: vertical;
     min-height: 200px;
-    max-height: 250px; /* 최대 높이, 원하는 값으로 조정 가능 */
+    max-height: 250px; 
 }
 
 .contact-form button {
@@ -51,6 +49,7 @@
     font-size: 1.1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin: 10px;
 }
 
 .contact-form button:hover {
@@ -64,6 +63,7 @@
     margin-bottom: 30px;
     padding-top: 20px;
 }
+
 .page-title2 {
     font-size: 1em;
     text-align: center;
@@ -108,34 +108,30 @@
     background-color: #f9f9f9;
 }
 
-/* 기본 링크 스타일 */
 .inquiry-list a {
-    color: #ff6f61; /* 링크 색상 */
-    text-decoration: none; /* 밑줄 제거 */
+    color: #ff6f61;
+    text-decoration: none;
 }
 
-/* 링크에 마우스를 올렸을 때 스타일 */
 .inquiry-list a:hover {
-    color: #e63946; /* 호버 시 링크 색상 */
-    text-decoration: underline; /* 밑줄 추가 */
+    color: #e63946;
+    text-decoration: underline;
 }
 
-/* 테이블에서 링크가 있는 셀에만 적용되는 스타일 */
 .inquiry-list td a {
-    color: #ff6f61; /* 링크 색상 */
-    text-decoration: none; /* 밑줄 제거 */
+    color: #ff6f61;
+    text-decoration: none;
 }
 
 .inquiry-list td a:hover {
-    color: #e63946; /* 호버 시 링크 색상 */
-    text-decoration: underline; /* 밑줄 추가 */
+    color: #e63946;
+    text-decoration: underline;
 }
 
-/* 자주 묻는 질문 섹션 */
 .section-title {
     font-size: 1.6em;
     margin-bottom: 20px;
-    border-bottom: 2px solid #ff6f61; /* 오렌지색 밑줄 */
+    border-bottom: 2px solid #ff6f61;
     padding-bottom: 10px;
     display: flex;
     justify-content: space-between;
@@ -165,12 +161,11 @@
     color: #555;
 }
 
-/* 문의하기 및 내 문의내역 버튼 */
 .header-buttons {
     display: flex;
     justify-content: center;
     gap: 20px;
-    margin: 30px 0; /* 자주 묻는 질문과의 여백 추가 */
+    margin: 30px 0;
     cursor: pointer;
 }
 
@@ -189,5 +184,5 @@
 }
 
 .header-button:hover {
-    background-color: #e63946; /* 약간 어두운 오렌지색 */
+    background-color: #e63946;
 }

@@ -2,7 +2,7 @@ import React from "react";
 import '../css/default.css';
 import '../css/inquiry.css';
 
-const InquiryCreate = () => {
+const InquiryDetail = () => {
     return(
         <>
     <section className="contact-section">
@@ -17,7 +17,8 @@ const InquiryCreate = () => {
         <label htmlFor="message">메시지</label>
         <textarea id="message" name="message" required></textarea>
 
-        <button type="submit">보내기</button>
+        <button type="submit">수정</button>
+        <button type="submit">취소</button>
     </form>
     </section>
         
@@ -25,4 +26,4 @@ const InquiryCreate = () => {
     );
 }
 
-export default InquiryCreate;
+export default InquiryDetail;

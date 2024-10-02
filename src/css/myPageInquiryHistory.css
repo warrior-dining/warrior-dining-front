@@ -1,0 +1,109 @@
+.content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+}
+
+.content section {
+    margin-bottom: 20px;
+}
+
+.content h1 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.order-list {
+    margin-top: 20px;
+}
+
+.order-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.order-item h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.order-item p {
+    margin: 5px 0;
+}
+
+.order-item ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.order-item ul li {
+    margin-bottom: 5px;
+}
+
+.order-details-button {
+    background-color: #ff6f61;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.order-details-button:hover {
+    background-color: #e63946;
+}
+
+.page-title {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.inquiries-container {
+    padding: 10px;
+}
+
+.inquiry-list {
+    overflow-x: auto;
+}
+
+.inquiry-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.inquiry-list th, .inquiry-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.inquiry-list th {
+    background-color: #f4f4f4;
+}
+
+.status {
+    font-weight: bold;
+}
+
+.status.처리중 {
+    color: #ff6f61;
+}
+
+.status.완료 {
+    color: #28a745;
+}
+
+.status.대기중 {
+    color: #ffc107;
+}
