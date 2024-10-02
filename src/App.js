@@ -28,6 +28,8 @@ import ReservationDetail from './containers/ReservationDetail';
 import MypageEdit from './containers/MypageEdit';
 import MypageDelete from './containers/MypageDelete';
 import ReviewComment from './containers/ReviewComment';
+import MypageReviewlist from './containers/MypageReviewlist';
+import MypageReviewEdit from './containers/MypageReviewEdit';
 
 
 
@@ -70,6 +72,8 @@ function App() {
             <Route path="/mypage/edit" element={<MypageEdit />} />
             <Route path="/mypage/delete" element={<MypageDelete />} />
             <Route path="/reviewcomment" element={<ReviewComment />} />
+            <Route path="/mypage/reviewlist" element={<MypageReviewlist />} />
+            <Route path="/mypage/reviewEdit" element={<MypageReviewEdit />} />
           {/* 다른 경로들도 여기 추가할 수 있습니다. */}
         <Route path="/" element={<Main />} />
       </Routes>
