@@ -1,19 +1,4 @@
 
-html, body {
-    height: 100%; 
-    margin: 0;
-    font-family: Arial, sans-serif; 
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-}
-
-header {
-    height: 60px; 
-}
-
 .bookmark-content {
     flex: 1;
     padding: 20px;
@@ -23,7 +8,6 @@ header {
     height: calc(100vh - 100px); 
     overflow-y: auto; 
 }
-
 
 .bookmark-content h1 {
     font-size: 1.5em;
