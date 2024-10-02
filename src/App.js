@@ -30,6 +30,7 @@ import MypageDelete from './containers/MypageDelete';
 import ReviewComment from './containers/ReviewComment';
 import MypageReviewlist from './containers/MypageReviewlist';
 import MypageReviewEdit from './containers/MypageReviewEdit';
+import MypageBookmark from './containers/MypageBookmark';
 
 
 
@@ -74,6 +75,7 @@ function App() {
             <Route path="/reviewcomment" element={<ReviewComment />} />
             <Route path="/mypage/reviewlist" element={<MypageReviewlist />} />
             <Route path="/mypage/reviewEdit" element={<MypageReviewEdit />} />
+            <Route path="/mypage/bookmark" element={<MypageBookmark />} />
           {/* 다른 경로들도 여기 추가할 수 있습니다. */}
         <Route path="/" element={<Main />} />
       </Routes>
