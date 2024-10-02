@@ -10,7 +10,6 @@ const Mypage = () => {
     return (
         <>
         <main className="mypage-container">
-//        사이드바 화면
         <MypageSidebar />
 
       <div className="mypage-content">
