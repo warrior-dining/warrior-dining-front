@@ -2,6 +2,7 @@ import '../css/memberDetail.css';
 import axios from "axios";
 import { useP,useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
+import { FindById } from '../api/DataApi';
 
 const host = "http://localhost:8080/api/admin/members/info/";
 
@@ -15,7 +16,7 @@ const closeModal = (type) => {
 
 const Grant = () => {
     const { id } = useParams();
-    const userId = Number(id);
+    const url = host + Number(id);
     const [selectedRole, setSelectedRole] = useState('ADMIN');
     const role = {
         type: true,
@@ -24,7 +25,7 @@ const Grant = () => {
     const grantRole = () => {
 
         // 권한 부여 로직 구현
-        axios.post(host+userId,  role)
+        axios.post(url,  role)
             .then(() => {
                 console.log(selectedRole);
             })
@@ -56,7 +57,7 @@ const Grant = () => {
 
 const Revoke = () => {
     const { id } = useParams();
-    const userId = Number(id);
+    const url = host + Number(id);
     const [selectedRole, setSelectedRole] = useState('ADMIN');
     const role = {
         type: false,
@@ -64,7 +65,7 @@ const Revoke = () => {
     };
     const revokeRole = () => {
         // 권한 제거 로직 구현
-        axios.post(host+userId,  role)
+        axios.post(url,  role)
             .then(() => {
                 console.log(selectedRole);
             })
@@ -95,34 +96,19 @@ const Revoke = () => {
     );
 }
 
-async function getUser(url) {
-    try {
-        const res = await axios.get(url);
-        console.log(res.data.results);
-        return res.data.results;
-    } catch (error) {
-        console.log(error);
-        return null;
-    }
-}
-
-const FindById = (url) => {
-    const [data, setData] = useState([]);
-    useEffect(() => {
-        const fetchData = async () => {
-            const res = await getUser(url);
-            setData(res);
-            // console.log(res);
-        }
-        fetchData();
-    }, [url]);
-    return data;
-}
-
 const MemberDetail = () => {
     const { id } = useParams();
-    const userId = Number(id);
-    const data = FindById(host+userId);
+    const url = host + Number(id);
+    const [response, error] = FindById(url);
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        if(error) {
+            console.log(error);
+        }
+        if(response.data) {
+            setData(response.data.state ? response.data.results : []);
+        }
+    }, [response, error]);
     if (!data || data.length === 0) {
         return <div>Loading...</div>; // 데이터가 로드 중일 때 로딩 표시
     }
