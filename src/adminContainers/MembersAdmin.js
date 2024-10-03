@@ -1,36 +1,22 @@
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import '../css/memberList.css';
 import {useEffect, useState} from "react";
+import {FindByAll} from '../api/DataApi'
 import axios from "axios";
 
-async function getUser(url) {
-    try {
-        const res = await axios.get(url);
-        console.log(res.data.results);
-        return res.data.results;
-    } catch (error) {
-        console.log(error);
-        return null;
-    }
-}
-
-const FindByAll = (url) => {
-    const [list, setList] = useState([]);
-    useEffect(() => {
-        const fetchData = async () => {
-            const data = await getUser(url);
-            setList(data);
-        }
-        fetchData();
-    }, [url]);
-    return list;
-}
-
-
 const MemberList = () => {
+    const host = "http://localhost:8080/api/admin/members/";
     const navigate = useNavigate();
-    const list = FindByAll("http://localhost:8080/api/admin/members/");
-
+    const [list, setList] = useState([])
+    const [response, error] = FindByAll(host); // 만들어 놓은 api Hook 사용.
+    useEffect(() => {
+        if(error) {
+            console.log(error);
+        }
+        if(response.data) {
+            setList(response.data.state ? response.data.results : []);
+        }
+    }, [response, error]);
     return (
         <>
             <table className="member-list-table">
@@ -53,7 +39,13 @@ const MemberList = () => {
                             <td>{row.email}</td>
                             <td>{row.name}</td>
                             <td>{row.createdAt}</td>
-                            <td>{row.roles[0].role}, {row.roles[1].role} </td>
+                            <td>
+                                {
+                                    row.roles.map((row, index)=> (
+                                        row.role+' '
+                                    ))
+                                }
+                            </td>
                         </tr>
                     ))
                 }
@@ -63,9 +55,7 @@ const MemberList = () => {
     );
 }
 
-
 const MembersAdmin = () => {
-
     return (
         <>
             <main>

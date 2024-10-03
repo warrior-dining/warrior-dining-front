@@ -3,6 +3,7 @@ import axios from "axios";
 import { useP,useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 
+const host = "http://localhost:8080/api/admin/members/info/";
 
 const openModal = (type) => {
     document.getElementById(type + 'Modal').style.display = 'flex';
@@ -13,8 +14,21 @@ const closeModal = (type) => {
 }
 
 const Grant = () => {
+    const { id } = useParams();
+    const userId = Number(id);
+    const [selectedRole, setSelectedRole] = useState('ADMIN');
+    const role = {
+        type: true,
+        role: selectedRole
+    };
     const grantRole = () => {
+
         // 권한 부여 로직 구현
+        axios.post(host+userId,  role)
+            .then(() => {
+                console.log(selectedRole);
+            })
+            .catch(error => console.log(error));
         alert('권한이 부여되었습니다.');
         closeModal('grant');
     }
@@ -26,7 +40,9 @@ const Grant = () => {
                     <h2>권한 부여</h2>
                     <div className="form-group">
                         <label htmlFor="grantRole">권한 선택:</label>
-                        <select id="grantRole">
+                        <select id="grantRole"
+                                value={selectedRole}
+                                onChange={(e) => {setSelectedRole(e.target.value)}}>
                             <option value="ADMIN">관리자</option>
                             <option value="OWNER">오너</option>
                         </select>
@@ -39,8 +55,21 @@ const Grant = () => {
 }
 
 const Revoke = () => {
+    const { id } = useParams();
+    const userId = Number(id);
+    const [selectedRole, setSelectedRole] = useState('ADMIN');
+    const role = {
+        type: false,
+        role: selectedRole
+    };
     const revokeRole = () => {
         // 권한 제거 로직 구현
+        axios.post(host+userId,  role)
+            .then(() => {
+                console.log(selectedRole);
+            })
+            .catch(error => console.log(error));
+
         alert('권한이 제거되었습니다.');
         closeModal('revoke');
     }
@@ -52,7 +81,9 @@ const Revoke = () => {
                     <h2>권한 제거</h2>
                     <div className="form-group">
                         <label htmlFor="revokeRole">제거할 권한:</label>
-                        <select id="revokeRole">
+                        <select id="revokeRole"
+                                value={selectedRole}
+                                onChange={(e) => {setSelectedRole(e.target.value)}}>
                             <option value="ADMIN">관리자</option>
                             <option value="OWNER">오너</option>
                         </select>
@@ -63,6 +94,7 @@ const Revoke = () => {
         </>
     );
 }
+
 async function getUser(url) {
     try {
         const res = await axios.get(url);
@@ -90,7 +122,7 @@ const FindById = (url) => {
 const MemberDetail = () => {
     const { id } = useParams();
     const userId = Number(id);
-    const data = FindById(`http://localhost:8080/api/admin/members/info/${userId}`);
+    const data = FindById(host+userId);
     if (!data || data.length === 0) {
         return <div>Loading...</div>; // 데이터가 로드 중일 때 로딩 표시
     }
@@ -102,11 +134,19 @@ const MemberDetail = () => {
 
                         <h2 className="main-title">회원 상세정보</h2>
                         <div className="info">
-                            <p><label>회원 ID :</label> {data.id}</p>
+                            <p><label>회원 ID :</label> {data.email}</p>
                             <p><label>이름 :</label> {data.name}</p>
                             <p><label>성별 :</label> {data.gender.comment}</p>
                             <p><label>가입일 :</label>{data.createdAt}</p>
-                            <p><label>권한 :</label>{data.roles[0].role}, {data.roles[1].role} </p>
+                            <p><label>권한 :</label>
+                                {
+                                    data.roles.map((row,index)=> {
+                                        return(
+                                            row.role+' '
+                                        );
+                                    })
+                                }
+                            </p>
                             <p><label>상태 :</label> {data.used? '활성':'비활성'}</p>
                         </div>
                         <div className="member-btn-container">
