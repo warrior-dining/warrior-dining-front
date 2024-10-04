@@ -14,7 +14,7 @@ const closeModal = (type) => {
     document.getElementById(type + 'Modal').style.display = 'none';
 }
 
-const Grant = () => {
+const Grant = ({callback}) => {
     const { id } = useParams();
     const url = host + Number(id);
     const [selectedRole, setSelectedRole] = useState('ADMIN');
@@ -22,12 +22,12 @@ const Grant = () => {
         type: true,
         role: selectedRole
     };
-    const grantRole = () => {
-
-        // 권한 부여 로직 구현
+    const grantRole = () =>{
+        // 권한 부여,제거 로직 구현
         axios.post(url,  role)
             .then(() => {
-                console.log(selectedRole);
+                console.log("권한 부여 성공");
+                callback();
             })
             .catch(error => console.log(error));
         alert('권한이 부여되었습니다.');
@@ -55,7 +55,7 @@ const Grant = () => {
     );
 }
 
-const Revoke = () => {
+const Revoke = ({callback}) => {
     const { id } = useParams();
     const url = host + Number(id);
     const [selectedRole, setSelectedRole] = useState('ADMIN');
@@ -67,7 +67,7 @@ const Revoke = () => {
         // 권한 제거 로직 구현
         axios.post(url,  role)
             .then(() => {
-                console.log(selectedRole);
+                callback();
             })
             .catch(error => console.log(error));
 
@@ -97,16 +97,20 @@ const Revoke = () => {
 }
 
 const MemberDetail = () => {
+    const [load, setLoad] = useState(false);
     const { id } = useParams();
-    const url = host + Number(id);
+    const url = host + Number(id) +`?q=${load}`;
     const [response, error] = FindById(url);
     const [data, setData] = useState([]);
+    const callback = () => {
+        setLoad(!load);
+    }
     useEffect(() => {
         if(error) {
             console.log(error);
         }
         if(response.data) {
-            setData(response.data.state ? response.data.results : []);
+            setData(response.data.status ? response.data.results : []);
         }
     }, [response, error]);
     if (!data || data.length === 0) {
@@ -140,8 +144,8 @@ const MemberDetail = () => {
                             <button onClick={ () => { openModal('revoke') }}>권한 제거</button>
                         </div>
                     </div>
-                    <Grant />
-                    <Revoke />
+                    <Grant callback={callback} />
+                    <Revoke callback={callback} />
                 </div>
             </main>
         </>

@@ -14,7 +14,7 @@ const MemberList = () => {
             console.log(error);
         }
         if(response.data) {
-            setList(response.data.state ? response.data.results : []);
+            setList(response.data.status ? response.data.results : []);
         }
     }, [response, error]);
     return (
