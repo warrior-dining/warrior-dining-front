@@ -2,6 +2,21 @@ import React, { useEffect, useState } from 'react';
 import '../css/default.css';
 import '../css/home.css';
 import '../css/restaurantList.css';
+import { useNavigate } from 'react-router-dom';
+
+const restaurants = [
+    { id: 1, name: '레스토랑 이름 1', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다. 분위기와 서비스가 뛰어나며, 특별한 날에 방문하기 좋은 장소입니다.',link: '/restaurant/detail' },
+    { id: 2, name: '레스토랑 이름 2', description: '훌륭한 분위기와 맛있는 요리를 제공합니다.' ,link: '/restaurant/detail'  },
+    { id: 3, name: '레스토랑 이름 3', description: '특별한 날에 적합한 멋진 장소입니다.' ,link: '/restaurant/detail'  },
+    { id: 4, name: '레스토랑 이름 4', description: '정통 요리와 현대적인 분위기가 어우러집니다.' ,link: '/restaurant/detail'  },
+    { id: 5, name: '레스토랑 이름 5', description: '신선한 재료로 만든 요리가 매력적입니다.' ,link: '/restaurant/detail'  },
+    { id: 6, name: '레스토랑 이름 6', description: '신선한 재료로 만든 요리가 매력적입니다.' ,link: '/restaurant/detail'  },
+    { id: 7, name: '레스토랑 이름 7', description: '신선한 재료로 만든 요리가 매력적입니다.' ,link: '/restaurant/detail'  },
+    { id: 8, name: '레스토랑 이름 8', description: '신선한 재료로 만든 요리가 매력적입니다.'  ,link: '/restaurant/detail' },
+    // Add more restaurant objects as needed
+];
+
+
 
 const RestaurantSidbar = () => {
     return (
@@ -31,15 +46,16 @@ const RestaurantSidbar = () => {
                     <option value="veryhigh">80,000 ~ 110,000원</option>
                     <option value="superhigh">110,000원 이상</option>
                 </select>
-
             </form>
         </aside>
     );
 };
 
 const RestaurantList = () => {
+    const navigate = useNavigate();
+
     const [isVisible, setIsVisible] = useState(false);
-    // 페이지 최상단으로 스크롤하는 로직
+
     const toggleVisibility = () => {
         if (window.scrollY > 300) { 
             setIsVisible(true);
@@ -47,19 +63,21 @@ const RestaurantList = () => {
             setIsVisible(false);
         }
     };
+    const resDetailClick = () => {
+        navigate(`/restaurant/detail`)
+    }
 
-    
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // 컴포넌트가 마운트될 때 스크롤 이벤트 리스너 추가
     useEffect(() => {
-        window.addEventListener('scroll', toggleVisibility); 
+        window.addEventListener('scroll', toggleVisibility);
         return () => {
-            window.removeEventListener('scroll', toggleVisibility); 
+            window.removeEventListener('scroll', toggleVisibility);
         };
-    }, []); 
+    }, []);
+
 
     return (
         <section className="restaurant-list-container">
@@ -68,13 +86,13 @@ const RestaurantList = () => {
                 <div className="restaurant-list">
                     <h1>맛집 전체 리스트</h1>
                     <ul>
-                        {/* 레스토랑 항목들 */}
-                        {Array(20).fill(null).map((_, index) => (
-                            <li key={index} className="restaurant-item2" data-id={index + 1}>
+                        {restaurants.map((restaurant) => (
+                            <li key={restaurant.id} className="restaurant-item2" data-id={restaurant.id} onClick={resDetailClick}>
                                 <img src="https://via.placeholder.com/200x150" alt="레스토랑 이미지" />
                                 <div className="restaurant-details2">
-                                    <h2>레스토랑 이름 {index + 1}</h2>
-                                    <p>이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다. 분위기와 서비스가 뛰어나며, 특별한 날에 방문하기 좋은 장소입니다.</p>
+                                    <h2>{restaurant.name}</h2>
+
+                                    <p>{restaurant.description}</p>
                                 </div>
                             </li>
                         ))}
