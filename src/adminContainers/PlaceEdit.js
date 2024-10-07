@@ -1,24 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import '../css/restaurantCreate.css';
-import axios from "axios";
-import {useNavigate} from "react-router-dom";
 
-const host = "http://localhost:8080/api/admin/places/"
-
-const PlaceAdd = () => {
+const PlaceEdit = () => {
     const [daum, setDaum] = useState(null);
-    const navigator = useNavigate();
-    const [placeInfo, setPlaceInfo] = useState({
-            email: '',
-            name: '',
-            category: 5,
-            location: '',
-            phone: '',
-            starttime: '',
-            endtime: '',
-            offday: '',
-            description: ''
-    });
+
     useEffect(() => {
         const loadDaumPostcode = () => {
             return new Promise((resolve) => {
@@ -69,29 +54,23 @@ const PlaceAdd = () => {
 
                     document.getElementById("location").value = addr;
                     document.getElementById("location").focus();
-                    handlePlaceInfoChange('location', addr);
                 }
             }).open();
         }
     }
 
     const [uploadedImages, setUploadedImages] = useState([]);
-    const [imgs, setImgs] = useState([])
     const [menuItems, setMenuItems] = useState([{ id: 1, name: '', price: '' }]);
 
-    const previewImages = (e) => {
-        const files = Array.from(e.target.files);
+    const previewImages = (event) => {
+        const files = Array.from(event.target.files);
         const newImages = files.map(file => URL.createObjectURL(file));
-        console.log(files);
-        setImgs([...imgs, ...files]);
         setUploadedImages(prev => [...prev, ...newImages]);
     };
 
     const removeImage = (image) => {
         setUploadedImages(prev => prev.filter(img => img !== image));
     };
-
-
 
     const addMenuItem = () => {
         setMenuItems(prev => [...prev, { id: prev.length + 1, name: '', price: '' }]);
@@ -113,32 +92,10 @@ const PlaceAdd = () => {
         );
     };
 
-    const handlePlaceInfoChange = (field, value) => {
-        console.log(`Updating ${field} to ${value}`);
-        setPlaceInfo(prev => ({ ...prev, [field]: value }));
-    };
-
-    const submitEvent = (e) => {
-        e.preventDefault();
+    const handleSubmit = (event) => {
+        event.preventDefault();
         // 추가적인 폼 제출 처리 로직을 여기에 작성
-        // console.log(placeInfo);
-        // console.log(menuItems);
-        // console.log(imgs);
-        const formData = new FormData();
-        imgs.forEach(img => {
-            formData.append("file", img );
-        })
-        formData.append("menu", JSON.stringify(menuItems) );
-        formData.append("place", JSON.stringify(placeInfo) );
-        console.log(formData.get("file"), formData.get("menu"), formData.get("place"));
-        axios.post(host, formData)
-            .then((res) => {
-                alert('폼이 제출되었습니다!');
-                console.log(res);
-                navigator("/admin/places/info/"+ res.data.results.id);
-                // 예시
-            })
-            .catch(error => console.log(error));
+        alert('폼이 제출되었습니다!'); // 예시
     };
 
     return (
@@ -149,47 +106,23 @@ const PlaceAdd = () => {
                     <h2 className="main-title">음식점 등록</h2>
 
                     <div className="form-container">
-                        <form onSubmit={submitEvent}>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label htmlFor="owner">아이디</label>
+                                <input type="text" id="owner" name="name" required />
+                            </div>
                             <div className="form-group">
                                 <label htmlFor="name">음식점 이름</label>
-                                <input type="text" id="name" name="name" value={placeInfo.name} onChange={(e) => {
-                                    handlePlaceInfoChange('name', e.target.value)
-                                }} required/>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="owner">사장님 아이디</label>
-                                <input type="text" id="owner" name="email" value={placeInfo.email} onChange={(e) => {
-                                    handlePlaceInfoChange('email', e.target.value)
-                                }} required/>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="category">카테고리</label>
-                                <select id="category"
-                                        value={placeInfo.category}
-                                        onChange={(e) => {
-                                            handlePlaceInfoChange('category', e.target.value)
-                                        }}>
-                                    <option value="5">한식</option>
-                                    <option value="6">중식</option>
-                                    <option value="7">일식</option>
-                                    <option value="8">양식</option>
-                                    <option value="9">분식</option>
-                                    <option value="10">아시안</option>
-                                    <option value="11">기타</option>
-                                </select>
+                                <input type="text" id="name" name="name" required />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="file">음식점 사진</label>
-                                <input type="file" id="file" name="file" accept="image/*" multiple required
-                                       onChange={previewImages}/>
-                                <div id="preview-container"
-                                     style={{display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '10px'}}>
+                                <input type="file" id="file" name="file" accept="image/*" multiple required onChange={previewImages} />
+                                <div id="preview-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '10px' }}>
                                     {uploadedImages.map((image, index) => (
                                         <div key={index} className="image-preview">
-                                            <img src={image} alt={`Preview ${index}`}
-                                                 style={{maxWidth: '150px', maxHeight: '150px'}}/>
-                                            <button type="button" className="remove-btn"
-                                                    onClick={() => removeImage(image)}>&times;</button>
+                                            <img src={image} alt={`Preview ${index}`} style={{ maxWidth: '150px', maxHeight: '150px' }} />
+                                            <button type="button" className="remove-btn" onClick={() => removeImage(image)}>&times;</button>
                                         </div>
                                     ))}
                                 </div>
@@ -222,9 +155,7 @@ const PlaceAdd = () => {
                                                     placeholder="가격을 입력하세요"
                                                     required
                                                 />
-                                                <button type="button" className="delete-menu-item"
-                                                        onClick={() => deleteMenuItem(item.id)}>−
-                                                </button>
+                                                <button type="button" className="delete-menu-item" onClick={() => deleteMenuItem(item.id)}>−</button>
                                             </div>
                                         </div>
                                     ))}
@@ -232,40 +163,20 @@ const PlaceAdd = () => {
                             </div>
                             <div className="form-group">
                                 <label htmlFor="location">위치</label>
-                                <input type="text" id="location" name="location" value={placeInfo.location} readOnly/>
+                                <input type="text" id="location" name="location" required />
                                 <button type="button" onClick={openKakao}>주소찾기</button>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="phone">전화번호</label>
-                                <input type="tel" id="phone" name="phone" value={placeInfo.phone}
-                                       onChange={(e) => handlePlaceInfoChange('phone', e.target.value)} required/>
-                            </div>
-                            <div className="form-group opening-hour-container-wrapper">
-                                <div className="opening-hour-header">
-                                    <label htmlFor="openingHours">운영 시간 [HH:mm]</label>
-                                </div>
-                                <div className="opening-hour-container">
-                                    <div className="opening-hour">
-                                        <label htmlFor="starttime">오픈 시간</label>
-                                        <input type="text" id="starttime" name="starttime"
-                                               value={placeInfo.starttime}
-                                               onChange={(e) => handlePlaceInfoChange('starttime', e.target.value)}/>
-                                        <label htmlFor="endtime">마감 시간</label>
-                                        <input type="text" id="endtime" name="endtime"
-                                               value={placeInfo.endtime}
-                                               onChange={(e) => handlePlaceInfoChange('endtime', e.target.value)}/>
-                                    </div>
-                                </div>
+                                <input type="tel" id="phone" name="phone" required />
                             </div>
                             <div className="form-group">
-                                <label htmlFor="offday">휴무일</label>
-                                <input type="text" id="offday" name="offday" value={placeInfo.offday}
-                                       onChange={(e) => handlePlaceInfoChange('offday', e.target.value)} required/>
+                                <label htmlFor="opening-hours">운영 시간</label>
+                                <input type="text" id="opening-hours" name="opening-hours" />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="description">설명</label>
-                                <textarea id="description" name="description" value={placeInfo.description}
-                                          onChange={(e) => handlePlaceInfoChange('description', e.target.value)}></textarea>
+                                <textarea id="description" name="description"></textarea>
                             </div>
                             <div className="form-actions">
                                 <button type="submit">등록하기</button>
@@ -278,4 +189,4 @@ const PlaceAdd = () => {
     );
 };
 
-export default PlaceAdd;
+export default PlaceEdit;

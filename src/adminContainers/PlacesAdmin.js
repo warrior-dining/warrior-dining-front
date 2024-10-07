@@ -1,31 +1,29 @@
 import '../css/restaurantManagement.css';
 import {useNavigate} from "react-router-dom";
+import {FindByAll} from "../api/DataApi";
+import {useEffect, useState} from "react";
 
-
-const data = [
-    {
-        id: 1,
-        name: '강남불백 신촌점',
-        addr: '서울 서대문구 연세로4길 6',
-        phone: '02-313-5988',
-        createAt: '2024-01-15'
-    },
-    {
-        id: 2,
-        name: '한창희천하일면 신촌점',
-        addr: '서울 서대문구 명물길 27-17',
-        phone: '0507-1445-3133',
-        createAt: '2024-01-15'
-    }
-]
+const host = "http://localhost:8080/api/admin/places/";
 
 const PlaceList = () => {
+    const navigate = useNavigate();
+    const [list, setList] = useState([])
+    const [response, error] = FindByAll(host); // 만들어 놓은 api Hook 사용.
+    useEffect(() => {
+        if(error) {
+            console.log(error);
+        }
+        if(response.data) {
+            setList(response.data.status ? response.data.results : []);
+        }
+    }, [response, error]);
+
     return (
         <>
             <table>
                 <thead>
                 <tr>
-                    <th>음식점 ID</th>
+                    <th>No</th>
                     <th>음식점 이름</th>
                     <th>위치</th>
                     <th>전화번호</th>
@@ -34,13 +32,15 @@ const PlaceList = () => {
                 </thead>
                 <tbody>
                 {
-                    data.map((row,index) => (
-                        <tr key={index}>
+                    list.map((row,index) => (
+                        <tr key={index} onClick={() => {
+                            navigate("/admin/places/info/"+ row.id)
+                        }}>
                             <td>{row.id}</td>
                             <td>{row.name}</td>
-                            <td>{row.addr}</td>
+                            <td>{row.addressNew}</td>
                             <td>{row.phone}</td>
-                            <td>{row.createAt}</td>
+                            <td>{row.createdAt}</td>
                         </tr>
                     ))
                 }

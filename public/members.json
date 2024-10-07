@@ -1,0 +1,18 @@
+{
+  "status": true,
+  "result": [
+  {
+    "no": 1,
+    "id": "hong@example.com",
+    "name": "홍길동",
+    "createAt": "2024-01-15",
+    "role": "관리자, 사용자"
+  },
+  {
+    "no": 2,
+    "id": "kim@example.com",
+    "name": "김철수",
+    "createAt": "2024-01-15",
+    "role": "오너, 사용자"
+  }]
+}
