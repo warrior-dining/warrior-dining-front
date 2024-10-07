@@ -135,7 +135,7 @@ const PlaceAdd = () => {
             .then((res) => {
                 alert('폼이 제출되었습니다!');
                 console.log(res);
-                navigator("/admin/places/info"+ res.data.results.id);
+                navigator("/admin/places/info/"+ res.data.results.id);
                 // 예시
             })
             .catch(error => console.log(error));

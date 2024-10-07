@@ -51,7 +51,7 @@ const PlaceDetail = () => {
                                  style={{display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '10px'}}>
                                 {data.placeFiles.map((image, index) => (
                                     <div key={image.id} className="image-preview">
-                                        <img src={`http://localhost:8080/api/admin/places/view?url=${image.url}`} alt={`Preview ${image.id}`}
+                                        <img src={image.url} alt={`Preview ${image.id}`}
                                              style={{maxWidth: '150px', maxHeight: '150px'}}/>
                                     </div>
                                 ))}
