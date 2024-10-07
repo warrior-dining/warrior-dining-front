@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'; // useNavigate 임포트
 import '../css/managerInquiryList.css';
 import axios from 'axios';
 
-const host = "http://localhost:8080/admin/inquiries/";
+const host = "http://localhost:80/admin/inquiries/";
 const data = [
     {
         id: 1,

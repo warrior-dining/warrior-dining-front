@@ -1,32 +1,26 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import '../css/reviewsAdmin.css';
 
-const data = [
-  {
-    id: 1,
-    username: '홍길동',
-    placename: '강남불백 신촌점',
-    rating: '★★★★',
-    content: '음식이 맛있어요.',
-    detail: '음식이 정말 맛있었고, 분위기도 좋았습니다. 다음에 또 방문할게요.',
-    createAt: '2024-08-25',
-    status: '0'
-  },
-  {
-    id: 2,
-    username: '김철수',
-    placename: '한창희천하일면 신촌점',
-    rating: '★★★',
-    content: '서비스가 느렸어요.',
-    detail: '두번 다시 안간다.',
-    createAt: '2024-08-24',
-    status: '0'
-  }
-];
+const host = "http://localhost:80/admin/reviews";
 
 const ReviewList = () => {
   const [expandedRowIds, setExpandedRowIds] = useState([]);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    axios.get(host)
+      .then(res => {
+        console.log(res);
+        setData(res.data.data);
+      })
+      .catch(error => console.log(error));
+  }, []);
+
+  if (!data || (Array.isArray(data) && data.length === 0)) {
+    return <div>Loading...</div>; // 데이터가 로드되기 전까지 로딩 메시지 표시
+  }
 
   const handleRowClick = (id) => {
     setExpandedRowIds((prev) => 
@@ -34,7 +28,43 @@ const ReviewList = () => {
     );
   };
 
-  useEffect(() => {}, []);
+  const getStars = (rating) => {
+    const starCount = parseInt(rating, 10); // 평점을 정수로 변환
+    let stars = '';
+  
+    for (let i = 0; i < 5; i++) {
+      stars += i < starCount ? '★' : '☆'; // 평점에 따라 채워진 별과 빈 별을 생성
+    }
+  
+    return stars;
+  };
+
+  const truncateContent = (content) => {
+    if (content.length > 5) {
+      return content.slice(0, 5) + '...'; // 5글자 이상이면 잘라내고 ... 추가
+    }
+    return content;
+  };
+
+  const handleUpdateStatus = (id) => {
+    setData(prevData => prevData.map(item => 
+      item.id === id ? { ...item, isDeleted: true } : item
+    ));
+
+    axios.patch(`${host}/${id}`, { status: 1 }) // 상태 업데이트를 위한 요청
+        .then(res => {
+            window.location.reload();
+        })
+        .catch(error => {
+          console.log('Axios error:', error);
+          if (error.response) {
+              console.log('Response data:', error.response.data);
+              console.log('Response status:', error.response.status);
+              console.log('Response headers:', error.response.headers);
+          }
+      });
+};
+
 
   return (
     <>
@@ -55,20 +85,26 @@ const ReviewList = () => {
             <React.Fragment key={index}>
               <tr onClick={() => handleRowClick(row.id)}>
                 <td>{row.id}</td>
-                <td>{row.username}</td>
-                <td>{row.placename}</td>
-                <td>{row.rating}</td>
-                <td>{row.content}</td>
-                <td>{row.createAt}</td>
+                <td>{row.user.name}</td>
+                <td>{row.places.name}</td>
+                <td>{getStars(row.rating)}</td>
+                <td>{truncateContent(row.content)}</td>
+                <td>{row.createdAt}</td>
                 <td className="actions">
-                  {row.status === '0' ? <button className="delete">삭제</button> : ''}
+                  {row.status === '0' ? '' : (
+                    row.deleted ? 
+                    '' :
+                      <button className="delete"  onClick={() => handleUpdateStatus(row.id, { status: 1 })}>삭제</button>
+                      
+                    
+                  )}
                 </td>
               </tr>
               {expandedRowIds.includes(row.id) && (
                 <tr className="review-detail">
                   <td colSpan="7">
                     <div className="detail-header">상세 내용:</div>
-                    <p>{row.detail}</p>
+                    <p>{row.content}</p>
                   </td>
                 </tr>
               )}

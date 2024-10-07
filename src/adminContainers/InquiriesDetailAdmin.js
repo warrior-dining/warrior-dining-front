@@ -4,7 +4,8 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import '../css/InquiriesDetailAdmin.css';
 
-const host = "http://localhost:8080/admin/inquiries/";
+
+const host = "http://localhost:80/admin/inquiries/";
 const InquirieDtailsAdmin = ({ inquiryId }) => {
     const {id} = useParams();
     const inquiriesId = Number(id);
@@ -23,6 +24,25 @@ const InquirieDtailsAdmin = ({ inquiryId }) => {
         return <div>Loading...</div>; // 데이터가 로드되기 전까지 로딩 메시지 표시
     }
 
+    const SubmitEvent = e => {
+        e.preventDefault();
+        //문의사항id:inquiriesId, 작성자 id:1, 문의사항답변:e.tartget.text.value
+        const data = {
+            inquiry_id: inquiriesId,
+            user_id : 1,
+            content : e.target.text.value
+        }
+   
+        axios.post(host+inquiriesId, data)
+        .then(res => {
+            console.log(data);
+            
+        })
+        .catch(error => console.log(error));
+    
+    }
+    
+    
     return (
         <>
             <main>
@@ -42,8 +62,8 @@ const InquirieDtailsAdmin = ({ inquiryId }) => {
                         </div>
                         <div className="reply-container">
                             <h4>답변 작성</h4>
-                            <form>
-                                <textarea placeholder="여기에 답변을 작성하세요..."></textarea>
+                            <form onSubmit={SubmitEvent}>
+                                <textarea placeholder="여기에 답변을 작성하세요..." name="text"></textarea>
                                 <button type="submit">답변 저장</button>
                             </form> 
                         </div>
