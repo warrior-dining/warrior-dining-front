@@ -68,7 +68,7 @@
     background-color: #e63946;
 }
 
-.modal {
+.modal-role {
     display: none;
     position: fixed;
     top: 0;
@@ -81,7 +81,7 @@
     z-index: 1001;
 }
 
-.modal-content {
+.modal-role-content {
     background: #fff;
     border-radius: 12px;
     padding: 30px;
@@ -91,7 +91,7 @@
     position: relative;
 }
 
-.modal-close {
+.modal-role-close {
     background: #ff6f61;
     color: #fff;
     border: none;
@@ -104,7 +104,7 @@
     font-size: 1.2em;
 }
 
-.modal-close:hover {
+.modal-role-close:hover {
     background: #e63946;
 }
 
