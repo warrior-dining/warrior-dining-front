@@ -64,7 +64,7 @@ function App() {
             <Route path="/admin/reviews" element={<ReviewsAdmin />} />
             <Route path="/admin/reservations" element={<ReservationAdmin/>} />
             <Route path="/admin/inquiries" element={<InquiriesAdmin />} />
-            <Route path="/admin/inquiries/detail" element={<InquirieDtailsAdmin />} />
+            <Route path="/admin/inquiries/detail/:id" element={<InquirieDtailsAdmin />} />
             <Route path="/admin/places/add" element={<PlaceAdd />} />
             <Route path="/admin/places/info/:id" element={<PlaceDetail />} />
             <Route path="/admin/places/edit" element={<PlaceEdit />} />

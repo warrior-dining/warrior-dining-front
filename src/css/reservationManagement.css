@@ -160,6 +160,7 @@
 .reservation-search-bar button {
     background-color: #ff6f61;
     color: white;
+    border-radius: 20px;
 }
 
 .reservation-search-bar button:hover {

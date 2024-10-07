@@ -1,7 +1,9 @@
-import React from 'react';
+import React,  {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate 임포트
 import '../css/managerInquiryList.css';
+import axios from 'axios';
 
+const host = "http://localhost:80/admin/inquiries/";
 const data = [
     {
         id: 1,
@@ -20,11 +22,26 @@ const data = [
 ];
 
 const InquiresList = () => {
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        axios.get(host)
+            .then(res => {
+                setData(res.data.data); // 전체 데이터 배열을 설정
+            })
+            .catch(error => console.log(error));
+    }, []);
+
+    useEffect(() => {
+        console.log(data); // data가 변경될 때마다 로그 출력
+    }, [data]);
+
     const navigate = useNavigate(); // useNavigate 훅 사용
 
     const handleRowClick = () => {
-        navigate(`/admin/inquiries/detail`); // 클릭 시 이동할 경로
+        navigate(`/admin/inquiries/`); // 클릭 시 이동할 경로
     };
+
     return (
         <>
             <table>
@@ -39,13 +56,15 @@ const InquiresList = () => {
                 </thead>
                 <tbody>
                 {
-                    data.map((row,index) => (
-                        <tr key={index} onClick={() => handleRowClick()}>
+                    data.map((row) => (
+                        <tr key={row.id} onClick={() => {
+                            navigate(`/admin/inquiries/detail/${row.id}`)
+                        }}>
                             <td>{row.id}</td>
                             <td>{row.title}</td>
-                            <td>{row.username}</td>
-                            <td>{row.createAt}</td>
-                            <td>{row.status}</td>
+                            <td>{row.user.name}</td>
+                            <td>{row.createdAt}</td>
+                            <td>{row.code.value}</td>
                         </tr>
                     ))
                 }
