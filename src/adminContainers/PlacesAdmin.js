@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 import {FindByAll} from "../api/DataApi";
 import {useEffect, useState} from "react";
 
-const host = "http://localhost:8080/api/admin/places";
+const host = "http://localhost:8080/api/admin/places/";
 
 const PlaceList = () => {
     const navigate = useNavigate();
@@ -17,9 +17,6 @@ const PlaceList = () => {
             setList(response.data.status ? response.data.results : []);
         }
     }, [response, error]);
-    const clickEvent = () => {
-        navigate("/admin/places/detail");
-    }
 
     return (
         <>
@@ -36,7 +33,9 @@ const PlaceList = () => {
                 <tbody>
                 {
                     list.map((row,index) => (
-                        <tr key={index} onClick={clickEvent}>
+                        <tr key={index} onClick={() => {
+                            navigate("/admin/places/info/"+ row.id)
+                        }}>
                             <td>{row.id}</td>
                             <td>{row.name}</td>
                             <td>{row.addressNew}</td>

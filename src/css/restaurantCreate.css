@@ -110,6 +110,37 @@
     width: 100%;
 }
 
+.opening-hour-header {
+    display: flex;
+    align-items: center;
+}
+
+.opening-hour-header label {
+    margin-right: 10px; /* "메뉴 추가" 라벨과 버튼 사이의 간격 조정 */
+}
+
+.opening-hour-container-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.opening-hour {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.opening-hour input[type="text"]{
+    width: calc(50% - 80px); /* 조정된 너비 */
+}
+
+.opening-hour-container {
+    display: flex;
+    width: 100%;
+}
+
 .image-preview {
     position: relative;
     display: inline-block;
