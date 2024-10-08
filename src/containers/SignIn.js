@@ -38,7 +38,6 @@ const SignIn = () => {
             } else {
                 const errorMessage = await response.text();
                 alert('로그인 실패: ' + errorMessage);
-                return;
             }
 
         } catch (error) {
