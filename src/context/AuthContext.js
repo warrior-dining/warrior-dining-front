@@ -7,6 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(null);
     const [auth, setAuth] = useState([]);
+    const [sub, setSub] = useState(null);
     const [isAdminNav, setIsAdminNav] = useState(false);
 
     useEffect(() => {
@@ -23,6 +24,7 @@ export const AuthProvider = ({ children }) => {
         try {
             const decodedToken = jwtDecode(token);
             setAuth(decodedToken.auth);
+            setSub(decodedToken.sub);
             setIsAdminNav(decodedToken.auth.includes('ADMIN'));
         } catch (error) {
             console.error('토큰 디코딩 오류:', error);
