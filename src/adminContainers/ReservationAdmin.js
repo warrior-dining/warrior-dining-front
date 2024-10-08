@@ -2,17 +2,17 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import '../css/reservationManagement.css';
 
-const host = "http://localhost:80/admin/reservations";
+const host = "http://localhost:8080/api/admin/reservations/";
 const ReservationAdmin = () => {
-    const [reservations, setReservations] = useState([
-        { id: '0001', restaurant: '맛있는 식당', customer: '홍길동', date: '2024-08-20', time: '18:00', guests: '4명', status: '확정' },
-        { id: '0002', restaurant: '즐거운 레스토랑', customer: '김영희', date: '2024-08-21', time: '19:00', guests: '2명', status: '확정' },
-        { id: '0003', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
-        { id: '0004', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
-        { id: '0005', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
-        { id: '0006', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
-        { id: '0007', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
-    ]);
+//     const [reservations, setReservations] = useState([
+//         { id: '0001', restaurant: '맛있는 식당', customer: '홍길동', date: '2024-08-20', time: '18:00', guests: '4명', status: '확정' },
+//         { id: '0002', restaurant: '즐거운 레스토랑', customer: '김영희', date: '2024-08-21', time: '19:00', guests: '2명', status: '확정' },
+//         { id: '0003', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
+//         { id: '0004', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
+//         { id: '0005', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
+//         { id: '0006', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
+//         { id: '0007', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
+//     ]);
 
     const itemsPerPage = 5;
     const [currentPage, setCurrentPage] = useState(1);
@@ -33,13 +33,13 @@ const ReservationAdmin = () => {
 
     useEffect(() => {
         renderReservations();
-    }, [currentPage, currentStatusFilter, searchQuery, reservations]);
+    }, [currentPage, currentStatusFilter, searchQuery]);
 
 
     const renderReservations = () => {
-        const filtered = reservations.filter(reservation => {
-            return (currentStatusFilter === '전체' || reservation.status === currentStatusFilter) &&
-                (reservation.customer.includes(searchQuery) || reservation.restaurant.includes(searchQuery));
+        const filtered = data.filter(row => {
+            return (currentStatusFilter === '전체' ||row.data.status === currentStatusFilter) &&
+                (row.data.customer.includes(searchQuery) || row.data.restaurant.includes(searchQuery));
         });
         setFilteredReservations(filtered);
     };
@@ -49,9 +49,9 @@ const ReservationAdmin = () => {
     };
 
     const handleUpdateStatus = (id) => {
-        setReservations(prevReservations =>
-            prevReservations.map(reservation =>
-                reservation.id === id ? { ...reservation, status: '취소' } : reservation
+        setData(prevReservations =>
+            prevReservations.map(data =>
+                data.id === id ? { ...data, status: '취소' } : data
             )
         );
 
@@ -108,26 +108,26 @@ const ReservationAdmin = () => {
                         </div>
                     </div>
                     <div id="reservation-container">
-                        {data.map((reservation) => (
-                            <div className="reservation-item" key={reservation.id} onClick={() => toggleDetails(reservation.id)} style={{ cursor: 'pointer' }}>
-                                <h3>예약 ID: {reservation.id}</h3>
+                        {data.map((row) => (
+                            <div className="reservation-item" key={row.id} onClick={() => toggleDetails(row.id)} style={{ cursor: 'pointer' }}>
+                                <h3>예약 ID: {row.id}</h3>
                                 <p>
-                                    고객 이름: {reservation.user.name}
-                                    <span className={`status ${reservation.code.value}`}>{reservation.code.value}</span>
+                                    고객 이름: {row.user.name}
+                                    <span className={`status ${row.code.value}`}>{row.code.value}</span>
                                 </p>
-                                {reservation.code.value === '대기' && (
-                                    <button className="cancel-button" onClick={(e) => { e.stopPropagation(); handleUpdateStatus(reservation.id); }}>
+                                {row.code.value === '대기' && (
+                                    <button className="cancel-button" onClick={(e) => { e.stopPropagation(); handleUpdateStatus(row.id); }}>
                                         예약 취소
                                     </button>
                                 )}
-                                <div className={`reservation-details ${expandedReservationId === reservation.id ? 'open' : ''}`}>
-                                    {expandedReservationId === reservation.id && (
+                                <div className={`reservation-details ${expandedReservationId === row.id ? 'open' : ''}`}>
+                                    {expandedReservationId === row.id && (
                                         <>
-                                            <p>식당: {reservation.places.name} </p>
-                                            <p>예약 날짜: {reservation.reservationDate}</p>
-                                            <p>예약 시간: {reservation.reservationTime}</p>
-                                            <p>요청사항: {reservation.orderNote}</p>
-                                            <p>인원: {reservation.count}</p>
+                                            <p>식당: {row.place.name} </p>
+                                            <p>예약 날짜: {row.reservationDate}</p>
+                                            <p>예약 시간: {row.reservationTime}</p>
+                                            <p>요청사항: {row.orderNote}</p>
+                                            <p>인원: {row.count}</p>
                                         </>
                                     )}
                                 </div>
@@ -143,5 +143,4 @@ const ReservationAdmin = () => {
         </main>
     );
 };
-
 export default ReservationAdmin;
