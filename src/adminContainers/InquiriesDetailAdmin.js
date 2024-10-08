@@ -5,7 +5,7 @@ import axios from "axios";
 import '../css/InquiriesDetailAdmin.css';
 
 
-const host = "http://localhost:80/admin/inquiries/";
+const host = "http://localhost:8080/api/admin/inquiries/";
 const InquirieDtailsAdmin = ({ inquiryId }) => {
     const {id} = useParams();
     const inquiriesId = Number(id);
@@ -42,25 +42,24 @@ const InquirieDtailsAdmin = ({ inquiryId }) => {
     
     }
     
-    
     return (
         <>
             <main>
-                <div className="container">
+                <div className="containers">
 
                     <h2 className="main-title">문의 사항 상세</h2>
 
-                    <div className="details-container">
+                    <div className="details-containers">
                         <h3>{data.title}</h3>
                         <div className="info">
-                            <p><label>작성자:</label> <span className="content">{data.user.name}</span></p>
-                            <p><label>날짜:</label> <span className="content">{data.createdAt}</span></p>
+                            <p><label>작성자:</label> <span className="contents">{data.user.name}</span></p>
+                            <p><label>날짜:</label> <span className="contents">{data.createdAt}</span></p>
                         </div>
                         <div className="info">
                             <p><label>문의 내용:</label></p>
                             <p>{data.content}</p>
                         </div>
-                        <div className="reply-container">
+                        <div className="reply-containers">
                             <h4>답변 작성</h4>
                             <form onSubmit={SubmitEvent}>
                                 <textarea placeholder="여기에 답변을 작성하세요..." name="text"></textarea>
