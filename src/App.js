@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import './css/default.css';
@@ -26,6 +27,8 @@ import NavBar from "./components/NavBar";
 import PlaceDetail from "./adminContainers/PlaceDetail";
 import PlaceEdit from "./adminContainers/PlaceEdit";
 
+import SignIn from './containers/SignIn';
+import SignUp from './containers/SignUp';
 import Reservationlist from './containers/ReservationList';
 import ReservationDetail from './containers/ReservationDetail';
 import MypageEdit from './containers/MypageEdit';
@@ -40,24 +43,37 @@ import Detail from './containers/Detail';
 
 
 function App() {
-   const [isAdmin, setIsAdmin] = useState(false);
- 
-  useEffect(()=> {
+    const [isAdmin, setIsAdmin] = useState(false);
 
-  }, []);
+    // 페이지 이동에 따라 isAdmin 상태 설정
+    const updateAdminStatus = () => {
+        const currentPath = window.location.pathname;
+        setIsAdmin(currentPath.startsWith('/admin'));
+    };
+
+    useEffect(() => {
+        updateAdminStatus();
+
+        // 뒤로가기 및 앞으로가기 시 admin 상태를 URL에 맞춰 업데이트
+        window.addEventListener('popstate', updateAdminStatus);
+        window.addEventListener('pushstate', updateAdminStatus); // 커스텀 이벤트를 사용해 상태 업데이트
+
+        return () => {
+            window.removeEventListener('popstate', updateAdminStatus);
+            window.removeEventListener('pushstate', updateAdminStatus);
+        };
+    }, []);
 
   return (
+      <>
+      <AuthProvider>
     <Router>
     <div className="App">
       <Header adminClick={setIsAdmin} />
-      {isAdmin ? (
-        <NavBarAdmin />
-      ) : (
-        <>      
-        <NavBar />      
-      </>
-    )}
+        {isAdmin ? (<NavBarAdmin />) : (<NavBar />)}
         <Routes>
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/admin/members" element={<MembersAdmin />} />
             <Route path="/admin/members/info/:id" element={<MemberDetail />} />
             <Route path="/admin/places" element={<PlacesAdmin />} />
@@ -99,6 +115,8 @@ function App() {
       <Footer />
     </div>
   </Router>
+      </AuthProvider>
+      </>
   );
 }
 
