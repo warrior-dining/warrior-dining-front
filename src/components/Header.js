@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 
 const Header = ({adminClick}) => {
   const { token, permissions: auth = [] } = useAuth();
+  const { signOut } = useAuth();
   const isLoggedIn = Boolean(token);
   const navigate = useNavigate();
 
@@ -37,14 +38,21 @@ const Header = ({adminClick}) => {
             <Link to="/" className="logo" onClick={changeMainClick}>WarriorDining</Link>
 
             <div className="auth-buttons">
-              {!isLoggedIn && (
-                  <>
-                    <a onClick={SignInClick}>로그인</a>
-                    <a onClick={SignUpClick}>회원 가입</a>
-                  </>
-              )}
+              {
+                !isLoggedIn && (
+                      <>
+                        <a onClick={SignInClick}>로그인</a>
+                        <a onClick={SignUpClick}>회원 가입</a>
+                      </>
+                  )
+              }
               {auth.includes('ADMIN') && <a onClick={changeAdminClick}>관리자 페이지</a>}
               {isLoggedIn && <Link to="/mypage/main">마이페이지</Link>}
+              {
+                  isLoggedIn && (
+                      <a onClick={signOut}>로그아웃</a>
+                  )
+              }
             </div>
           </div>
         </div>

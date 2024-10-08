@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
 
 const AuthContext = createContext();
 
@@ -8,14 +9,21 @@ export const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState([]);
     const [isAdminNav, setIsAdminNav] = useState(false);
 
+    useEffect(() => {
+        // 쿠키에서 토큰 읽기
+        const savedToken = Cookies.get('accessToken');
+        if (savedToken) {
+            saveToken(savedToken);
+        }
+    }, []);
+
     const saveToken = (token) => {
         setToken(token);
+        Cookies.set('accessToken', token, { secure: true, sameSite: 'strict' });
         try {
             const decodedToken = jwtDecode(token);
-            console.log('디코딩된 토큰:', decodedToken);
             setAuth(decodedToken.auth);
             setIsAdminNav(decodedToken.auth.includes('ADMIN'));
-            console.log('저장된 권한:', decodedToken.auth);
         } catch (error) {
             console.error('토큰 디코딩 오류:', error);
         }
@@ -24,10 +32,17 @@ export const AuthProvider = ({ children }) => {
     const clearToken = () => {
         setToken(null);
         setAuth([]);
+        Cookies.remove('accessToken');
+    };
+
+    const signOut = () => {
+        if (window.confirm('로그아웃 하시겠습니까?')) {
+            clearToken();
+        }
     };
 
     return (
-        <AuthContext.Provider value={{ token, permissions: auth, saveToken, clearToken }}>
+        <AuthContext.Provider value={{ token, permissions: auth, saveToken, clearToken, signOut }}>
             {children}
         </AuthContext.Provider>
     );
