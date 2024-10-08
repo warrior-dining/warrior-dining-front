@@ -5,7 +5,7 @@ import '../css/SignIn.css';
 
 const SignIn = () => {
     const navigate = useNavigate();
-    const {saveToken} = useAuth();
+    const { saveToken } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
@@ -32,12 +32,13 @@ const SignIn = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                saveToken(data.accessToken);
-                console.log(data.accessToken)
+                const { accessToken} = data;
+                saveToken(accessToken);
                 navigate('/');
+
             } else {
                 const errorMessage = await response.text();
-                alert('로그인 실패: ' + errorMessage);
+                setError('로그인 실패: ' + errorMessage);
             }
 
         } catch (error) {
@@ -53,7 +54,7 @@ const SignIn = () => {
                 <input
                     type="text"
                     id="email"
-                    name="name"
+                    name="email"
                     placeholder="아이디를 입력하세요"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
