@@ -11,6 +11,12 @@ const Header = ({adminClick}) => {
   const changeMainClick = () => {
     adminClick(false);
   }
+  const SignInClick = () => {
+    navigate('/signin');
+  };
+  const SignUpClick = () => {
+    navigate('/signup');
+  };
 
   return (
     <header>
@@ -20,8 +26,8 @@ const Header = ({adminClick}) => {
         <Link to="/" className="logo" onClick={changeMainClick}>WarriorDining</Link> 
 
           <div className="auth-buttons">
-            <a href="#">로그인</a>
-            <a href="#">회원 가입</a>
+            <a onClick={SignInClick}>로그인</a>
+            <a onClick={SignUpClick}>회원 가입</a>
             <a onClick={changeAdminClick}>관리자 페이지</a>
             <Link to="/mypage/main">마이페이지</Link>
           </div>

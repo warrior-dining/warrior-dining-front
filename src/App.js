@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import './css/default.css';
@@ -26,6 +27,8 @@ import NavBar from "./components/NavBar";
 import PlaceDetail from "./adminContainers/PlaceDetail";
 import PlaceEdit from "./adminContainers/PlaceEdit";
 
+import SignIn from './containers/SignIn';
+import SignUp from './containers/SignUp';
 import Reservationlist from './containers/ReservationList';
 import ReservationDetail from './containers/ReservationDetail';
 import MypageEdit from './containers/MypageEdit';
@@ -47,17 +50,14 @@ function App() {
   }, []);
 
   return (
+      <AuthProvider>
     <Router>
     <div className="App">
       <Header adminClick={setIsAdmin} />
-      {isAdmin ? (
-        <NavBarAdmin />
-      ) : (
-        <>      
-        <NavBar />      
-      </>
-    )}
+      {isAdmin ? (<NavBarAdmin />) : (<><NavBar /></>)}
         <Routes>
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/admin/members" element={<MembersAdmin />} />
             <Route path="/admin/members/info/:id" element={<MemberDetail />} />
             <Route path="/admin/places" element={<PlacesAdmin />} />
@@ -99,6 +99,7 @@ function App() {
       <Footer />
     </div>
   </Router>
+      </AuthProvider>
   );
 }
 
