@@ -65,3 +65,14 @@
 .login-form a:hover {
     text-decoration: underline;
 }
+
+.error {
+    color: #d9534f;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: center;
+}

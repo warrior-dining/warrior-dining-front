@@ -37,12 +37,13 @@ const SignIn = () => {
                 navigate('/');
 
             } else {
-                const errorMessage = await response.text();
-                setError('로그인 실패: ' + errorMessage);
+                const errorResponse = await response.json();
+                const errorMessage = errorResponse.message || '로그인 실패'; // 사용자에게 보여줄 메시지
+                setError(errorMessage);
             }
 
         } catch (error) {
-            setError(error.message);
+            setError('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
     };
 
