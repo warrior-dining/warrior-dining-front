@@ -2,7 +2,7 @@ import '../css/memberDetail.css';
 import axios from "axios";
 import { useP,useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
-import { FindById } from '../api/DataApi';
+import { FindById } from '../api/DataApi'
 
 const host = "http://localhost:8080/api/admin/members/info/";
 
