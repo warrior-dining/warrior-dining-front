@@ -2,21 +2,16 @@ import React, { useEffect, useState } from 'react';
 import '../css/default.css';
 import '../css/home.css';
 import '../css/restaurantList.css';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-const restaurants = [
-    { id: 1, name: '레스토랑 이름 1', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다. 분위기와 서비스가 뛰어나며, 특별한 날에 방문하기 좋은 장소입니다.',link: '/restaurant/detail' },
-    { id: 2, name: '레스토랑 이름 2', description: '훌륭한 분위기와 맛있는 요리를 제공합니다.' ,link: '/restaurant/detail'  },
-    { id: 3, name: '레스토랑 이름 3', description: '특별한 날에 적합한 멋진 장소입니다.' ,link: '/restaurant/detail'  },
-    { id: 4, name: '레스토랑 이름 4', description: '정통 요리와 현대적인 분위기가 어우러집니다.' ,link: '/restaurant/detail'  },
-    { id: 5, name: '레스토랑 이름 5', description: '신선한 재료로 만든 요리가 매력적입니다.' ,link: '/restaurant/detail'  },
-    { id: 6, name: '레스토랑 이름 6', description: '신선한 재료로 만든 요리가 매력적입니다.' ,link: '/restaurant/detail'  },
-    { id: 7, name: '레스토랑 이름 7', description: '신선한 재료로 만든 요리가 매력적입니다.' ,link: '/restaurant/detail'  },
-    { id: 8, name: '레스토랑 이름 8', description: '신선한 재료로 만든 요리가 매력적입니다.'  ,link: '/restaurant/detail' },
-    // Add more restaurant objects as needed
-];
+const host = "http://localhost:8080/api/restaurant";
 
-
+const fetchRestaurants = async ({ pageParam = 0 }) => {
+    const response = await fetch(`${host}?page=${pageParam}`);
+    const data = await response.json();
+    return data;
+};
 
 const RestaurantSidbar = () => {
     return (
@@ -53,23 +48,32 @@ const RestaurantSidbar = () => {
 
 const RestaurantList = () => {
     const navigate = useNavigate();
-
     const [isVisible, setIsVisible] = useState(false);
 
     const toggleVisibility = () => {
-        if (window.scrollY > 300) { 
-            setIsVisible(true);
-        } else {
-            setIsVisible(false);
-        }
+        setIsVisible(window.scrollY > 300);
     };
+
     const resDetailClick = () => {
-        navigate(`/restaurant/detail`)
-    }
+        navigate(`/restaurant/detail`);
+    };
 
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+
+    const {
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetching,
+    } = useInfiniteQuery({
+        queryKey: ['restaurants'],
+        queryFn: fetchRestaurants,
+        getNextPageParam: (lastPage) => {
+            return lastPage.number + 1 < lastPage.totalPages ? lastPage.number + 1 : undefined;
+        },
+    });
 
     useEffect(() => {
         window.addEventListener('scroll', toggleVisibility);
@@ -78,7 +82,25 @@ const RestaurantList = () => {
         };
     }, []);
 
+    useEffect(() => {
+        const handleScroll = () => {
+            if (hasNextPage && window.innerHeight + window.scrollY >= document.body.offsetHeight + 1000 && !isFetching) {
+                fetchNextPage();
+                for (let i = 0; i < 10; i++) {
+                    if (hasNextPage) {
+                        fetchNextPage();
+                    }
+                }
+            }
+        };
 
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, [hasNextPage, isFetching, fetchNextPage]);
+
+    
     return (
         <section className="restaurant-list-container">
             <div className="restaurant-wrapper">
@@ -86,17 +108,21 @@ const RestaurantList = () => {
                 <div className="restaurant-list">
                     <h1>맛집 전체 리스트</h1>
                     <ul>
-                        {restaurants.map((restaurant) => (
-                            <li key={restaurant.id} className="restaurant-item2" data-id={restaurant.id} onClick={resDetailClick}>
-                                <img src="https://via.placeholder.com/200x150" alt="레스토랑 이미지" />
+                        {data?.pages.flatMap(page => page.content).map((restaurant) => (
+                            <li key={restaurant.id} className="restaurant-item2" onClick={() => resDetailClick(restaurant.id)}>
+                                <img 
+                                    src={restaurant.placeFiles.url}
+                                    alt={`${restaurant.name} 이미지`} 
+                                    onError={(e) => { e.target.src = "https://via.placeholder.com/200x150"; }} // 이미지 로딩 실패 시 대체 이미지
+                                />
                                 <div className="restaurant-details2">
                                     <h2>{restaurant.name}</h2>
-
-                                    <p>{restaurant.description}</p>
+                                    <p>{restaurant.comment}</p>
                                 </div>
                             </li>
                         ))}
                     </ul>
+                    {isFetching && <p>Loading more...</p>}
                 </div>
             </div>
             {isVisible && (
