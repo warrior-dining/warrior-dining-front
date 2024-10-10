@@ -1,22 +1,12 @@
 import '../css/restaurantManagement.css';
 import {useNavigate} from "react-router-dom";
 import {FindByAll} from "../api/DataApi";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 
 const host = "http://localhost:8080/api/admin/places/";
 
-const PlaceList = () => {
+const PlaceList = ({list}) => {
     const navigate = useNavigate();
-    const [list, setList] = useState([])
-    const [response, error] = FindByAll(host); // 만들어 놓은 api Hook 사용.
-    useEffect(() => {
-        if(error) {
-            console.log(error);
-        }
-        if(response.data) {
-            setList(response.data.status ? response.data.results : []);
-        }
-    }, [response, error]);
 
     return (
         <>
@@ -51,7 +41,34 @@ const PlaceList = () => {
 }
 
 const PlacesAdmin = () => {
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
+    const [list, setList] = useState([])
+    const [response, error] = FindByAll(host, page, pageSize); // 만들어 놓은 api Hook 사용.
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if(error) {
+            console.log(error);
+        }
+        if(response.data) {
+            setList(response.data.status ? response.data.results.content : []);
+            setTotalPages(response.data.status ? response.data.results.totalPages : [])
+        }
+    }, [response,error]);
+
+
+    const getPaginationNumbers = () => {
+        const maxPagesToShow = 5;
+        const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
+        const endPage = Math.min(totalPages, startPage + maxPagesToShow);
+
+        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+    };
+
+    const paginationNumbers = getPaginationNumbers();
+
     return (
         <>
             <main>
@@ -72,12 +89,43 @@ const PlacesAdmin = () => {
                             <button>검색</button>
                         </div>
                     </div>
-                    <PlaceList />
+                    <PlaceList  list={list}/>
                     <div className="pagination">
-                        <a href="#" className="active">1</a>
-                        <a href="#">2</a>
-                        <a href="#">3</a>
-                        <a href="#">다음</a>
+                        {page >= 1 && (
+                            <a
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setPage(page - 1);
+                                }}
+                            >
+                                이전
+                            </a>
+                        )}
+                        {paginationNumbers.map((num) => (
+                            <a
+                                key={num}
+                                href="#"
+                                className={num === page ? "active" : ""}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setPage(num);
+                                }}
+                            >
+                                {num + 1}
+                            </a>
+                        ))}
+                        {page < totalPages - 1 && (
+                            <a
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setPage(page + 1);
+                                }}
+                            >
+                                다음
+                            </a>
+                        )}
                     </div>
                 </div>
             </main>

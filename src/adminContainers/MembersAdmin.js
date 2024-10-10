@@ -1,22 +1,14 @@
 import {useNavigate} from "react-router-dom";
 import '../css/memberList.css';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {FindByAll} from '../api/DataApi'
 import axios from "axios";
 
-const MemberList = () => {
-    const host = "http://localhost:8080/api/admin/members/";
+const host = "http://localhost:8080/api/admin/members/";
+
+const MemberList = ({list}) => {
     const navigate = useNavigate();
-    const [list, setList] = useState([])
-    const [response, error] = FindByAll(host); // 만들어 놓은 api Hook 사용.
-    useEffect(() => {
-        if(error) {
-            console.log(error);
-        }
-        if(response.data) {
-            setList(response.data.status ? response.data.results : []);
-        }
-    }, [response, error]);
+
     return (
         <>
             <table className="member-list-table">
@@ -35,14 +27,14 @@ const MemberList = () => {
                         <tr key={index} onClick={() => {
                             navigate(`/admin/members/info/${row.id}`);
                         }}>
-                            <td>{index+1}</td>
+                            <td>{index + 1}</td>
                             <td>{row.email}</td>
                             <td>{row.name}</td>
                             <td>{row.createdAt}</td>
                             <td>
                                 {
-                                    row.roles.map((row, index)=> (
-                                        row.role+' '
+                                    row.roles.map((row, index) => (
+                                        row.role + ' '
                                     ))
                                 }
                             </td>
@@ -56,6 +48,32 @@ const MemberList = () => {
 }
 
 const MembersAdmin = () => {
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
+    const [list, setList] = useState([])
+    const [response, error] = FindByAll(host, page, pageSize); // 만들어 놓은 api Hook 사용.
+    useEffect(() => {
+        if(error) {
+            console.log(error);
+        }
+        if(response.data) {
+            setList(response.data.status ? response.data.results.content : []);
+            setTotalPages(response.data.status ? response.data.results.totalPages : [])
+        }
+    }, [response, error]);
+
+
+    const getPaginationNumbers = () => {
+        const maxPagesToShow = 5; // 화면에 보여줄 페이지 갯수
+        const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
+        const endPage = Math.min(totalPages, startPage + maxPagesToShow);
+
+        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+    };
+
+    const paginationNumbers = getPaginationNumbers();
+
     return (
         <>
             <main>
@@ -64,7 +82,7 @@ const MembersAdmin = () => {
                     <h2 className="main-title">회원 목록</h2>
 
                     <div className="member-search-bar">
-                    <select>
+                        <select>
                             <option value="id">회원 ID</option>
                             <option value="name">이름</option>
                             <option value="email">권한</option>
@@ -72,12 +90,43 @@ const MembersAdmin = () => {
                         <input type="text" placeholder="검색어 입력..."/>
                         <button>검색</button>
                     </div>
-                    <MemberList />
+                    <MemberList list={list}/>
                     <div className="pagination">
-                        <a href="#" className="active">1</a>
-                        <a href="#">2</a>
-                        <a href="#">3</a>
-                        <a href="#">다음</a>
+                        {page >= 1 && (
+                            <a
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setPage(page - 1);
+                                }}
+                            >
+                                이전
+                            </a>
+                        )}
+                        {paginationNumbers.map((num) => (
+                            <a
+                                key={num}
+                                href="#"
+                                className={num === page ? "active" : ""}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setPage(num);
+                                }}
+                            >
+                                {num + 1}
+                            </a>
+                        ))}
+                        {page < totalPages - 1 && (
+                            <a
+                                href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setPage(page + 1);
+                                }}
+                            >
+                                다음
+                            </a>
+                        )}
                     </div>
                 </div>
             </main>
