@@ -23,7 +23,7 @@ const PlaceDetail = () => {
     }, [response, error]);
     const images = [];
     const clickEvent = () => {
-        navigate("/admin/places/edit");
+        navigate("/admin/places/edit/"+Number(id));
     }
 
     if (!data || data.length === 0) {

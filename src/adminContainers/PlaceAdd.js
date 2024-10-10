@@ -8,6 +8,9 @@ const host = "http://localhost:8080/api/admin/places/"
 const PlaceAdd = () => {
     const [daum, setDaum] = useState(null);
     const navigator = useNavigate();
+    const [viewImages, setViewImages] = useState([]);
+    const [uploadImages, setUploadImages] = useState([])
+    const [menuItems, setMenuItems] = useState([{ id: 1, name: '', price: '' }]);
     const [placeInfo, setPlaceInfo] = useState({
             email: '',
             name: '',
@@ -75,26 +78,25 @@ const PlaceAdd = () => {
         }
     }
 
-    const [uploadedImages, setUploadedImages] = useState([]);
-    const [imgs, setImgs] = useState([])
-    const [menuItems, setMenuItems] = useState([{ id: 1, name: '', price: '' }]);
 
     const previewImages = (e) => {
         const files = Array.from(e.target.files);
         const newImages = files.map(file => URL.createObjectURL(file));
-        console.log(files);
-        setImgs([...imgs, ...files]);
-        setUploadedImages(prev => [...prev, ...newImages]);
+        setUploadImages([...uploadImages, ...files]);
+        setViewImages(prev => [...prev, ...newImages]);
     };
 
     const removeImage = (image) => {
-        setUploadedImages(prev => prev.filter(img => img !== image));
+        setViewImages(prev => prev.filter(img => img !== image));
+        setUploadImages(prev => prev.filter(img => URL.createObjectURL(img) !== image));
     };
 
-
-
     const addMenuItem = () => {
-        setMenuItems(prev => [...prev, { id: prev.length + 1, name: '', price: '' }]);
+        if (menuItems.length < 10) {
+            setMenuItems(prev => [...prev, { id: prev.length + 1, menu: '', price: '' }]);
+        } else  {
+            alert('메뉴 항목은 최대 10개 까지 작성할 수 있습니다.');
+        }
     };
 
     const deleteMenuItem = (id) => {
@@ -114,18 +116,13 @@ const PlaceAdd = () => {
     };
 
     const handlePlaceInfoChange = (field, value) => {
-        console.log(`Updating ${field} to ${value}`);
         setPlaceInfo(prev => ({ ...prev, [field]: value }));
     };
 
     const submitEvent = (e) => {
         e.preventDefault();
-        // 추가적인 폼 제출 처리 로직을 여기에 작성
-        // console.log(placeInfo);
-        // console.log(menuItems);
-        // console.log(imgs);
         const formData = new FormData();
-        imgs.forEach(img => {
+        uploadImages.forEach(img => {
             formData.append("file", img );
         })
         formData.append("menu", JSON.stringify(menuItems) );
@@ -133,8 +130,7 @@ const PlaceAdd = () => {
         console.log(formData.get("file"), formData.get("menu"), formData.get("place"));
         axios.post(host, formData)
             .then((res) => {
-                alert('폼이 제출되었습니다!');
-                console.log(res);
+                alert('저장 되었습니다.');
                 navigator("/admin/places/info/"+ res.data.results.id);
                 // 예시
             })
@@ -184,7 +180,7 @@ const PlaceAdd = () => {
                                        onChange={previewImages}/>
                                 <div id="preview-container"
                                      style={{display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '10px'}}>
-                                    {uploadedImages.map((image, index) => (
+                                    {viewImages.map((image, index) => (
                                         <div key={index} className="image-preview">
                                             <img src={image} alt={`Preview ${index}`}
                                                  style={{maxWidth: '150px', maxHeight: '150px'}}/>

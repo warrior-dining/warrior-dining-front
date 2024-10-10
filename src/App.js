@@ -83,7 +83,7 @@ function App() {
             <Route path="/admin/inquiries/detail/:id" element={<InquirieDtailsAdmin />} />
             <Route path="/admin/places/add" element={<PlaceAdd />} />
             <Route path="/admin/places/info/:id" element={<PlaceDetail />} />
-            <Route path="/admin/places/edit" element={<PlaceEdit />} />
+            <Route path="/admin/places/edit/:id" element={<PlaceEdit />} />
           <Route path="/topreservation" element={<TopReservation />} />
           <Route path="/monthbest" element={<MonthBest />} />
           <Route path="/restaurantlist" element={<RestaurantList />} />

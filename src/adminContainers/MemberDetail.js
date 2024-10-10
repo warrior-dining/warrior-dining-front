@@ -7,11 +7,12 @@ import { FindById } from '../api/DataApi';
 const host = "http://localhost:8080/api/admin/members/info/";
 
 const openModal = (type) => {
-    document.getElementById(type + 'Modal').style.display = 'flex';
+    document.getElementById(type+'Modal').style.display = 'flex';
+    console.log(type+"호출됨");
 }
 
 const closeModal = (type) => {
-    document.getElementById(type + 'Modal').style.display = 'none';
+    document.getElementById(type+'Modal').style.display = 'none';
 }
 
 const Grant = ({callback}) => {
@@ -35,9 +36,9 @@ const Grant = ({callback}) => {
     }
     return (
         <>
-            <div id="grantModal" className="modal">
-                <div className="modal-content">
-                    <button className="modal-close" onClick={() => {closeModal('grant')}}>&times;</button>
+            <div id="grantModal" className="modal-role">
+                <div className="modal-role-content">
+                    <button className="modal-role-close" onClick={() => {closeModal('grant')}}>&times;</button>
                     <h2>권한 부여</h2>
                     <div className="form-group">
                         <label htmlFor="grantRole">권한 선택:</label>
@@ -76,9 +77,9 @@ const Revoke = ({callback}) => {
     }
     return (
         <>
-            <div id="revokeModal" className="modal">
-                <div className="modal-content">
-                    <button className="modal-close" onClick={()=> {closeModal('revoke')}}>&times;</button>
+            <div id="revokeModal" className="modal-role">
+                <div className="modal-role-content">
+                    <button className="modal-role-close" onClick={()=> {closeModal('revoke')}}>&times;</button>
                     <h2>권한 제거</h2>
                     <div className="form-group">
                         <label htmlFor="revokeRole">제거할 권한:</label>
