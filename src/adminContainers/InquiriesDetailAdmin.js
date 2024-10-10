@@ -10,6 +10,7 @@ const InquirieDtailsAdmin = ({ inquiryId }) => {
     const {id} = useParams();
     const inquiriesId = Number(id);
     const [data, setData] = useState(null);
+    const [content, setContent] = useState("");
     useEffect(() => {
         axios.get(host + inquiriesId)
         .then(res => {
@@ -26,14 +27,8 @@ const InquirieDtailsAdmin = ({ inquiryId }) => {
 
     const SubmitEvent = e => {
         e.preventDefault();
-        //문의사항id:inquiriesId, 작성자 id:1, 문의사항답변:e.tartget.text.value
-        const data = {
-            inquiry_id: inquiriesId,
-            user_id : 1,
-            content : e.target.text.value
-        }
    
-        axios.post(host+inquiriesId, data)
+        axios.post(host+inquiriesId, {"content": content})
         .then(res => {
             console.log(data);
             
@@ -45,7 +40,7 @@ const InquirieDtailsAdmin = ({ inquiryId }) => {
     return (
         <>
             <main>
-                <div className="containers">
+                <div className="container">
 
                     <h2 className="main-title">문의 사항 상세</h2>
 
@@ -60,14 +55,14 @@ const InquirieDtailsAdmin = ({ inquiryId }) => {
                             <p>{data.content}</p>
                         </div>
                         <div className="reply-containers">
-                            <h4>답변 작성</h4>
-                            <form onSubmit={SubmitEvent}>
-                                <textarea placeholder="여기에 답변을 작성하세요..." name="text"></textarea>
-                                <button type="submit">답변 저장</button>
+                            <h4>답변 작성</h4> 
+                            <form onSubmit={SubmitEvent}>  
+                                <textarea placeholder="여기에 답변을 작성하세요..." value={data && data.answer ? data.answer.content : ""} name="text" onChange={(e)=> setContent( e.target.value)}></textarea>
+                                {!data || !data.answer || !data.answer.content ? ( <button type="submit">답변 저장</button>) : null}
                             </form> 
                         </div>
                     </div>
-                </div>
+                </div> 
             </main>
         </>
     );
