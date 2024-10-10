@@ -50,7 +50,6 @@ const MemberList = ({list}) => {
 const MembersAdmin = () => {
     const [searchType, setSearchType] = useState('email');
     const [searchKeyword, setSearchKeyword] = useState('');
-    const [searchStatus, setSearchStatus] = useState(true);
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
