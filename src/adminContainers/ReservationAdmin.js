@@ -2,76 +2,68 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import '../css/reservationManagement.css';
 
-const host = "http://localhost:80/admin/reservations";
-const ReservationAdmin = () => {
-    const [reservations, setReservations] = useState([
-        { id: '0001', restaurant: '맛있는 식당', customer: '홍길동', date: '2024-08-20', time: '18:00', guests: '4명', status: '확정' },
-        { id: '0002', restaurant: '즐거운 레스토랑', customer: '김영희', date: '2024-08-21', time: '19:00', guests: '2명', status: '확정' },
-        { id: '0003', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
-        { id: '0004', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
-        { id: '0005', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
-        { id: '0006', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
-        { id: '0007', restaurant: '멋진 카페', customer: '이철수', date: '2024-08-22', time: '15:00', guests: '3명', status: '대기' },
-    ]);
+const host = "http://localhost:8080/api/admin/reservations/";
 
-    const itemsPerPage = 5;
+const ReservationAdmin = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [currentStatusFilter, setCurrentStatusFilter] = useState('전체');
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredReservations, setFilteredReservations] = useState([]);
-    const [expandedReservationId, setExpandedReservationId] = useState(null); // 상세 정보 상태
-
+    const [expandedReservationId, setExpandedReservationId] = useState(null);
     const [data, setData] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
+    const [status, setStatus] = useState([]);
+
+    let url = host + `?page=${currentPage - 1}&size=5&status=${status}`; // currentPage - 1
+
     useEffect(() => {
-        axios.get(host)
-        .then(res => {
-            setData(res.data.data);
-            console.log(res);
-        })
-        .catch(error => console.log(error));
-    }, []);
+        axios.get(url)
+            .then(res => {
+                setData(res.data.data.content);
+                setTotalPages(res.data.data.totalPages);
+            })
+            .catch(error => console.log(error));
+    }, [currentPage]);
 
     useEffect(() => {
         renderReservations();
-    }, [currentPage, currentStatusFilter, searchQuery, reservations]);
-
+    }, [currentStatusFilter, data]); // searchQuery는 제외
 
     const renderReservations = () => {
-        const filtered = reservations.filter(reservation => {
-            return (currentStatusFilter === '전체' || reservation.status === currentStatusFilter) &&
-                (reservation.customer.includes(searchQuery) || reservation.restaurant.includes(searchQuery));
+        const filtered = data.filter(row => {
+            // 상태 필터링
+            if (currentStatusFilter !== '전체' && row.code.value !== currentStatusFilter) {
+                return false;
+            }
+            // 검색 필터링
+            if (searchQuery && !row.user.name.includes(searchQuery)) {
+                return false;
+            }
+            return true;
         });
         setFilteredReservations(filtered);
     };
 
-    const changePage = (direction) => {
-        setCurrentPage(prevPage => prevPage + direction);
-    };
-
     const handleUpdateStatus = (id) => {
-        setReservations(prevReservations =>
-            prevReservations.map(reservation =>
-                reservation.id === id ? { ...reservation, status: '취소' } : reservation
-            )
-        );
-
-        axios.patch(`${host}/${id}`, { status: 14 }) // 상태 업데이트를 위한 요청
+        const confirmCancel = window.confirm("예약을 취소하시겠습니까?");
+        if (!confirmCancel) {
+            return;
+        }
+        axios.patch(`${host}${id}`, { status: 14 })
             .then(res => {
-                window.location.reload();
+                setData(prevData => prevData.map(item => 
+                    item.id === id ? { ...item, code: { value: '취소' } } : item
+                ));
+                renderReservations();
             })
             .catch(error => {
                 console.log('Axios error:', error);
-                if (error.response) {
-                    console.log('Response data:', error.response.data);
-                    console.log('Response status:', error.response.status);
-                    console.log('Response headers:', error.response.headers);
-                }
             });
     };
 
     const filterReservations = (status) => {
         setCurrentStatusFilter(status);
-        setCurrentPage(1);
+        setCurrentPage(1); // 페이지를 1로 리셋
     };
 
     const handleSearch = (event) => {
@@ -83,12 +75,19 @@ const ReservationAdmin = () => {
         setExpandedReservationId(expandedReservationId === id ? null : id);
     };
 
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const pageReservations = filteredReservations.slice(startIndex, startIndex + itemsPerPage);
-
     if (!data || data.length === 0) {
-        return <div>Loading...</div>; // 데이터가 로드되기 전까지 로딩 메시지 표시
+        return <div>Loading...</div>;
     }
+
+    const getPaginationNumbers = () => {
+        const maxPagesToShow = 5;
+        const startPage = Math.max(0, currentPage - Math.floor(maxPagesToShow));
+        const endPage = Math.min(totalPages, startPage + maxPagesToShow);
+
+        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+    };
+
+    const paginationNumbers = getPaginationNumbers();
 
     return (
         <main>
@@ -101,6 +100,7 @@ const ReservationAdmin = () => {
                             <button onClick={() => filterReservations('확정')}>확정</button>
                             <button onClick={() => filterReservations('대기')}>대기</button>
                             <button onClick={() => filterReservations('취소')}>취소</button>
+                            <button onClick={() => filterReservations('완료')}>완료</button>
                         </div>
                         <div className="reservation-search-bar">
                             <input type="text" id="search-input" placeholder="검색어를 입력하세요" onChange={handleSearch} />
@@ -108,35 +108,40 @@ const ReservationAdmin = () => {
                         </div>
                     </div>
                     <div id="reservation-container">
-                        {data.map((reservation) => (
-                            <div className="reservation-item" key={reservation.id} onClick={() => toggleDetails(reservation.id)} style={{ cursor: 'pointer' }}>
-                                <h3>예약 ID: {reservation.id}</h3>
+                        {filteredReservations.map((row) => (
+                            <div className="reservation-item" key={row.id} onClick={() => toggleDetails(row.id)} style={{ cursor: 'pointer' }}>
+                                <h3>예약 ID: {row.id}</h3>
                                 <p>
-                                    고객 이름: {reservation.user.name}
-                                    <span className={`status ${reservation.code.value}`}>{reservation.code.value}</span>
+                                    고객 이름: {row.user.name}
+                                    <span className={`status ${row.code.value}`}>{row.code.value}</span>
                                 </p>
-                                {reservation.code.value === '대기' && (
-                                    <button className="cancel-button" onClick={(e) => { e.stopPropagation(); handleUpdateStatus(reservation.id); }}>
+                                {row.code.value === '대기' && (
+                                    <button className="cancel-button" onClick={(e) => { e.stopPropagation(); handleUpdateStatus(row.id); }}>
                                         예약 취소
                                     </button>
                                 )}
-                                <div className={`reservation-details ${expandedReservationId === reservation.id ? 'open' : ''}`}>
-                                    {expandedReservationId === reservation.id && (
+                                <div className={`reservation-details ${expandedReservationId === row.id ? 'open' : ''}`}>
+                                    {expandedReservationId === row.id && (
                                         <>
-                                            <p>식당: {reservation.places.name} </p>
-                                            <p>예약 날짜: {reservation.reservationDate}</p>
-                                            <p>예약 시간: {reservation.reservationTime}</p>
-                                            <p>요청사항: {reservation.orderNote}</p>
-                                            <p>인원: {reservation.count}</p>
+                                            <p>식당: {row.place.name} </p>
+                                            <p>예약 날짜: {row.reservationDate}</p>
+                                            <p>예약 시간: {row.reservationTime}</p>
+                                            <p>요청사항: {row.orderNote}</p>
+                                            <p>인원: {row.count}</p>
                                         </>
                                     )}
                                 </div>
                             </div>
                         ))}
                     </div>
-                    <div className="pagination">
-                        <button onClick={() => changePage(-1)} disabled={currentPage === 1}>이전</button>
-                        <button onClick={() => changePage(1)} disabled={startIndex + itemsPerPage >= filteredReservations.length}>다음</button>
+                    <div className="reservation-pagination">
+                        <a href="#" onClick={(e) => { e.preventDefault(); if (currentPage > 1) setCurrentPage(currentPage - 1); }}>이전</a>
+                        {paginationNumbers.map((num) => (
+                            <a key={num} href="#" className={num + 1 === currentPage ? "active" : ""} onClick={(e) => { e.preventDefault(); setCurrentPage(num + 1); }}>
+                                {num + 1}
+                            </a>
+                        ))}
+                        <a href="#" onClick={(e) => { e.preventDefault(); if (currentPage < totalPages) setCurrentPage(currentPage + 1); }}>다음</a>
                     </div>
                 </section>
             </div>

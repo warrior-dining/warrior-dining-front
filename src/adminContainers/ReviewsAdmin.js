@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../css/reviewsAdmin.css';
 
-const host = "http://localhost:80/admin/reviews";
+const host = "http://localhost:8080/api/admin/reviews/";
 
 const ReviewList = () => {
   const [expandedRowIds, setExpandedRowIds] = useState([]);
@@ -86,14 +86,14 @@ const ReviewList = () => {
               <tr onClick={() => handleRowClick(row.id)}>
                 <td>{row.id}</td>
                 <td>{row.user.name}</td>
-                <td>{row.places.name}</td>
+                <td>{row.place.name}</td>
                 <td>{getStars(row.rating)}</td>
                 <td>{truncateContent(row.content)}</td>
                 <td>{row.createdAt}</td>
                 <td className="actions">
-                  {row.status === '0' ? '' : (
+                  {row.status === '0' ? '1' : (
                     row.deleted ? 
-                    '' :
+                    '처리됨' :
                       <button className="delete"  onClick={() => handleUpdateStatus(row.id, { status: 1 })}>삭제</button>
                       
                     
