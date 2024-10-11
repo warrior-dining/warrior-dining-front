@@ -3,6 +3,7 @@ import axios from "axios";
 import '../css/reservationManagement.css';
 
 const host = "http://localhost:8080/api/admin/reservations/";
+
 const ReservationAdmin = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [currentStatusFilter, setCurrentStatusFilter] = useState('전체');
@@ -10,49 +11,50 @@ const ReservationAdmin = () => {
     const [filteredReservations, setFilteredReservations] = useState([]);
     const [expandedReservationId, setExpandedReservationId] = useState(null);
     const [data, setData] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
+    const [status, setStatus] = useState([]);
+
+    let url = host + `?page=${currentPage - 1}&size=5&status=${status}`; // currentPage - 1
 
     useEffect(() => {
-        axios.get(host)
+        axios.get(url)
             .then(res => {
-                setData(res.data.data);
-                console.log(res);
+                setData(res.data.data.content);
+                setTotalPages(res.data.data.totalPages);
             })
             .catch(error => console.log(error));
-    }, []);
+    }, [currentPage]);
 
     useEffect(() => {
         renderReservations();
-    }, [currentPage, currentStatusFilter, data]); // searchQuery를 포함시키지 않았습니다
+    }, [currentStatusFilter, data]); // searchQuery는 제외
 
     const renderReservations = () => {
         const filtered = data.filter(row => {
-            // 전체인 경우는 모든 예약을 포함
-            if (currentStatusFilter === '전체') {
-                return true;
+            // 상태 필터링
+            if (currentStatusFilter !== '전체' && row.code.value !== currentStatusFilter) {
+                return false;
             }
-            // 현재 상태 필터와 일치하는 예약만 포함
-            return row.code.value === currentStatusFilter;
+            // 검색 필터링
+            if (searchQuery && !row.user.name.includes(searchQuery)) {
+                return false;
+            }
+            return true;
         });
-        setFilteredReservations(filtered); // 필터링된 결과를 저장
-        console.log("Filtered Reservations:", filtered);
-    };
-
-    const changePage = (direction) => {
-        setCurrentPage(prevPage => prevPage + direction);
+        setFilteredReservations(filtered);
     };
 
     const handleUpdateStatus = (id) => {
         const confirmCancel = window.confirm("예약을 취소하시겠습니까?");
-    if (!confirmCancel) {
-        return; // 사용자가 취소를 클릭하면 함수 종료
+        if (!confirmCancel) {
+            return;
         }
-       axios.patch(`${host}${id}`, { status: 14 }) // 상태 업데이트를 위한 요청
+        axios.patch(`${host}${id}`, { status: 14 })
             .then(res => {
-                // 데이터 새로 고침
                 setData(prevData => prevData.map(item => 
                     item.id === id ? { ...item, code: { value: '취소' } } : item
                 ));
-                renderReservations(); // 상태 업데이트 후 다시 렌더링
+                renderReservations();
             })
             .catch(error => {
                 console.log('Axios error:', error);
@@ -61,7 +63,6 @@ const ReservationAdmin = () => {
 
     const filterReservations = (status) => {
         setCurrentStatusFilter(status);
-        console.log(`Current Status Filter: ${status}`);
         setCurrentPage(1); // 페이지를 1로 리셋
     };
 
@@ -75,8 +76,18 @@ const ReservationAdmin = () => {
     };
 
     if (!data || data.length === 0) {
-        return <div>Loading...</div>; // 데이터가 로드되기 전까지 로딩 메시지 표시
+        return <div>Loading...</div>;
     }
+
+    const getPaginationNumbers = () => {
+        const maxPagesToShow = 5;
+        const startPage = Math.max(0, currentPage - Math.floor(maxPagesToShow));
+        const endPage = Math.min(totalPages, startPage + maxPagesToShow);
+
+        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+    };
+
+    const paginationNumbers = getPaginationNumbers();
 
     return (
         <main>
@@ -89,6 +100,7 @@ const ReservationAdmin = () => {
                             <button onClick={() => filterReservations('확정')}>확정</button>
                             <button onClick={() => filterReservations('대기')}>대기</button>
                             <button onClick={() => filterReservations('취소')}>취소</button>
+                            <button onClick={() => filterReservations('완료')}>완료</button>
                         </div>
                         <div className="reservation-search-bar">
                             <input type="text" id="search-input" placeholder="검색어를 입력하세요" onChange={handleSearch} />
@@ -96,7 +108,7 @@ const ReservationAdmin = () => {
                         </div>
                     </div>
                     <div id="reservation-container">
-                        {filteredReservations.map((row) => ( // filteredReservations를 사용
+                        {filteredReservations.map((row) => (
                             <div className="reservation-item" key={row.id} onClick={() => toggleDetails(row.id)} style={{ cursor: 'pointer' }}>
                                 <h3>예약 ID: {row.id}</h3>
                                 <p>
@@ -122,9 +134,14 @@ const ReservationAdmin = () => {
                             </div>
                         ))}
                     </div>
-                    <div className="pagination">
-                        <button onClick={() => changePage(-1)} >이전</button>
-                        <button onClick={() => changePage(1)} >다음</button>
+                    <div className="reservation-pagination">
+                        <a href="#" onClick={(e) => { e.preventDefault(); if (currentPage > 1) setCurrentPage(currentPage - 1); }}>이전</a>
+                        {paginationNumbers.map((num) => (
+                            <a key={num} href="#" className={num + 1 === currentPage ? "active" : ""} onClick={(e) => { e.preventDefault(); setCurrentPage(num + 1); }}>
+                                {num + 1}
+                            </a>
+                        ))}
+                        <a href="#" onClick={(e) => { e.preventDefault(); if (currentPage < totalPages) setCurrentPage(currentPage + 1); }}>다음</a>
                     </div>
                 </section>
             </div>

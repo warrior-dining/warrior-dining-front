@@ -91,9 +91,9 @@ const ReviewList = () => {
                 <td>{truncateContent(row.content)}</td>
                 <td>{row.createdAt}</td>
                 <td className="actions">
-                  {row.status === '0' ? '' : (
+                  {row.status === '0' ? '1' : (
                     row.deleted ? 
-                    '' :
+                    '처리됨' :
                       <button className="delete"  onClick={() => handleUpdateStatus(row.id, { status: 1 })}>삭제</button>
                       
                     

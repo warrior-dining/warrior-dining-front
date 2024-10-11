@@ -88,30 +88,31 @@
     background-color: #c82333;
 }
 
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
+.reservation-pagination {
+    position: fixed;
+    left: 50%; /* 화면의 50% 위치로 설정 */
+    bottom: 90px; /* 화면 하단에서 20px 위치 */
+    transform: translateX(-50%); /* 자신의 폭의 절반만큼 왼쪽으로 이동하여 중앙 정렬 */
+    z-index: 1000; /* 다른 요소 위에 표시되도록 */
 }
 
-.pagination button {
-    border: none;
-    background-color: #ff6f61;
-    color: white;
-    padding: 12px 24px;
+.reservation-pagination a {
+    text-decoration: none;
+    color: #ff6f61;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
     margin: 0 5px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    border-radius: 4px;
 }
 
-.pagination button:hover {
+.reservation-pagination a:hover {
+    background-color: #f4f4f4;
+}
+
+.reservation-pagination .active {
     background-color: #ff6f61;
-}
-
-.pagination button:disabled {
-    background-color: #aaa;
-    cursor: not-allowed;
+    color: #fff;
+    border: 1px solid #ff6f61;
 }
 
 .filter-search-container {
@@ -165,4 +166,8 @@
 
 .reservation-search-bar button:hover {
     background-color: #ff6f61;
+}
+
+.table-container {
+    margin-bottom: 50px; /* 페이징의 높이만큼 여유를 둡니다 */
 }

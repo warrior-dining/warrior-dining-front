@@ -4,44 +4,9 @@ import '../css/managerInquiryList.css';
 import axios from 'axios';
 
 const host = "http://localhost:8080/api/admin/inquiries/";
-const data = [
-    {
-        id: 1,
-        title: '제목 1',
-        username: '홍길동',
-        createAt: '2024-08-21',
-        status: '처리됨'
-    },
-    {
-        id: 2,
-        title: '제목 2',
-        username: '김철수',
-        createAt: '2024-08-21',
-        status: '미처리'
-    }
-];
 
-const InquiresList = () => {
-    const [data, setData] = useState([]);
-
-    useEffect(() => {
-        axios.get(host)
-            .then(res => {
-                setData(res.data.data); // 전체 데이터 배열을 설정
-            })
-            .catch(error => console.log(error));
-    }, []);
-
-    useEffect(() => {
-        console.log(data); // data가 변경될 때마다 로그 출력
-    }, [data]);
-
-    const navigate = useNavigate(); // useNavigate 훅 사용
-
-    const handleRowClick = () => {
-        navigate(`/admin/inquiries/`); // 클릭 시 이동할 경로
-    };
-
+const InquiresList = ({data}) => {
+    const navigate = useNavigate();
     return (
         <>
             <table>
@@ -75,6 +40,42 @@ const InquiresList = () => {
 }
 
 const InquiriesAdmin = () => {
+    const [page, setPage] = useState(0);
+    const [data, setData] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
+
+    let url = host+`?page=${page}&size=10`;
+
+    useEffect(() => {
+        axios.get(url)
+            .then(res => {
+                setData(res.data.data.content); // 전체 데이터 배열을 설정
+                setTotalPages(res.data.data.totalPages);
+            })
+            .catch(error => console.log(error));
+    }, [page]);
+
+    useEffect(() => {
+        console.log(data); // data가 변경될 때마다 로그 출력
+    }, [data]);
+
+    const navigate = useNavigate(); // useNavigate 훅 사용
+
+    const handleRowClick = () => {
+        navigate(`/admin/inquiries/`); // 클릭 시 이동할 경로
+    };
+
+    const getPaginationNumbers = () => {
+        const maxPagesToShow = 5;
+        const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
+        const endPage = Math.min(totalPages, startPage + maxPagesToShow);
+
+        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+    };
+
+    const paginationNumbers = getPaginationNumbers();
+
+
     return (
         <>
             <main>
@@ -92,13 +93,24 @@ const InquiriesAdmin = () => {
                             <button>검색</button>
                         </div>
                     </div>
-                    <InquiresList />
+                    <InquiresList data={data} />
                     <div className="pagination">
-                        <a href="#">« 이전</a>
-                        <a href="#" className="active">1</a>
-                        <a href="#">2</a>
-                        <a href="#">3</a>
-                        <a href="#">다음 »</a>
+                            <a href="#" onClick={(e) => { e.preventDefault();
+                                   if(page > 0){
+                                       setPage(page - 1);
+                                    }
+                               }}
+                               disabled={page === 0} > 이전 </a>
+                        {paginationNumbers.map((num) => (
+                            <a key={num} href="#" className={num === page ? "active" : ""} onClick={(e) => {e.preventDefault(); setPage(num);}}> 
+                            {num + 1} 
+                            </a>
+                        ))}
+                            <a href="#" onClick={(e) => {e.preventDefault(); 
+                                if(page < totalPages-1){
+                                    setPage(page + 1);
+                                }
+                            }} disabled={page >= totalPages - 1}> 다음 </a>
                     </div>
                 </div>
             </main>
