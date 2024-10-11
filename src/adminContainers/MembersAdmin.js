@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import '../css/memberList.css';
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {FindByAll, FindByKeyword} from '../api/DataApi'
 import axios from "axios";
 
@@ -54,16 +54,15 @@ const MembersAdmin = () => {
     const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [list, setList] = useState([]);
-    const [response, setResponse] = useState({});
     const [error, setError] = useState(null);
+    const searchKeywordRef= useRef();
 
     // 검색어가 있을 때는 FindByKeyword, 없을 때는 FindByAll 사용
     useEffect(() => {
         const fetchData = async () => {
-            const url = `${host}?page=${page}&size=${pageSize}`;
+            const url = `${host}?type=${searchType}&keyword=${searchKeyword}&page=${0}&size=${pageSize}`;
             try {
                 const result = await axios.get(url);
-                setResponse(result);
                 setList(result.data.status ? result.data.results.content : []);
                 setTotalPages(result.data.status ? result.data.results.totalPages : 0);
             } catch (error) {
@@ -72,25 +71,15 @@ const MembersAdmin = () => {
             }
         };
         fetchData();
-    }, [page, pageSize]);
+    }, [page, pageSize, searchKeyword]);
 
     const searchEvent = async () => {
         if(searchKeyword === null) {
             alert("검색어를 입력하세요.");
             return;
         }
-
         setPage(0); // 검색할 때 페이지를 0으로 초기화
-        const url = `${host}?type=${searchType}&keyword=${searchKeyword}&page=${0}&size=${pageSize}`
-        try {
-            const result = await axios.get(url);
-            setResponse(result);
-            setList(result.data.status ? result.data.results.content : []);
-            setTotalPages(result.data.status ? result.data.results.totalPages : 0);
-        } catch (error) {
-            setError(error);
-            console.log(error);
-        }
+        setSearchKeyword(searchKeywordRef.current.value);
     };
 
     const getPaginationNumbers = () => {
@@ -116,11 +105,7 @@ const MembersAdmin = () => {
                             <option value="name">이름</option>
                             <option value="roles">권한</option>
                         </select>
-                        <input type="text"
-                               placeholder="검색어 입력..."
-                               value={searchKeyword}
-                               onChange={(e) => setSearchKeyword(e.target.value)}
-                        />
+                        <input type="text" placeholder="검색어 입력..." ref={searchKeywordRef} />
                         <button onClick={searchEvent}>검색</button>
                     </div>
                     <MemberList list={list}/>
