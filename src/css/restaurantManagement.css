@@ -59,3 +59,36 @@
 .header-container button:hover {
     background-color: #e63946;
 }
+
+.pagination {
+    position: fixed; /* 고정 위치 */
+    bottom: 90px; /* 화면 하단에서의 거리 */
+    left: 50%; /* 수평 중앙 정렬 */
+    transform: translateX(-50%); /* 중앙 정렬을 위한 변환 */
+    padding: 10px; /* 패딩 (선택사항) */
+
+}
+
+.pagination a {
+    text-decoration: none;
+    color: #ff6f61;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    margin: 0 5px;
+    border-radius: 4px;
+}
+
+.pagination a:hover {
+    background-color: #f4f4f4;
+}
+
+.pagination .active {
+    background-color: #ff6f61;
+    color: #fff;
+    border: 1px solid #ff6f61;
+}
+
+/* 리스트와 페이징이 겹치지 않도록 여백 설정 */
+.table-container {
+    margin-bottom: 50px; /* 페이징의 높이만큼 여유를 둡니다 */
+}

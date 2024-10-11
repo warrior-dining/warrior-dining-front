@@ -8,23 +8,33 @@ const host = "http://localhost:8080/api/admin/members/info/";
 
 const openModal = (type) => {
     document.getElementById(type+'Modal').style.display = 'flex';
-    console.log(type+"호출됨");
 }
 
 const closeModal = (type) => {
     document.getElementById(type+'Modal').style.display = 'none';
 }
 
-const Grant = ({callback}) => {
+const Grant = ({callback, data}) => {
     const { id } = useParams();
     const url = host + Number(id);
-    const [selectedRole, setSelectedRole] = useState('ADMIN');
-    const role = {
-        type: true,
-        role: selectedRole
+
+    const initialRole = () => {
+        const hasAdmin = data.roles.some(r => r.role === 'ADMIN');
+        const hasOwner = data.roles.some(r => r.role === 'OWNER');
+        // ADMIN과 OWNER 둘 다 있으면 빈 문자열, 아니면 없는 것 중 하나를 초기값으로 설정
+        if (hasAdmin && hasOwner) {
+            return ''; // 빈 문자열
+        }
+        return hasAdmin ? 'OWNER' : 'ADMIN'; // 둘 중 하나 선택
     };
+
+    const [selectedRole, setSelectedRole] = useState(initialRole());
+
     const grantRole = () =>{
-        // 권한 부여,제거 로직 구현
+        const role = {
+            type: true,
+            role: selectedRole
+        };
         axios.post(url,  role)
             .then(() => {
                 console.log("권한 부여 성공");
@@ -45,8 +55,13 @@ const Grant = ({callback}) => {
                         <select id="grantRole"
                                 value={selectedRole}
                                 onChange={(e) => {setSelectedRole(e.target.value)}}>
-                            <option value="ADMIN">관리자</option>
-                            <option value="OWNER">오너</option>
+                            {['ADMIN', 'OWNER'].map((role) => (
+                                !data.roles.some(r => r.role === role) && ( // data.roles에 포함되지 않은 경우만 렌더링
+                                    <option key={role} value={role}>
+                                        {role === 'ADMIN' ? 'ADMIN' : 'OWNER'}
+                                    </option>
+                                )
+                            ))}
                         </select>
                     </div>
                     <button onClick={grantRole}>부여하기</button>
@@ -56,24 +71,36 @@ const Grant = ({callback}) => {
     );
 }
 
-const Revoke = ({callback}) => {
+const Revoke = ({callback , data}) => {
     const { id } = useParams();
     const url = host + Number(id);
-    const [selectedRole, setSelectedRole] = useState('ADMIN');
-    const role = {
-        type: false,
-        role: selectedRole
-    };
-    const revokeRole = () => {
-        // 권한 제거 로직 구현
-        axios.post(url,  role)
-            .then(() => {
-                callback();
-            })
-            .catch(error => console.log(error));
+    // 사용자 권한 확인
 
-        alert('권한이 제거되었습니다.');
-        closeModal('revoke');
+    const userRoles = data.roles.map(row => row.role);
+    const hasOnlyUserRole = userRoles.length === 1 && userRoles[0] === 'USER';
+    // 초기값 설정
+    const initialRole = () => {
+        // USER 권한을 제외한 나머지 권한만 필터링
+        const rolesWithoutUser = userRoles.filter(role => role !== 'USER');
+        // 권한이 있으면 첫 번째 권한을 초기값으로 설정, 없으면 빈 문자열
+        return rolesWithoutUser.length > 0 ? rolesWithoutUser[0] : '';
+    };
+    const [selectedRole, setSelectedRole] = useState(initialRole());
+
+    const revokeRole = () => {
+
+        const role = {
+            type: false,
+            role: selectedRole
+        };
+            axios.post(url, role)
+                .then(() => {
+                    callback();
+                })
+                .catch(error => console.log(error));
+
+            alert('권한이 제거되었습니다.');
+            closeModal('revoke');
     }
     return (
         <>
@@ -86,8 +113,15 @@ const Revoke = ({callback}) => {
                         <select id="revokeRole"
                                 value={selectedRole}
                                 onChange={(e) => {setSelectedRole(e.target.value)}}>
-                            <option value="ADMIN">관리자</option>
-                            <option value="OWNER">오너</option>
+                            {!hasOnlyUserRole ? (
+                                data.roles.map((row) => (
+                                    row.role !== 'USER' && (
+                                        <option key={row.id} value={row.role}>{row.role}</option>
+                                    )
+                                ))
+                            ) : (
+                                ''
+                            )}
                         </select>
                     </div>
                     <button onClick={revokeRole}>제거하기</button>
@@ -145,8 +179,8 @@ const MemberDetail = () => {
                             <button onClick={ () => { openModal('revoke') }}>권한 제거</button>
                         </div>
                     </div>
-                    <Grant callback={callback} />
-                    <Revoke callback={callback} />
+                    <Grant callback={callback} data={data}/>
+                    <Revoke callback={callback} data={data}/>
                 </div>
             </main>
         </>

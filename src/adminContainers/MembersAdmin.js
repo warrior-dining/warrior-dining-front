@@ -73,7 +73,8 @@ const MembersAdmin = () => {
         fetchData();
     }, [page, pageSize, searchKeyword]);
 
-    const searchEvent = async () => {
+    const searchEvent = (e) => {
+        e.preventDefault();
         if(searchKeyword === null) {
             alert("검색어를 입력하세요.");
             return;
@@ -96,55 +97,45 @@ const MembersAdmin = () => {
         <>
             <main>
                 <div className="container">
-
                     <h2 className="main-title">회원 목록</h2>
-
-                    <div className="member-search-bar">
-                        <select value={searchType} onChange={(e) => {setSearchType(e.target.value)}}>
-                            <option value="email">회원 ID</option>
-                            <option value="name">이름</option>
-                            <option value="roles">권한</option>
-                        </select>
-                        <input type="text" placeholder="검색어 입력..." ref={searchKeywordRef} />
-                        <button onClick={searchEvent}>검색</button>
-                    </div>
+                    <form onSubmit={searchEvent}>
+                        <div className="member-search-bar">
+                            <select value={searchType} onChange={(e) => {
+                                setSearchType(e.target.value)
+                            }}>
+                                <option value="email">회원 ID</option>
+                                <option value="name">이름</option>
+                                <option value="roles">권한</option>
+                            </select>
+                            <input type="text" placeholder="검색어 입력..." ref={searchKeywordRef}/>
+                            <button type="submit">검색</button>
+                        </div>
+                    </form>
                     <MemberList list={list}/>
                     <div className="pagination">
-                        {page >= 1 && (
-                            <a
-                                href="#"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    setPage(page - 1);
-                                }}
-                            >
-                                이전
-                            </a>
-                        )}
+                        <a href="#"
+                           onClick={(e) => {
+                               e.preventDefault();
+                               if (page > 0) {
+                                   setPage(page - 1);
+                               }
+                           }}
+                           disabled={page === 0}> 이전 </a>
                         {paginationNumbers.map((num) => (
-                            <a
-                                key={num}
-                                href="#"
-                                className={num === page ? "active" : ""}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    setPage(num);
-                                }}
-                            >
-                                {num + 1}
-                            </a>
+                            <a key={num} href="#" className={num === page ? "active" : ""}
+                               onClick={(e) => {
+                                   e.preventDefault();
+                                   setPage(num);
+                               }}> {num + 1} </a>
                         ))}
-                        {page < totalPages - 1 && (
-                            <a
-                                href="#"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    setPage(page + 1);
-                                }}
-                            >
-                                다음
-                            </a>
-                        )}
+                        <a href="#"
+                           onClick={(e) => {
+                               e.preventDefault();
+                               if (page < totalPages - 1) {
+                                   setPage(page + 1);
+                               }
+                           }}
+                           disabled={page >= totalPages - 1}> 다음 </a>
                     </div>
                 </div>
             </main>
