@@ -111,7 +111,7 @@ const RestaurantList = () => {
                         {data?.pages.flatMap(page => page.content).map((restaurant) => (
                             <li key={restaurant.id} className="restaurant-item2" onClick={() => resDetailClick(restaurant.id)}>
                                 <img 
-                                    src={restaurant.placeFiles.url}
+                                    src={restaurant.placeFiles[0].url}
                                     alt={`${restaurant.name} 이미지`} 
                                     onError={(e) => { e.target.src = "https://via.placeholder.com/200x150"; }} // 이미지 로딩 실패 시 대체 이미지
                                 />
