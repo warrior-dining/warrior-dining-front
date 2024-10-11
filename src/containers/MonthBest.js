@@ -1,9 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import '../css/default.css'; 
 import '../css/home.css';
 import '../css/monthBest.css';
+import { useNavigate } from 'react-router-dom';
+
+const host = "http://localhost:8080/api/restaurant/month"; 
 
 const MonthBest = () => {
+    const navigate = useNavigate();
+    const [ratings, setRatings] = useState([]); 
+
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetch(host);
+            const data = await response.json();
+    
+            if (Array.isArray(data)) {
+              setRatings(data.slice(0, 10));
+            } else {
+              console.error("오류에용", data);
+            }
+          } catch (error) {
+            console.error("에러에용", error);
+          }
+        };
+    
+        fetchData();
+      }, []);
+
+      const resDetailClick = () => {
+        navigate(`/restaurant/detail`);
+      };
+
   return (
     <div>
 
@@ -12,41 +41,33 @@ const MonthBest = () => {
         <h1>이달의 맛집</h1>
 
         <div className="category-list">
-            <a href="#">한식</a>
-            <a href="#">양식</a>
-            <a href="#">일식</a>
-            <a href="#">중식</a>
-            <a href="#">기타</a>
-            <a href="#">전체보기</a>
+          <a href="/korean">한식</a>
+          <a href="/western">양식</a>
+          <a href="/japanese">일식</a>
+          <a href="/chinese">중식</a>
+          <a href="/etc">기타</a>
+          <a href="/all">전체보기</a>
         </div>
 
         <div className="restaurant-list">
-            <div className="restaurant-item">
-                <img src="https://via.placeholder.com/300x200" alt="레스토랑 이미지" />
-                <div className="restaurant-details">
-                    <h2>레스토랑 이름 1</h2>
-                    <p>이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다. 분위기와 서비스가 뛰어나며, 특별한 날에 방문하기 좋은 장소입니다.</p>
+            {ratings.length > 0 ? (
+              ratings.map((rating, index) => (
+                <div className="restaurant-item" key={index} onClick={() => resDetailClick(rating.id)}>
+                  <div className="restaurant-rank">{index + 1}</div>
+                  <img src={rating.url} alt={`레스토랑 이미지 ${index + 1}`} 
+                   onError={(e) => {e.target.src = "https://via.placeholder.com/200x150";}}/>
+                  <div className="restaurant-details">
+                    <h2>{rating.name}</h2>
+                    <p>{rating.comment}</p>
+                  </div>
                 </div>
-            </div>
-            <div className="restaurant-item">
-                <img src="https://via.placeholder.com/300x200" alt="레스토랑 이미지" />
-                <div className="restaurant-details">
-                    <h2>레스토랑 이름 2</h2>
-                    <p>이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다. 분위기와 서비스가 뛰어나며, 특별한 날에 방문하기 좋은 장소입니다.</p>
-                </div>
-            </div>
-            <div className="restaurant-item">
-                <img src="https://via.placeholder.com/300x200" alt="레스토랑 이미지" />
-                <div className="restaurant-details">
-                    <h2>레스토랑 이름 3</h2>
-                    <p>이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다. 분위기와 서비스가 뛰어나며, 특별한 날에 방문하기 좋은 장소입니다.</p>
-                </div>
-            </div>
-
-        </div>
+              ))
+            ) : (
+              <p>데이터를 불러오는 중입니다...</p> 
+            )}
+          </div>
     </div>
 </section>
-
     </div>
   );
 };

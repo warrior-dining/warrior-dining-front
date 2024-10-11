@@ -1,33 +1,9 @@
 
-import React, { useEffect, useRef } from 'react';
-import { useNavigate, Link} from 'react-router-dom'; 
+import React, { useState,useEffect, useRef } from 'react';
+import { useNavigate} from 'react-router-dom'; 
 import { initReviewSlider } from '../components/ReviewSlider';
 
-
-const topRestaurants = [
-  { name: '레스토랑 이름 1', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다.' },
-  { name: '레스토랑 이름 2', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다.' },
-  { name: '레스토랑 이름 3', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다.' },
-  { name: '레스토랑 이름 4', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다.' }
-];
-
-const monthBestRestaurants = [
-  { name: '레스토랑 이름 5', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다.' },
-  { name: '레스토랑 이름 6', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다.' },
-  { name: '레스토랑 이름 7', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다.' },
-  { name: '레스토랑 이름 8', description: '이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다.' }
-];
-
-const reviews = [
-    { name: '홍길동', text: '이 레스토랑은 정말 훌륭합니다! 음식도 맛있고 서비스도 친절했습니다. 꼭 다시 방문할 것입니다.' },
-    { name: '김미영', text: '정말 맛있는 식사를 했습니다. 분위기도 좋고, 직원들이 매우 친절했습니다. 강력히 추천합니다.' },
-    { name: '이철수', text: '음식이 맛있고, 가격도 합리적입니다. 서비스는 평균적이지만, 전반적으로 좋은 경험이었습니다.' },
-    { name: '황철수', text: '어디서 혼자먹기 딱좋은 혼밥맛집!! 다음번엔꼭 연인이랑 같이 오길 ㅠㅠ' },
-    { name: '리정화', text: '음식이 친절하고 사장님이 맛있어요.' },
-    { name: '조상민', text: '음식이 친절하고 사장님이 맛있어요.' },
-    { name: '황성민', text: '음식이 친절하고 사장님이 맛있어요.' },
-    { name: '김은수', text: '음식이 친절하고 사장님이 맛있어요.' }
-  ];
+const host = "http://localhost:8080/api/restaurant"
 
 const HeroSection = () => {
     const navigate = useNavigate();
@@ -45,7 +21,13 @@ const HeroSection = () => {
     );
 }
 
-const RestaurantSection = ({ title, items, onMoreClick }) => (
+const RestaurantSection = ({ title, items, onMoreClick }) => {
+  const navigate = useNavigate(); 
+    const detailClick = () => {
+        navigate(`/restaurant/detail/`);
+    }
+
+  return (
   <section>
     <div className="section-title">
       <h2>{title}</h2>
@@ -53,24 +35,37 @@ const RestaurantSection = ({ title, items, onMoreClick }) => (
     </div>
     <div className="section-container">
       {items.map((item, index) => (
-        <div className="restaurant-card" key={index}>
-          <img src="https://via.placeholder.com/300x200" alt={`레스토랑 이미지 ${index + 1}`} />
+        <div className="restaurant-card" key={index} onClick={()=> detailClick(item.id)}>
+          <img src={item.url} alt={`레스토랑 이미지 ${index + 1}`} 
+          onError={(e) => {e.target.src = "https://via.placeholder.com/200x150";}}/>
           <h3>{item.name}</h3>
           <p>{item.description}</p>
         </div>
       ))}
     </div>
   </section>
-);
+  );
+};
+
 
 const ReviewSection = () => { 
   const reviewWrapperRef = useRef(null); 
   const reviewSlidesRef = useRef([]); 
+  const [restaurantReviews, setRestaurantsReviews] = useState([]);
 
   useEffect(() => {
       const reviewSlides = reviewSlidesRef.current; 
       const reviewWrapper = reviewWrapperRef.current; 
-
+      const fetchRestaurantsReviews = async () => {
+        try {
+          const response = await fetch(`${host}/reviews`);
+          const data = await response.json();
+          setRestaurantsReviews(data);
+        } catch (error) {
+          console.error("리뷰가 존재 하지 않습니다 : " , error);
+        }
+      };
+      fetchRestaurantsReviews();
 
       const cleanup = initReviewSlider(reviewWrapper, reviewSlides);
 
@@ -84,13 +79,13 @@ const ReviewSection = () => {
           <h2>레스토랑 리뷰</h2>
           <div className="review-carousel">
               <div className="review-wrapper" ref={reviewWrapperRef}>
-                  {reviews.map((review, index) => (
+                  {restaurantReviews.map((review, index) => (
                       <div className="review-slide" ref={el => reviewSlidesRef.current[index] = el} key={index}>
                           <div className="review-card">
-                              <img src="https://via.placeholder.com/300x200" alt={`리뷰어 이미지 ${review.name}`} />
+                        
                               <div className="review-content">
                                   <div className="reviewer-name">{review.name}</div>
-                                  <div className="review-text">{review.text}</div>
+                                  <div className="review-text">{review.content}</div>
                               </div>
                           </div>
                       </div>
@@ -103,6 +98,34 @@ const ReviewSection = () => {
 
 const MainContent = () => {
   const navigate = useNavigate();
+  const [topRestaurants, setTopRestaurants] = useState([]);
+  const [monthBestRestaurants, setMonthBestRestaurants] = useState([]);
+
+  useEffect(() => {
+    const fetchTopRestaurants = async () => {
+      try {
+        const response = await fetch(`${host}/top`);
+        const data = await response.json();
+        setTopRestaurants(data.slice(0, 4));
+      } catch (error) {
+        console.error("데이터가 존재 하지 않습니다 : ", error);
+      }
+    };
+
+    const fetchMonthBestRestaurants = async () => {
+      try {
+        const response = await fetch(`${host}/month`);
+        const data = await response.json();
+        setMonthBestRestaurants(data.slice(0, 4)); 
+      } catch (error) {
+        console.error("데이터가 존재 하지 않습니다 : ", error);
+      }
+    };
+
+    
+    fetchTopRestaurants();
+    fetchMonthBestRestaurants();
+  }, []);
 
   const handleMoreClick = (title) => {
     if (title === '예약 TOP 순위') {
@@ -120,6 +143,7 @@ const MainContent = () => {
           items={topRestaurants} 
           onMoreClick={handleMoreClick}
         />
+        <img src={topRestaurants.url}/>
         <RestaurantSection 
           title="이달의 맛집" 
           items={monthBestRestaurants} 
