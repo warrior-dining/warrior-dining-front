@@ -1,7 +1,7 @@
 import '../css/restaurantManagement.css';
 import {useNavigate} from "react-router-dom";
-import {FindByAll} from "../api/DataApi";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
+import axios from "axios";
 
 const host = "http://localhost:8080/api/admin/places/";
 
@@ -41,23 +41,41 @@ const PlaceList = ({list}) => {
 }
 
 const PlacesAdmin = () => {
+    const navigate = useNavigate();
+    const [searchType, setSearchType] = useState('name');
+    const [searchKeyword, setSearchKeyword] = useState('');
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [list, setList] = useState([])
-    const [response, error] = FindByAll(host, page, pageSize); // 만들어 놓은 api Hook 사용.
-    const navigate = useNavigate();
+    const [error, setError] = useState(null);
+    const searchKeywordRef= useRef();
 
+    // 검색어가 있을 때는 FindByKeyword, 없을 때는 FindByAll 사용
     useEffect(() => {
-        if(error) {
-            console.log(error);
-        }
-        if(response.data) {
-            setList(response.data.status ? response.data.results.content : []);
-            setTotalPages(response.data.status ? response.data.results.totalPages : [])
-        }
-    }, [response,error]);
+        const fetchData = async () => {
+            const url = `${host}?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`
+            try {
+                const result = await axios.get(url);
+                setList(result.data.status ? result.data.results.content : []);
+                setTotalPages(result.data.status ? result.data.results.totalPages : 0);
+            } catch (error) {
+                setError(error);
+                console.log(error);
+            }
+        };
+        fetchData();
+    }, [page, pageSize, searchKeyword]);
 
+    const searchEvent = (e) => {
+        e.preventDefault();
+        if(searchKeyword === null) {
+            alert("검색어를 입력하세요.");
+            return;
+        }
+        setPage(0);
+        setSearchKeyword(searchKeywordRef.current.value);
+    };
 
     const getPaginationNumbers = () => {
         const maxPagesToShow = 5;
@@ -80,52 +98,42 @@ const PlacesAdmin = () => {
                         <button type="button" onClick={()=>{
                             navigate('/admin/places/add');
                         }}>음식점 등록</button>
-                        <div className="search-bar">
-                            <select>
-                                <option value="name">음식점 이름</option>
-                                <option value="location">위치</option>
-                            </select>
-                            <input type="text" placeholder="검색어 입력..."/>
-                            <button>검색</button>
-                        </div>
+                        <form onSubmit={searchEvent}>
+                            <div className="search-bar">
+                                <select value={searchType} onChange={(e)=> {setSearchType(e.target.value)}}>
+                                    <option value="name">음식점 이름</option>
+                                    <option value="location">위치</option>
+                                </select>
+                                <input type="text" placeholder="검색어 입력..." ref={searchKeywordRef}/>
+                                <button type="submit" >검색</button>
+                            </div>
+                        </form>
                     </div>
                     <PlaceList  list={list}/>
                     <div className="pagination">
-                        {page >= 1 && (
-                            <a
-                                href="#"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    setPage(page - 1);
-                                }}
-                            >
-                                이전
-                            </a>
-                        )}
+                            <a href="#"
+                               onClick={(e) => {
+                                   e.preventDefault();
+                                   if(page > 0){
+                                       setPage(page - 1);
+                                   }
+                               }}
+                               disabled={page === 0} > 이전 </a>
                         {paginationNumbers.map((num) => (
-                            <a
-                                key={num}
-                                href="#"
-                                className={num === page ? "active" : ""}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    setPage(num);
-                                }}
-                            >
-                                {num + 1}
-                            </a>
+                            <a key={num} href="#" className={num === page ? "active" : ""}
+                               onClick={(e) => {
+                                   e.preventDefault();
+                                   setPage(num);
+                               }}> {num + 1} </a>
                         ))}
-                        {page < totalPages - 1 && (
-                            <a
-                                href="#"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    setPage(page + 1);
+                            <a href="#"
+                               onClick={(e) => {
+                                   e.preventDefault();
+                                   if(page < totalPages-1){
+                                       setPage(page + 1);
+                                   }
                                 }}
-                            >
-                                다음
-                            </a>
-                        )}
+                                disabled={page >= totalPages - 1}> 다음 </a>
                     </div>
                 </div>
             </main>
