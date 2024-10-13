@@ -34,8 +34,7 @@ const ReviewList = ({data, setData}) => {
         setData(prevData => prevData.map(item =>
             item.id === id ? {...item, isDeleted: true} : item
         ));
-
-        axios.patch(`${host}/${id}`, {status: 1}) // 상태 업데이트를 위한 요청
+        axios.patch(`${host}${id}`) // 상태 업데이트를 위한 요청
             .then(res => {
                 window.location.reload();
             })
@@ -60,6 +59,7 @@ const ReviewList = ({data, setData}) => {
                     <th>평점</th>
                     <th>리뷰 내용</th>
                     <th>리뷰 날짜</th>
+                    <th>상태</th>
                     <th>작업</th>
                 </tr>
                 </thead>
@@ -73,12 +73,15 @@ const ReviewList = ({data, setData}) => {
                             <td>{getStars(row.rating)}</td>
                             <td>{truncateContent(row.content)}</td>
                             <td>{row.createdAt}</td>
+                            <td>{row.deleted ? '비활성화' : '활성화'}</td>
                             <td className="actions">
                                 {row.status === '0' ? '1' : (
-                                    row.deleted ?
-                                        '처리됨' :
                                         <button className="delete"
-                                                onClick={() => handleUpdateStatus(row.id, {status: 1})}>삭제</button>
+                                                style={{display: row.deleted ? 'none' : ''}}
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); //tr 태그의 온클릭 이벤트 비활성화.
+                                                    handleUpdateStatus(row.id)
+                                                }}>삭제</button>
                                 )}
                             </td>
                         </tr>
