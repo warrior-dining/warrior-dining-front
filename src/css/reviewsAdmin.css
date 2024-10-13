@@ -6,15 +6,28 @@
     border-bottom: 2px solid #ff6f61; /* 오렌지색 밑줄 */
     padding-bottom: 10px;
 }
-
-.filter-bar, .search-bar {
-    display: inline-block;
-    flex-wrap: wrap; /* 화면 크기가 작아질 때 줄 바꿈 */
-    gap: 1px; /* 요소 간의 간격 */
+.admin-filter-search-container {
+    display: flex;
+    justify-content: space-between; /* 양쪽 끝으로 나누기 */
+    align-items: center; /* 수직 정렬 */
     margin-bottom: 20px;
 }
 
-.filter-bar select, .search-bar input, .search-bar button {
+.admin-filter-bar, .admin-search-bar {
+    display: flex;
+    align-items: center; /* 수직 정렬 */
+}
+
+.admin-filter-bar select, .admin-search-bar select {
+    margin-top: 20px; /* 요소 간 간격 추가 */
+}
+.admin-filter-bar, .admin-search-bar {
+    display: inline-block;
+    flex-wrap: wrap; /* 화면 크기가 작아질 때 줄 바꿈 */
+    gap: 1px; /* 요소 간의 간격 */
+}
+
+.admin-filter-bar select, .admin-search-bar select , .admin-search-bar input, .admin-search-bar button {
     padding: 10px;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
@@ -22,16 +35,16 @@
     margin-right: 5px; /* 오른쪽 여백 */
 }
 
-.filter-bar select {
+.admin-filter-bar select {
     flex: 1; /* 가변 너비 */
 }
 
-.search-bar input {
+.admin-search-bar input {
     width: 250px; /* 검색 입력 필드가 버튼보다 넓게 */
     border: 1px solid #e0e0e0;
 }
 
-.search-bar button {
+.admin-search-bar button {
     flex: 0; /* 버튼 크기 고정 */
     background-color: #ff6f61;
     color: #fff;
@@ -39,7 +52,7 @@
     cursor: pointer;
 }
 
-.search-bar button:hover {
+.admin-search-bar button:hover {
     background-color: #e63946;
 }
 
