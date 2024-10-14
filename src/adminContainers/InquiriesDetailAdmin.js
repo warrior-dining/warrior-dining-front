@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams} from "react-router-dom";
 import axios from "axios";
 import '../css/InquiriesDetailAdmin.css';
 
 const host = "http://localhost:8080/api/admin/inquiries/";
 
 const InquirieDtailsAdmin = () => {
+
     const { id } = useParams();
     const inquiriesId = Number(id);
     const [data, setData] = useState(null);
@@ -29,7 +30,6 @@ const InquirieDtailsAdmin = () => {
         e.preventDefault();
         axios.post(host + inquiriesId, { "content": content })
             .then(res => {
-                console.log(res.data);
                 // 필요 시 추가 로직
                 window.location.reload();
             })
@@ -57,7 +57,12 @@ const InquirieDtailsAdmin = () => {
                             <h4>답변 작성</h4>
                             <form onSubmit={SubmitEvent}>
                                 <textarea placeholder="여기에 답변을 작성하세요..." value={content} name="text" onChange={(e) => setContent(e.target.value)} readOnly={isAnswered}/>
-                                {!isAnswered ? <button type="submit">답변 저장</button> : null}
+                                <div  style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                    {!isAnswered ? <button type="submit">답변 저장</button> : null}
+                                    <button type="button" onClick={() => {
+                                        window.location.href = '/admin/inquiries';
+                                    }}>돌아가기</button>
+                                </div>
                             </form>
                         </div>
                     </div>
