@@ -9,7 +9,8 @@ const PlaceAdd = () => {
     const [daum, setDaum] = useState(null);
     const navigator = useNavigate();
     const [viewImages, setViewImages] = useState([]);
-    const [uploadImages, setUploadImages] = useState([])
+    const [uploadImages, setUploadImages] = useState([]);
+    const [error, setError] = useState('');
     const [menuItems, setMenuItems] = useState([{ id: 1, name: '', price: '' }]);
     const [placeInfo, setPlaceInfo] = useState({
             email: '',
@@ -127,14 +128,17 @@ const PlaceAdd = () => {
         })
         formData.append("menu", JSON.stringify(menuItems) );
         formData.append("place", JSON.stringify(placeInfo) );
-        console.log(formData.get("file"), formData.get("menu"), formData.get("place"));
+
         axios.post(host, formData)
             .then((res) => {
-                alert('저장 되었습니다.');
-                navigator("/admin/places/info/"+ res.data.results.id);
-                // 예시
+                if(res.data.status === true) {
+                    alert('저장 되었습니다.');
+                    navigator("/admin/places/info/" + res.data.results.id);
+                }
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+                if (error.response) { setError(error.response.data.message);}
+            });
     };
 
     return (
@@ -266,6 +270,7 @@ const PlaceAdd = () => {
                             <div className="form-actions">
                                 <button type="submit">등록하기</button>
                             </div>
+                            {error && <div className="error">{error}</div>}
                         </form>
                     </div>
                 </div>
