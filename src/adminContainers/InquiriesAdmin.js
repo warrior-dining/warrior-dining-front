@@ -1,4 +1,4 @@
-import React,  {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate 임포트
 import '../css/managerInquiryList.css';
 import axios from 'axios';
@@ -41,28 +41,35 @@ const InquiresList = ({data}) => {
 
 const InquiriesAdmin = () => {
     const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
     const [data, setData] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
-
-    let url = host+`?page=${page}&size=10`;
+    const [searchType, setSearchType] = useState('title');
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const searchKeywordRef = useRef('');
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        axios.get(url)
+        const fetchData = async () => {
+            const url = `${host}?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`
+            axios.get(url)
             .then(res => {
-                setData(res.data.data.content); // 전체 데이터 배열을 설정
-                setTotalPages(res.data.data.totalPages);
+                setData(res.data.results.content);
+                setTotalPages(res.data.results.totalPages);
             })
-            .catch(error => console.log(error));
-    }, [page]);
+            .catch(error => setError(error));
+        }
+        fetchData();
+    }, [page, pageSize, searchKeyword]);
 
-    useEffect(() => {
-        console.log(data); // data가 변경될 때마다 로그 출력
-    }, [data]);
-
-    const navigate = useNavigate(); // useNavigate 훅 사용
-
-    const handleRowClick = () => {
-        navigate(`/admin/inquiries/`); // 클릭 시 이동할 경로
+    const submitEvent = (e) => {
+        e.preventDefault();
+        if(searchKeyword === null) {
+            alert("검색어를 입력하세요.");
+            return;
+        }
+        setPage(0);
+        setSearchKeyword(searchKeywordRef.current.value);
     };
 
     const getPaginationNumbers = () => {
@@ -75,7 +82,6 @@ const InquiriesAdmin = () => {
 
     const paginationNumbers = getPaginationNumbers();
 
-
     return (
         <>
             <main>
@@ -83,16 +89,20 @@ const InquiriesAdmin = () => {
 
                     <h2 className="main-title">문의 사항 목록</h2>
 
-                    <div className="search-container">
-                        <div className="search-bar">
-                            <select>
-                                <option value="title">제목</option>
-                                <option value="date">날짜</option>
-                            </select>
-                            <input type="text" placeholder="검색어 입력..."/>
-                            <button>검색</button>
+                    <form onSubmit={submitEvent}>
+                        <div className="search-container">
+                            <div className="search-bar">
+                                <select value={searchType} onChange={(e) => setSearchType(e.target.value)}>
+                                    <option value="title">제목</option>
+                                    <option value="date">날짜</option>
+                                    <option value="user">작성자</option>
+                                    <option value="status">답변 처리 여부</option>
+                                </select>
+                                <input type="text" placeholder="검색어 입력..." ref={searchKeywordRef}/>
+                                <button type="submit">검색</button>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                     <InquiresList data={data} />
                     <div className="pagination">
                             <a href="#" onClick={(e) => { e.preventDefault();

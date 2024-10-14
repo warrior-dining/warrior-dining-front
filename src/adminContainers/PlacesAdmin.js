@@ -51,19 +51,16 @@ const PlacesAdmin = () => {
     const [error, setError] = useState(null);
     const searchKeywordRef= useRef();
 
-    // 검색어가 있을 때는 FindByKeyword, 없을 때는 FindByAll 사용
     useEffect(() => {
         const fetchData = async () => {
             const url = `${host}?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`
-            try {
-                const result = await axios.get(url);
-                setList(result.data.status ? result.data.results.content : []);
-                setTotalPages(result.data.status ? result.data.results.totalPages : 0);
-            } catch (error) {
-                setError(error);
-                console.log(error);
+            await axios.get(url)
+            .then(res => {
+                setList(res.data.status ? res.data.results.content : []);
+                setTotalPages(res.data.status ? res.data.results.totalPages : 0);
+            })
+                .catch (error => setError(error) );
             }
-        };
         fetchData();
     }, [page, pageSize, searchKeyword]);
 
