@@ -116,7 +116,6 @@ const ReviewsAdmin = () => {
             let url = `${host}?searchtype=${searchType}&searchkeyword=${searchKeyword}&page=${page}&size=${pageSize}&sorttype=${sortType}`;
             axios.get(url)
                 .then(res => {
-                    console.log(url);
                     setData(res.data.status ? res.data.results.content : []);
                     setTotalPages(res.data.status ? res.data.results.totalPages : 0);
                 })
