@@ -131,6 +131,7 @@ const ReviewsAdmin = () => {
             return;
         }
         setPage(0); // 검색할 때 페이지를 0으로 초기화
+        setSortType('');
         setSearchKeyword(searchKeywordRef.current.value);
     };
 

@@ -75,22 +75,16 @@ const ReservationList = () => {
                                 </ul>
                                 <button
                                     className="myreservationList-button"
-                                    onClick={() => navigate(`/mypage/reservationdetail/${row.id}`)}
-                                >
-                                    예약 수정/취소
-                                </button>
+                                    onClick={() => navigate(`/mypage/reservationdetail/${row.id}`)}> 예약 수정/취소 </button>
                                 <button
                                     className="myreservationList-button"
-                                    onClick={() => navigate('/reviewcomment')}
-                                >
-                                    리뷰 작성하기
-                                </button>
-                                <button
-                                    className="myreservationList-button"
-                                    onClick={() => navigate('/reviewcomment')}
-                                >
-                                    즐겨찾기 등록
-                                </button>
+                                    onClick={() => navigate('/reviewcomment')}> 리뷰 작성하기 </button>
+                                {row.code.value === "완료"?
+                                    <button
+                                        className="myreservationList-button"
+                                        onClick={() => navigate('/reviewcomment')}> 즐겨찾기 등록 </button>
+                                    : ""
+                                }
                             </div>
                         </div>
                     ))}
