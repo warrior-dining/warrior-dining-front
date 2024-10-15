@@ -1,21 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import '../css/default.css';
 import '../css/detail.css';
 
-const menuItems = [
-    { id: 1, title: '메뉴 아이템 1', description: '이 메뉴 아이템은 최고의 재료로 준비된 요리입니다. 맛과 품질이 뛰어납니다.' },
-    { id: 2, title: '메뉴 아이템 2', description: '다양한 맛을 느낄 수 있는 메뉴로, 고객의 입맛을 만족시킬 수 있습니다.' },
-    { id: 3, title: '메뉴 아이템 3', description: '세심하게 조리된 요리로, 고급스러운 맛을 제공합니다.' },
-];
-
-const reviews = [
-    { id: 1, name: '홍길동', text: '정말 훌륭한 경험이었습니다. 음식이 맛있고 서비스가 친절했습니다. 다음에 또 오고 싶어요.' },
-    { id: 2, name: '김철수', text: '분위기가 정말 좋았고, 음식이 신선하고 맛있었습니다. 추천합니다.' },
-    { id: 3, name: '이영희', text: '따뜻한 분위기, 친절한 서비스가 인상 깊었습니다. 다시 가고 싶습니다.' },
-];
+const host = "http://localhost:8080/api/restaurant";
 
 const Detail = () => {
+    const [restaurantDetail, setRestaurantDetail] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [visibleMenus, setVisibleMenus] = useState(3); // 초기 보여줄 메뉴 개수
+    const [visibleReviews, setVisibleReviews] = useState(3); // 초기 보여줄 리뷰 개수
+    const [showMoreMenus, setShowMoreMenus] = useState(true); // 메뉴 더보기 상태
+    const [showMoreReviews, setShowMoreReviews] = useState(true); // 리뷰 더보기 상태
+    const { id } = useParams(); // URL에서 placeId 가져오기
+
+    useEffect(() => {
+        fetchRestaurantDetail();
+    }, [id]);
+
+    const fetchRestaurantDetail = async () => {
+        try {
+            const response = await fetch(`${host}/detail/${id}`);
+            const data = await response.json();
+
+            if (data.content && data.content.length > 0) {
+                setRestaurantDetail(data.content[0]); 
+            } else {
+                setRestaurantDetail(null); 
+            }
+        } catch (error) {
+            console.error("Failed to fetch restaurant detail:", error);
+        }
+    };
 
     const handleOpenModal = (e) => {
         e.preventDefault();
@@ -26,51 +42,145 @@ const Detail = () => {
         setIsModalOpen(false);
     };
 
+    const loadMoreMenus = () => {
+        const newVisibleMenus = visibleMenus + 3; // 3개씩 추가
+        setVisibleMenus(newVisibleMenus);
+
+        // 더보기 버튼 상태 업데이트
+        if (newVisibleMenus >= restaurantDetail.placeMenus.length) {
+            setShowMoreMenus(false); // 더 이상 데이터가 없으면 더보기 버튼 비활성화
+        }
+    };
+
+    const loadMoreReviews = () => {
+        const newVisibleReviews = visibleReviews + 3; // 3개씩 추가
+        setVisibleReviews(newVisibleReviews);
+
+        // 더보기 버튼 상태 업데이트
+        if (newVisibleReviews >= restaurantDetail.reviews.length) {
+            setShowMoreReviews(false); // 더 이상 데이터가 없으면 더보기 버튼 비활성화
+        }
+    };
+
+    const toggleMenus = () => {
+        setVisibleMenus(3); // 초기 상태로 되돌리기
+        setShowMoreMenus(true); // 더보기 버튼 활성화
+    };
+
+    const toggleReviews = () => {
+        setVisibleReviews(3); // 초기 상태로 되돌리기
+        setShowMoreReviews(true); // 더보기 버튼 활성화
+    };
+
+    if (!restaurantDetail) {
+        return <p>Loading...</p>;
+    }
+
     return (
         <div className="container">
-            <RestaurantDetails onOpenModal={handleOpenModal} />
-            <MenuSection />
-            <ReviewsSection />
+            <RestaurantDetails restaurant={restaurantDetail} onOpenModal={handleOpenModal} />
+            <MenuSection 
+                menus={restaurantDetail.placeMenus} 
+                visibleMenus={visibleMenus} 
+                loadMoreMenus={loadMoreMenus} 
+                showMoreMenus={showMoreMenus} 
+                toggleMenus={toggleMenus} 
+            />
+            <ReviewsSection 
+                reviews={restaurantDetail.reviews} 
+                visibleReviews={visibleReviews} 
+                loadMoreReviews={loadMoreReviews} 
+                showMoreReviews={showMoreReviews} 
+                toggleReviews={toggleReviews} 
+            />
             {isModalOpen && <ReservationModal onClose={handleCloseModal} />}
         </div>
     );
 };
 
-const RestaurantDetails = ({ onOpenModal }) => (
-    <section className="restaurant-detail">
-        <img src="https://via.placeholder.com/1200x800" alt="레스토랑 이미지" />
-        <div className="restaurant-info">
-            <h1>레스토랑 이름 1</h1>
-            <p>이곳은 맛있는 음식을 제공하는 최고의 레스토랑입니다. 정통 요리와 현대적인 분위기가 어우러지는 장소입니다.</p>
-            <button className="cta-button" onClick={onOpenModal}>예약하기</button>
-        </div>
-    </section>
-);
+const RestaurantDetails = ({ restaurant, onOpenModal }) => {
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-const MenuSection = () => (
+    const handleNextImage = () => {
+        setCurrentImageIndex((prevIndex) => 
+            (prevIndex + 1) % restaurant.placeFiles.length
+        );
+    };
+
+    const handlePrevImage = () => {
+        setCurrentImageIndex((prevIndex) => 
+            (prevIndex - 1 + restaurant.placeFiles.length) % restaurant.placeFiles.length
+        );
+    };
+
+    return (
+        <section className="restaurant-detail">
+            <button className="slide-button prev" onClick={handlePrevImage}>
+                &lt; {/* 왼쪽 화살표 */}
+            </button>
+            <div className="detailPage-image-container">
+                <img 
+                    src={restaurant.placeFiles[currentImageIndex]?.url} 
+                    alt="레스토랑 이미지" 
+                    onError={(e) => {
+                        e.target.src = "https://via.placeholder.com/1200x800"; 
+                    }} 
+                />
+            </div>
+            <div className="restaurant-info">
+                <h1>{restaurant.name}</h1>
+                <p>{restaurant.comment}</p>
+                <button className="cta-button" onClick={onOpenModal}>예약하기</button>
+            </div>
+            <button className="slide-button next" onClick={handleNextImage}>
+                &gt; {/* 오른쪽 화살표 */}
+            </button>
+        </section>
+    );
+};
+
+const MenuSection = ({ menus, visibleMenus, loadMoreMenus, showMoreMenus, toggleMenus }) => (
     <section className="RD-menu-section">
         <h2 className="section-title">메뉴</h2>
-        {menuItems.map(item => (
+        {menus.slice(0, visibleMenus).map(item => (
             <MenuItem key={item.id} item={item} />
         ))}
-        <a href="#" className="more-link">메뉴 더보기</a>
+        {showMoreMenus && (
+            <a className="more-link" onClick={loadMoreMenus}>
+                메뉴 더보기
+            </a>
+        )}
+        {visibleMenus > 3 && !showMoreMenus && (
+            <a className="more-link" onClick={toggleMenus}>
+                접기
+            </a>
+        )}
     </section>
 );
 
 const MenuItem = ({ item }) => (
     <div className="Detail-menu-item">
-        <h3>{item.title}</h3>
-        <p>{item.description}</p>
+        <h3>{item.menu}</h3>
+        <p>{item.price.toLocaleString()} 원</p> {/* 가격 포맷팅 */}
     </div>
 );
 
-const ReviewsSection = () => (
+const ReviewsSection = ({ reviews, visibleReviews, loadMoreReviews, showMoreReviews, toggleReviews }) => (
     <section className="RD-reviews-section">
         <h2 className="section-title">리뷰</h2>
-        {reviews.map(review => (
-            <ReviewCard key={review.id} review={review} />
+        {reviews.slice(0, visibleReviews).map((review, index) => (
+            <ReviewCard key={index} review={review} />
         ))}
-        <a href="#" className="more-link">리뷰 더보기</a>
+        {showMoreReviews && (
+            <a className="more-link" onClick={loadMoreReviews}>
+                리뷰 더보기
+            </a>
+        )}
+        {visibleReviews > 3 && !showMoreReviews && (
+            <a className="more-link" onClick={toggleReviews}>
+                접기
+            </a>
+        )}
     </section>
 );
 
@@ -79,8 +189,8 @@ const ReviewCard = ({ review }) => (
         <div className="RD-review-content">
             <img src="https://via.placeholder.com/60" alt="리뷰어 사진" />
             <div>
-                <p className="reviewer-name">{review.name}</p>
-                <p className="review-text">{review.text}</p>
+                <p className="reviewer-name">{review.user.name}</p>
+                <p className="review-text">{review.content}</p>
             </div>
         </div>
     </div>

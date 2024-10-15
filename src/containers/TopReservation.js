@@ -30,8 +30,8 @@ const TopReservation = () => {
     fetchData();
   }, []);
 
-  const resDetailClick = () => {
-    navigate(`/restaurant/detail`);
+  const resDetailClick = (id) => {
+    navigate(`/restaurant/detail/${id}`);
   };
   
   return (
