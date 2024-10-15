@@ -48,6 +48,7 @@
     cursor: pointer;
     font-size: 1.125em;
     box-sizing: border-box;
+    margin-bottom: 20px; /* 추가: 카카오 버튼과의 간격 */
 }
 
 .login-form button:hover {
@@ -75,4 +76,38 @@
     margin-top: 10px;
     font-weight: bold;
     text-align: center;
+}
+
+.login-form .social-login-container {
+    display: flex;
+    align-items: center; /* 버튼을 수평 중앙 정렬 */
+    width: 100%;
+    margin-top: 15px;
+}
+
+.login-form .kakao-login-button,
+.login-form .naver-login-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent; /* 배경 투명으로 설정 */
+    border: none;
+    cursor: pointer;
+    padding: 1px; /* 여백 제거 */
+    width: auto;
+    height: auto;
+}
+
+.login-form .kakao-login-button img,
+.login-form .naver-login-button img {
+    width: 200px; /* 원하는 이미지 너비 */
+    height: 50px; /* 원하는 이미지 높이 */
+}
+
+.login-form .kakao-login-button:hover {
+    background-color: #ffc107;
+}
+
+.login-form .naver-login-button:hover {
+    background-color: #28a745;
 }
