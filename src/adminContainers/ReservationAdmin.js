@@ -21,7 +21,6 @@ const ReservationAdmin = () => {
         let url = `${host}?page=${page}&size=${pageSize}&status=${sortType}&type=${searchType}&keyword=${searchKeyword}`;
         axios.get(url)
             .then(res => {
-                console.log(res);
                 setData(res.data.results.content);
                 setTotalPages(res.data.results.totalPages);
             })
@@ -44,7 +43,6 @@ const ReservationAdmin = () => {
     };
 
     const searchEvent = (e) => {
-        console.log("호출되나?")
         e.preventDefault();
         if(searchKeyword === null) {
             alert("검색어를 입력하세요.");
