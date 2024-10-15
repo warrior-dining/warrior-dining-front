@@ -7,6 +7,10 @@
     padding-bottom: 10px;
 }
 
+.reservation-container {
+    min-height: 65vh;
+}
+
 .reservation-item {
     border-radius: 10px;
     padding: 15px;
@@ -92,12 +96,16 @@
     background-color: #c82333;
 }
 
+.reservation-pagination-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    padding: 15px 0;
+}
+
 .reservation-pagination {
-    position: fixed;
-    left: 50%; /* 화면의 50% 위치로 설정 */
-    bottom: 90px; /* 화면 하단에서 20px 위치 */
-    transform: translateX(-50%); /* 자신의 폭의 절반만큼 왼쪽으로 이동하여 중앙 정렬 */
-    z-index: 1000; /* 다른 요소 위에 표시되도록 */
+    display: flex;
 }
 
 .reservation-pagination a {
@@ -118,8 +126,6 @@
     color: #fff;
     border: 1px solid #ff6f61;
 }
-
-
 
 .filter-search-container {
     display: flex;

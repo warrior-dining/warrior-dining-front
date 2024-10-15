@@ -10,7 +10,7 @@ const ReservationAdmin = () => {
     const [data, setData] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [page, setPage] = useState(0);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(10);
     const searchKeywordRef= useRef('');
     const [searchType, setSearchType] = useState('id');
     const [searchKeyword, setSearchKeyword] = useState('');
@@ -21,7 +21,6 @@ const ReservationAdmin = () => {
         let url = `${host}?page=${page}&size=${pageSize}&status=${sortType}&type=${searchType}&keyword=${searchKeyword}`;
         axios.get(url)
             .then(res => {
-                console.log(res);
                 setData(res.data.results.content);
                 setTotalPages(res.data.results.totalPages);
             })
@@ -44,7 +43,6 @@ const ReservationAdmin = () => {
     };
 
     const searchEvent = (e) => {
-        console.log("호출되나?")
         e.preventDefault();
         if(searchKeyword === null) {
             alert("검색어를 입력하세요.");
@@ -97,7 +95,7 @@ const ReservationAdmin = () => {
                             </div>
                         </form>
                     </div>
-                    <div id="reservation-container">
+                    <div className="reservation-container">
                         {data.map((row) => (
                             <div className="reservation-item" key={row.id} onClick={() => toggleDetails(row.id)} style={{ cursor: 'pointer' }}>
                                 <h3>예약 ID: {row.id}</h3>
@@ -124,26 +122,28 @@ const ReservationAdmin = () => {
                             </div>
                         ))}
                     </div>
-                    <div className="reservation-pagination">
-                        <a href="#"
-                            onClick={(e) => {
-                                e.preventDefault();
-                               if(page > 0){setPage(page - 1);}
-                            }}
-                            disabled={page === 0}> 이전 </a>
-                        {paginationNumbers.map((num) => (
-                            <a key={num} href="#" className={num === page ? "active" : ""}
-                               onClick={(e) => {
-                                   e.preventDefault();
-                                   setPage(num);
-                               }}> {num + 1} </a>
-                        ))}
-                        <a href="#"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                if(page < totalPages-1){ setPage(page + 1);}
-                            }}
-                            disabled={page >= totalPages - 1}> 다음 </a>
+                    <div className="reservation-pagination-container">
+                        <div className="reservation-pagination">
+                            <a href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if(page > 0){setPage(page - 1);}
+                                }}
+                                disabled={page === 0}> 이전 </a>
+                            {paginationNumbers.map((num) => (
+                                <a key={num} href="#" className={num === page ? "active" : ""}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setPage(num);
+                                    }}> {num + 1} </a>
+                            ))}
+                            <a href="#"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if(page < totalPages-1){ setPage(page + 1);}
+                                }}
+                                disabled={page >= totalPages - 1}> 다음 </a>
+                        </div>
                     </div>
                 </section>
             </div>
