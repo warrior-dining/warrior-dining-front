@@ -1,9 +1,12 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../context/AuthContext';
 import '../css/SignIn.css';
+import kakaoLoginImage from '../image/kakao_login.png';
+import naverLoginImage from '../image/naver_login.png';
 
 const SignIn = () => {
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const navigate = useNavigate();
     const { saveToken } = useAuth();
     const [email, setEmail] = useState('');
@@ -18,6 +21,29 @@ const SignIn = () => {
         // 비밀번호 찾기 기능 구현
         alert('비밀번호 찾기 기능은 준비 중입니다.');
     };
+
+    const socialLoginClick = (platform) => {
+        const urlMap = {
+            kakao: `${backendUrl}/api/user/login/kakao`,
+            naver: `${backendUrl}/api/user/login/naver`
+        };
+
+        // 플랫폼에 맞는 URL로 리다이렉트
+        if (urlMap[platform]) {
+            window.location.href = urlMap[platform];
+        } else {
+            setError('로그인 중 오류가 발생했습니다. 다시 시도해주세요.')
+        }
+    };
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessToken = urlParams.get('accessToken');
+        if (accessToken) {
+            saveToken(accessToken);
+            navigate('/'); // 로그인 후 메인 페이지로 리다이렉트
+        }
+    }, [navigate, saveToken]);
 
     const submit = async (e) => {
         e.preventDefault();
@@ -72,8 +98,19 @@ const SignIn = () => {
 
                 <button type="submit">로그인</button>
                 {error && <p className="error">{error}</p>}
+
+                <div class="social-login-container">
+                    <button type="button" className="kakao-login-button" onClick={() => socialLoginClick("kakao")}>
+                        <img src={kakaoLoginImage} alt="카카오 로그인" className="kakao-login-image"/>
+                    </button>
+
+                    <button type="button" className="naver-login-button" onClick={() => socialLoginClick("naver")}>
+                        <img src={naverLoginImage} alt="네이버 로그인" className="kakao-login-image"/>
+                    </button>
+                </div>
+
                 <a type="button" onClick={signUpClick}>회원 가입</a>
-                <a type="button" onClick={forgotPasswordClick}>비밀번호를 잊으셨나요?</a>
+                p<a type="button" onClick={forgotPasswordClick}>비밀번호를 잊으셨나요?</a>
             </form>
         </div>
     );
