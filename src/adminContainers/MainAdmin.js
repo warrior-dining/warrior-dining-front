@@ -58,14 +58,29 @@ const StatisticsSection = ({data}) => {
     );
 };
 
-const NoticeSection = () => {
+const NoticeSection = ({data}) => {
+    let placeList = [];
+    if(data.placeRecent != null && data.placeRecent.length > 0 ){
+        placeList = [... data.placeRecent];
+    }
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+        });
+    };
     return (
         <section className="announcements">
-            <h2>공지사항</h2>
+            <h2>최근 등록된 음식점</h2>
             <ul>
-                <li>8월 21일 - 새로운 기능 업데이트가 진행되었습니다.</li>
-                <li>8월 15일 - 시스템 유지보수 공지.</li>
-                <li>8월 10일 - 데이터 백업 완료.</li>
+                { placeList.map((row) =>
+                        <li key={row.id}>
+                            {formatDate(row.createdAt)} - {row.name}
+                        </li>
+                    )
+                }
             </ul>
         </section>
     );
@@ -88,7 +103,7 @@ const MainContent = () => {
       <div className="container">
           <DashboardSection data={data}/>
           <StatisticsSection data={data} />
-          <NoticeSection />
+          <NoticeSection data={data}/>
       </div>
     </main>
   );
