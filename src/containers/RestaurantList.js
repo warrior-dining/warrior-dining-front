@@ -11,7 +11,6 @@ const host = "http://localhost:8080/api/restaurant";
 const fetchRestaurants = async ({ pageParam = 0 }) => {
     const response = await fetch(`${host}?page=${pageParam}`);
     const data = await response.json();
-    console.log(data);
     return data;
 };
 
