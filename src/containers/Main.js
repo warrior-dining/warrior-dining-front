@@ -21,10 +21,10 @@ const HeroSection = () => {
     );
 }
 
-const RestaurantSection = ({ title, items, onMoreClick }) => {
-  const navigate = useNavigate(); 
-    const detailClick = () => {
-        navigate(`/restaurant/detail/`);
+const RestaurantSection = ({ title, items, onMoreClick ,id}) => {
+  const navigate = useNavigate(id); 
+    const detailClick = (id) => {
+        navigate(`/restaurant/detail/${id}`);
     }
 
   return (

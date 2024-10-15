@@ -7,9 +7,11 @@ import { useNavigate } from 'react-router-dom';
 
 const host = "http://localhost:8080/api/restaurant";
 
+
 const fetchRestaurants = async ({ pageParam = 0 }) => {
     const response = await fetch(`${host}?page=${pageParam}`);
     const data = await response.json();
+    console.log(data);
     return data;
 };
 
@@ -54,8 +56,8 @@ const RestaurantList = () => {
         setIsVisible(window.scrollY > 300);
     };
 
-    const resDetailClick = () => {
-        navigate(`/restaurant/detail`);
+    const resDetailClick = (id) => {
+        navigate(`/restaurant/detail/${id}`);
     };
 
     const scrollToTop = () => {
