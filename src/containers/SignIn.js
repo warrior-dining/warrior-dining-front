@@ -110,7 +110,7 @@ const SignIn = () => {
                 </div>
 
                 <a type="button" onClick={signUpClick}>회원 가입</a>
-                p<a type="button" onClick={forgotPasswordClick}>비밀번호를 잊으셨나요?</a>
+                <a type="button" onClick={forgotPasswordClick}>비밀번호를 잊으셨나요?</a>
             </form>
         </div>
     );
