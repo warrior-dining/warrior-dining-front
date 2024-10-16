@@ -37,6 +37,14 @@ const ReservationList = () => {
         }
     }, [page, pageSize]);
 
+    const bookMark = (placeId) => {
+        axios.put("http://localhost:8080/api/member/bookmarks/", {"email": sub, "placeId": placeId})
+            .then(res => {
+                alert("즐겨찾기 등록 완료");
+                navigate("/mypage/bookmark");
+            })
+            .catch(error => console.log(error));
+    }
     const getPaginationNumbers = () => {
         const maxPagesToShow = 5;
         const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
@@ -82,7 +90,7 @@ const ReservationList = () => {
                                 {row.code.value === "완료"?
                                     <button
                                         className="myreservationList-button"
-                                        onClick={() => navigate('/reviewcomment')}> 즐겨찾기 등록 </button>
+                                        onClick={() => { bookMark(row.place.id);}}> 즐겨찾기 등록 </button>
                                     : ""
                                 }
                             </div>

@@ -27,7 +27,6 @@ const PlaceEdit = () => {
         }
         if(response.data) {
             setData(response.data.status ? response.data.results : []);
-            console.log(data);
         }
     }, [response, error]);
 
@@ -60,7 +59,6 @@ const PlaceEdit = () => {
             });
             setMenuItems([...data.placeMenus || '']);
             setExistingImages([...data.placeFiles || '']);
-            console.log("imgs",existingImages);
         }
     }, [data]);
 
@@ -130,8 +128,6 @@ const PlaceEdit = () => {
     const removeImage = (image) => {
         setViewImages(prev => prev.filter(img => img !== image));
         setExistingImages(prev => prev.filter(img => img.url !== image.url));
-        console.log("uploadedImages",viewImages);
-        console.log("imgs" , existingImages);
     };
 
     const addMenuItem = () => {
