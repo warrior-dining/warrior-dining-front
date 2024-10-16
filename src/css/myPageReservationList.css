@@ -9,11 +9,11 @@
     margin: 0 auto; /* 가운데 정렬 */
 }
 
-.order-list {
+.myorder-list {
     margin-top: 20px;
 }
 
-.order-item {
+.myorder-item {
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -22,41 +22,67 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.order-item h2 {
+.myorder-item h2 {
     font-size: 1.2em; /* 제목 글자 크기 조정 */
     margin-bottom: 10px;
 }
 
-.order-item p {
+.myorder-item p {
     margin: 5px 0;
 }
 
-.order-item ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 10px 0;
+.myreservation-details {
+    padding: 15px;
+    /*border: 1px solid #eee;*/
+    background-color: #f9f9f9;
 }
 
-.order-item ul li {
+.myreservation-details ul {
+    list-style-type: none;
+    margin: 10px 0;
+    padding-left: 10px;
+}
+
+.myreservation-details li {
     margin-bottom: 5px;
 }
 
 
-
-.reservationList-order-details-button {
+.myreservationList-button {
     background-color: #ff6f61; /* 예약 수정/취소 버튼 배경색 */
     margin-right: 10px;
 }
-
-.reservationList-cancel-button {
-    background-color: #ff6f61; /* 리뷰 작성 버튼 배경색 */
-}
-
-/* 버튼 호버 효과 */
-.reservationList-order-details-button:hover {
+.myreservationList-button:hover {
     background-color: #e63946; /* 예약 수정/취소 버튼 호버 색상 */
 }
 
-.reservationList-cancel-button:hover {
-    background-color: #e63946; /* 리뷰 작성 버튼 호버 색상 */
+.reservation-pagination-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    padding: 15px 0;
+}
+
+.reservation-pagination {
+    display: flex;
+}
+
+.reservation-pagination a {
+    text-decoration: none;
+    color: #ff6f61;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    margin: 0 5px;
+    border-radius: 4px;
+}
+
+.reservation-pagination a:hover {
+    background-color: #f4f4f4;
+}
+
+.reservation-pagination .active {
+    background-color: #ff6f61;
+    color: #fff;
+    border: 1px solid #ff6f61;
 }

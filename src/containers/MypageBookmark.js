@@ -1,60 +1,100 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import '../css/default.css';
 import '../css/mypageMutual.css';
 import '../css/myPageBookmark.css';
 import MypageSidebar from "../components/MypageSidebar";
+import {useAuth} from "../context/AuthContext";
+import axios from "axios";
 
+const host = "http://localhost:8080/api/member/bookmarks/"
 
 const MypageBookmark = () => {
-    const favorites = [
-        {
-            name: "레스토랑 A",
-            location: "서울시 강남구",
-            rating: "★★★★☆ (4.5)",
-            phone: "02-1234-5678"
-        },
-        {
-            name: "레스토랑 B",
-            location: "서울시 홍대",
-            rating: "★★★☆☆ (3.8)",
-            phone: "02-2345-6789"
-        },
-        {
-            name: "레스토랑 C",
-            location: "서울시 신촌",
-            rating: "★★★★★ (5.0)",
-            phone: "02-3456-7890"
-        }
-    ];
+    const {sub} = useAuth('');
+    const [data, setData] = useState([]);
+    const [page, setPage] = useState(0);
+    const [pageSize, setPageSize] = useState(4);
+    const [totalPages, setTotalPages] = useState(0);
+    const [reload, setReload] = useState(false);
 
-    const removeFavorite = (name) => {
-        // 즐겨찾기 해제 로직 구현
-        alert(`${name} 즐겨찾기가 해제되었습니다.`);
-        console.log(`${name} 즐겨찾기 해제됨.`);
+    useEffect(() => {
+        if(sub){
+            const fetchData = () =>{
+                let url = `${host}?email=${sub}&page=${page}&size=${pageSize}`;
+                axios.get(url)
+                    .then(res => {
+                        setData(res.data.results ? res.data.results.content : []);
+                        setTotalPages( res.data.status ? res.data.results.totalPages : 0);
+                    })
+                    .catch(error => console.log(error));
+            }
+            fetchData();
+        }
+    }, [page, pageSize, reload]);
+
+    const removeBookmark = (placeId) => {
+        let url = `${host}?email=${sub}&placeId=${placeId}`;
+        axios.delete(url)
+            .then(res => {
+                alert(`즐겨찾기가 해제되었습니다.`);
+                setReload(!reload);
+            })
+            .catch(error => console.log(error));
     };
 
+    const getPaginationNumbers = () => {
+        const maxPagesToShow = 5;
+        const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
+        const endPage = Math.min(totalPages, startPage + maxPagesToShow);
+
+        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+    };
+    const paginationNumbers = getPaginationNumbers();
 
 return (
     <>
- <main className="mypage-container">
+        <main className="mypage-container">
             <MypageSidebar />
             <div className="bookmark-content">
                 <h1>즐겨찾기</h1>
                 <div className="favorite-list">
-                    {favorites.map((restaurant, index) => (
-                        <div className="favorite-item" key={index}>
-                            <h2>{restaurant.name}</h2>
-                            <p>위치: {restaurant.location}</p>
-                            <p>평점: {restaurant.rating}</p>
-                            <p>전화: {restaurant.phone}</p>
-                            <button 
-                                className="remove-favorite-button" 
-                                onClick={() => removeFavorite(restaurant.name)}
-                            >
-                                즐겨찾기 해제
+                    {data.map((row) => (
+                        <div className="favorite-item" key={row.placeId}>
+                            <h2>{row.placeName}</h2>
+                            <p>위치: {row.addressNew}</p>
+                            <p>평점: {row.avgRating}</p>
+                            <p>전화: {row.phone}</p>
+                            <button className="remove-favorite-button"
+                                onClick={() => removeBookmark(row.placeId)}> 즐겨찾기 해제
                             </button>
                         </div>
                     ))}
+                </div>
+                <div className="bookmark-pagination-container">
+                    <div className="bookmark-pagination">
+                        <a href="#"
+                           onClick={(e) => {
+                               e.preventDefault();
+                               if (page > 0) {
+                                   setPage(page - 1);
+                               }
+                           }}
+                           disabled={page === 0}> 이전 </a>
+                        {paginationNumbers.map((num) => (
+                            <a key={num} href="#" className={num === page ? "active" : ""}
+                               onClick={(e) => {
+                                   e.preventDefault();
+                                   setPage(num);
+                               }}> {num + 1} </a>
+                        ))}
+                        <a href="#"
+                           onClick={(e) => {
+                               e.preventDefault();
+                               if (page < totalPages - 1) {
+                                   setPage(page + 1);
+                               }
+                           }}
+                           disabled={page >= totalPages - 1}> 다음 </a>
+                    </div>
                 </div>
             </div>
         </main>
