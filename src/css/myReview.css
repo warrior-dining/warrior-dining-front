@@ -48,3 +48,34 @@
 .delete-review-button:hover {
     background-color: #c0392b;
 }
+
+.review-pagination-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    padding: 15px 0;
+}
+
+.review-pagination {
+    display: flex;
+}
+
+.review-pagination a {
+    text-decoration: none;
+    color: #ff6f61;
+    padding: 10px 15px;
+    border: 1px solid #e0e0e0;
+    margin: 0 5px;
+    border-radius: 4px;
+}
+
+.review-pagination a:hover {
+    background-color: #f4f4f4;
+}
+
+.review-pagination .active {
+    background-color: #ff6f61;
+    color: #fff;
+    border: 1px solid #ff6f61;
+}

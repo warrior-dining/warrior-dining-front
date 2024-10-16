@@ -1,36 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {useAuth} from '../context/AuthContext';
+import axios from "axios";
 import '../css/default.css';
 import '../css/mypageMutual.css';
 import '../css/myReview.css';
 import MypageSidebar from "../components/MypageSidebar";
 
+const host = "http://localhost:8080/api/member/reviews/";
+
 const MypageReviewlist = () => {
     const navigate = useNavigate();
+    const [data, setData] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [pageSize, setPageSize]  = useState(5);
+    const {sub} = useAuth();
 
-    const reviews = [
-        {
-          id: 1,
-          restaurantName: '레스토랑 A',
-          rating: 4.5,
-          date: '2024-08-21',
-          content: '음식이 맛있었고 서비스도 훌륭했습니다. 분위기가 아쉬웠지만 전반적으로 만족스러웠습니다.'
-        },
-        {
-          id: 2,
-          restaurantName: '레스토랑 B',
-          rating: 3.8,
-          date: '2024-08-15',
-          content: '가격이 조금 비쌌지만 음식은 괜찮았습니다. 서비스는 개선이 필요합니다.'
-        },
-        {
-          id: 3,
-          restaurantName: '레스토랑 C',
-          rating: 5.0,
-          date: '2024-08-10',
-          content: '최고의 경험이었습니다. 모든 것이 완벽했습니다.'
-        }
-      ];
+    useEffect(() => {
+      if(sub){
+      let url = `${host}?email=${sub}&page=${page}&size=${pageSize}`;
+      console.log(url);
+      axios.get(url)
+      .then(res => {
+        setData(res.data.results.content);
+        setTotalPages(res.data.results.totalPages);
+      })
+      .catch(error => console.log(error));
+    }
+    }, [page, pageSize])
+
+    const getStars = (rating) => {
+      const starCount = parseInt(rating, 10); // 평점을 정수로 변환
+      let stars = '';
+      for (let i = 0; i < 5; i++) {
+          stars += i < starCount ? '★' : '☆'; // 평점에 따라 채워진 별과 빈 별을 생성
+      }
+      return stars;
+  };
 
       const confirmDelete = (id) => {
         if (window.confirm('정말로 이 리뷰를 삭제하시겠습니까?')) {
@@ -43,20 +50,30 @@ const MypageReviewlist = () => {
         navigate(`/mypage/reviewEdit`); 
       };
 
+      const getPaginationNumbers = () => {
+        const maxPagesToShow = 5;
+        const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
+        const endPage = Math.min(totalPages, startPage + maxPagesToShow);
+
+        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+    };
+
+    const paginationNumbers = getPaginationNumbers();
+
     return(
         <>
     <main className="mypage-container">
         <MypageSidebar />
         <div className="content">
-            <section id="myReview">
+            <section className="myReview">
             <h1>리뷰 관리</h1>
             <div className="review-list">
-                {reviews.map((review) => (
+                {data.map((review) => (
                 <div className="review-item-container" key={review.id}>
                     <div className="review-item">
-                    <h2>{review.restaurantName}</h2>
-                    <p>별점: {'★'.repeat(Math.floor(review.rating))}{review.rating % 1 !== 0 ? '☆' : ''} ({review.rating})</p>
-                    <p>작성일: {review.date}</p>
+                    <h2>{review.place.name}</h2>
+                    <p>별점: {getStars(review.rating)}</p>
+                    <p>작성일: {review.createdAt}</p>
                     <p>리뷰 내용: {review.content}</p>
                     <button className="edit-review-button" onClick={() => handleEdit(review.id)}>수정</button>
                     <button className="delete-review-button" onClick={() => confirmDelete(review.id)}>삭제</button>
@@ -64,6 +81,34 @@ const MypageReviewlist = () => {
                 </div>
                 ))}
             </div>
+            
+                        <div className="review-pagination-container">
+                            <div className="review-pagination">
+                                <a href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        if (page > 0) { setPage(page - 1); }
+                                    }}
+                                    disabled={page === 0}> 이전 </a>
+                                {paginationNumbers.map((num) => (
+                                    <a key={num} href="#" className={num === page ? "active" : ""}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setPage(num);
+                                        }}> {num + 1} </a>
+                                ))}
+                                <a href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        if (page < totalPages - 1) { setPage(page + 1); }
+                                    }}
+                                    disabled={page >= totalPages - 1}> 다음 </a>
+                            </div>
+                        </div>
+                 
+                    {data.length === 0 && ( // 리뷰가 없을 때 메시지 표시
+                      <p>작성된 리뷰가 없습니다.</p>
+                    )}
             </section>
         </div>
     </main>
