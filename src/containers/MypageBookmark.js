@@ -14,7 +14,7 @@ const MypageBookmark = () => {
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(4);
     const [totalPages, setTotalPages] = useState(0);
-    const [loading, setLoading] = useState(true);
+    const [reload, setReload] = useState(false);
 
     useEffect(() => {
         if(sub){
@@ -29,14 +29,14 @@ const MypageBookmark = () => {
             }
             fetchData();
         }
-    }, [page, pageSize]);
+    }, [page, pageSize, reload]);
 
     const removeBookmark = (placeId) => {
         let url = `${host}?email=${sub}&placeId=${placeId}`;
         axios.delete(url)
             .then(res => {
                 alert(`즐겨찾기가 해제되었습니다.`);
-                setPage(0);
+                setReload(!reload);
             })
             .catch(error => console.log(error));
     };
