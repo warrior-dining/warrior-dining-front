@@ -103,9 +103,19 @@ body {
     font-weight: bold;
 }
 
-.auth-buttons {
-    display: flex;
-    align-items: center;
+.auth-buttons button {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+    cursor: pointer;
+    margin-left: 20px;
+
+}
+
+.auth-buttons button:hover {
+    text-decoration: underline;
 }
 
 .auth-buttons a {
@@ -153,6 +163,7 @@ body {
 .nav-bar a:hover {
     color: #e63946; /* 애플 감성 파란색 */
 }
+
 /* ========== */
 
 /* 상단 검색창 css */
@@ -182,6 +193,7 @@ body {
 .search-bar button:hover {
     background-color: #e63946; /* 약간 어두운 오렌지색 */
 }
+
 /* ========== */
 
 /* 버튼 */
