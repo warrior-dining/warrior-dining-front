@@ -1,15 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../css/default.css';
 import '../css/home.css';
 import '../css/restaurantList.css';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
 
 const host = "http://localhost:8080/api/restaurant";
 
+const fetchRestaurants = async ({ pageParam = 0, queryKey }) => {
+    const [,search] = queryKey;
+    const endpoint = search 
+        ? `/search?keyword=${encodeURIComponent(search)}&page=${pageParam}` 
+        : `?page=${pageParam}`;
 
-const fetchRestaurants = async ({ pageParam = 0 }) => {
-    const response = await fetch(`${host}?page=${pageParam}`);
+    const response = await fetch(`${host}${endpoint}`);
+    
+    if (!response.ok) {
+        throw new Error(`서버연결 불가능: ${response.status}`); // 오류처리
+    }
+
     const data = await response.json();
     return data;
 };
@@ -49,6 +58,10 @@ const RestaurantSidbar = () => {
 
 const RestaurantList = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const searchTerm = searchParams.get('search') || '';
+
     const [isVisible, setIsVisible] = useState(false);
 
     const toggleVisibility = () => {
@@ -56,7 +69,7 @@ const RestaurantList = () => {
     };
 
     const resDetailClick = (id) => {
-        navigate(`/restaurant/detail/${id}`);
+        navigate(`/restaurant/${id}`);
     };
 
     const scrollToTop = () => {
@@ -69,7 +82,7 @@ const RestaurantList = () => {
         hasNextPage,
         isFetching,
     } = useInfiniteQuery({
-        queryKey: ['restaurants'],
+        queryKey: ['restaurants', searchTerm],
         queryFn: fetchRestaurants,
         getNextPageParam: (lastPage) => {
             return lastPage.number + 1 < lastPage.totalPages ? lastPage.number + 1 : undefined;
@@ -87,11 +100,6 @@ const RestaurantList = () => {
         const handleScroll = () => {
             if (hasNextPage && window.innerHeight + window.scrollY >= document.body.offsetHeight + 1000 && !isFetching) {
                 fetchNextPage();
-                for (let i = 0; i < 10; i++) {
-                    if (hasNextPage) {
-                        fetchNextPage();
-                    }
-                }
             }
         };
 
@@ -101,18 +109,17 @@ const RestaurantList = () => {
         };
     }, [hasNextPage, isFetching, fetchNextPage]);
 
-    
     return (
         <section className="restaurant-list-container">
             <div className="restaurant-wrapper">
                 <RestaurantSidbar />
                 <div className="restaurant-list">
-                    <h1>맛집 전체 리스트</h1>
+                    <h1>{searchTerm ? `검색 결과: ${searchTerm}` : '맛집 전체 리스트'}</h1>
                     <ul>
                         {data?.pages.flatMap(page => page.content).map((restaurant) => (
                             <li key={restaurant.id} className="restaurant-item2" onClick={() => resDetailClick(restaurant.id)}>
                                 <img 
-                                    src={restaurant.placeFiles[0].url}
+                                    src={searchTerm ? (restaurant.url && restaurant.url.length > 0 ? restaurant.url[0] : "https://via.placeholder.com/200x150") : (restaurant.placeFiles[0]?.url || "https://via.placeholder.com/200x150")}
                                     alt={`${restaurant.name} 이미지`} 
                                     onError={(e) => { e.target.src = "https://via.placeholder.com/200x150"; }} // 이미지 로딩 실패 시 대체 이미지
                                 />
