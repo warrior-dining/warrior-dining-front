@@ -8,7 +8,7 @@ import naverLoginImage from '../image/naver_login.png';
 const SignIn = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const navigate = useNavigate();
-    const { saveToken } = useAuth();
+    const {saveToken} = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
@@ -38,10 +38,12 @@ const SignIn = () => {
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
+        const grantType = urlParams.get('grantType');
         const accessToken = urlParams.get('accessToken');
+        const refreshToken = urlParams.get('refreshToken');
         if (accessToken) {
-            saveToken(accessToken);
-            navigate('/'); // 로그인 후 메인 페이지로 리다이렉트
+            saveToken(accessToken, refreshToken, grantType);
+            navigate('/');
         }
     }, [navigate, saveToken]);
 
@@ -58,8 +60,8 @@ const SignIn = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                const { accessToken} = data;
-                saveToken(accessToken);
+                const {accessToken, refreshToken, grantType} = data;
+                saveToken(accessToken, refreshToken, grantType);
                 navigate('/');
 
             } else {
@@ -99,7 +101,7 @@ const SignIn = () => {
                 <button type="submit">로그인</button>
                 {error && <p className="error">{error}</p>}
 
-                <div class="social-login-container">
+                <div className="social-login-container">
                     <button type="button" className="kakao-login-button" onClick={() => socialLoginClick("kakao")}>
                         <img src={kakaoLoginImage} alt="카카오 로그인" className="kakao-login-image"/>
                     </button>
@@ -109,8 +111,10 @@ const SignIn = () => {
                     </button>
                 </div>
 
-                <a type="button" onClick={signUpClick}>회원 가입</a>
-                <a type="button" onClick={forgotPasswordClick}>비밀번호를 잊으셨나요?</a>
+                <div className="login-under">
+                    <button type="button" onClick={signUpClick}>회원 가입</button>
+                    <button type="button" onClick={forgotPasswordClick}>비밀번호를 잊으셨나요?</button>
+                </div>
             </form>
         </div>
     );
