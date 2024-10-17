@@ -55,14 +55,7 @@ const MypageReviewlist = () => {
             .then(res => {
                 setReload(!reload);
             })
-            .catch(error => {
-                console.log('Axios error:', error);
-                if (error.response) {
-                    console.log('Response data:', error.response.data);
-                    console.log('Response status:', error.response.status);
-                    console.log('Response headers:', error.response.headers);
-                }
-            });
+            .catch(error => console.log(error));
     };
 
       const handleEdit = (id) => {

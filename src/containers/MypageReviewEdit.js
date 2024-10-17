@@ -38,7 +38,6 @@ const MypageReviewEdit = () => {
         const updateData = {"rating": rating, "review": review}
         axios.put(`${host}${id}`, updateData)
         .then(res => {
-          console.log("성공");
         })
         .catch(error => console.log(error));
     };
@@ -46,7 +45,6 @@ const MypageReviewEdit = () => {
     const handleUpdateStatus = (id) => {
       axios.delete(`${host}${id}`) // 상태 업데이트를 위한 요청
           .then(res => {
-              console.log("삭제성공");
               window.location.reload();
           })
           .catch(error => console.log(error));
