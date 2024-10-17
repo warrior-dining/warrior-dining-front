@@ -16,11 +16,11 @@ const MypageReviewlist = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [pageSize, setPageSize]  = useState(5);
     const {sub} = useAuth();
+    const [reload, setReload] = useState(true);
 
     useEffect(() => {
       if(sub){
       let url = `${host}?email=${sub}&page=${page}&size=${pageSize}`;
-      console.log(url);
       axios.get(url)
       .then(res => {
         setData(res.data.results.content);
@@ -28,7 +28,7 @@ const MypageReviewlist = () => {
       })
       .catch(error => console.log(error));
     }
-    }, [page, pageSize])
+    }, [page, pageSize, reload])
 
     const getStars = (rating) => {
       const starCount = parseInt(rating, 10); // 평점을 정수로 변환
@@ -45,9 +45,28 @@ const MypageReviewlist = () => {
           
         }
       };
-    
-      const handleEdit = () => {
-        navigate(`/mypage/reviewEdit`); 
+
+      const handleUpdateStatus = (id) => {
+        setData(prevData => prevData.map(item =>
+            item.id === id ? {...item, isDeleted: true} : item
+        ));
+        confirmDelete();
+        axios.patch(`${host}${id}`) // 상태 업데이트를 위한 요청
+            .then(res => {
+                setReload(!reload);
+            })
+            .catch(error => {
+                console.log('Axios error:', error);
+                if (error.response) {
+                    console.log('Response data:', error.response.data);
+                    console.log('Response status:', error.response.status);
+                    console.log('Response headers:', error.response.headers);
+                }
+            });
+    };
+
+      const handleEdit = (id) => {
+        navigate(`/mypage/reviewEdit/${id}`); 
       };
 
       const getPaginationNumbers = () => {
@@ -76,40 +95,45 @@ const MypageReviewlist = () => {
                     <p>작성일: {review.createdAt}</p>
                     <p>리뷰 내용: {review.content}</p>
                     <button className="edit-review-button" onClick={() => handleEdit(review.id)}>수정</button>
-                    <button className="delete-review-button" onClick={() => confirmDelete(review.id)}>삭제</button>
+                    {review.status === '0' ? '1' :
+                    <button className="delete-review-button" 
+                        style={{display: review.deleted ? 'none' : ''}}
+                        onClick={(e) => {
+                            handleUpdateStatus(review.id)
+                        }}>삭제</button>
+                    }
                     </div>
                 </div>
                 ))}
             </div>
-            
-                        <div className="review-pagination-container">
-                            <div className="review-pagination">
-                                <a href="#"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        if (page > 0) { setPage(page - 1); }
-                                    }}
-                                    disabled={page === 0}> 이전 </a>
-                                {paginationNumbers.map((num) => (
-                                    <a key={num} href="#" className={num === page ? "active" : ""}
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            setPage(num);
-                                        }}> {num + 1} </a>
-                                ))}
-                                <a href="#"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        if (page < totalPages - 1) { setPage(page + 1); }
-                                    }}
-                                    disabled={page >= totalPages - 1}> 다음 </a>
-                            </div>
-                        </div>
-                 
-                    {data.length === 0 && ( // 리뷰가 없을 때 메시지 표시
-                      <p>작성된 리뷰가 없습니다.</p>
-                    )}
+            <div className="message">
+                {data.length === 0 && ( // 리뷰가 없을 때 메시지 표시
+                    <p>작성된 리뷰가 없습니다.</p> )}
+            </div>
             </section>
+            <div className="review-pagination-container">
+                <div className="review-pagination">
+                    <a href="#"
+                        onClick={(e) => {
+                        e.preventDefault();
+                            if (page > 0) { setPage(page - 1); }
+                        }}
+                    disabled={page === 0}> 이전 </a>
+                    {paginationNumbers.map((num) => (
+                        <a key={num} href="#" className={num === page ? "active" : ""}
+                            onClick={(e) => {
+                            e.preventDefault();
+                            setPage(num);
+                        }}> {num + 1} </a>
+                    ))}
+                    <a href="#"
+                        onClick={(e) => {
+                        e.preventDefault();
+                        if (page < totalPages - 1) { setPage(page + 1); }
+                    }}
+                    disabled={page >= totalPages - 1}> 다음 </a>
+                </div>
+            </div>    
         </div>
     </main>
         </>
