@@ -6,9 +6,9 @@ import Cookies from 'js-cookie';
 const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
+    // const [token, setToken] = useState(null); // access, refresh 로 변경
     const [accessToken, setAccessToken] = useState(null);
     const [refreshToken, setRefreshToken] = useState(null);
-    // const [token, setToken] = useState(null); // access, refresh 로 변경
     const [auth, setAuth] = useState([]);
     const [sub, setSub] = useState(null);
     const [isAdminNav, setIsAdminNav] = useState(false);
@@ -16,14 +16,14 @@ export const AuthProvider = ({children}) => {
 
     // 컴포넌트가 마운트 될 때 쿠키에서 토큰 읽기
     useEffect(() => {
-        const aToken = Cookies.get('accessToken');
-        const rToken = Cookies.get('refreshToken');
-        if (aToken && rToken) {
-            setAccessToken(aToken);
-            setRefreshToken(rToken);
+        const savedAccessToken = Cookies.get('accessToken');
+        const savedRefreshToken = Cookies.get('refreshToken');
+        if (savedAccessToken && savedRefreshToken) {
+            setAccessToken(savedAccessToken);
+            setRefreshToken(savedRefreshToken);
         }
         try {
-            const decodedToken = jwtDecode(aToken);
+            const decodedToken = jwtDecode(savedAccessToken);
             setAuth(decodedToken.auth);
             setSub(decodedToken.sub);
             setIsAdminNav(decodedToken.auth.includes('ADMIN'));
@@ -33,7 +33,7 @@ export const AuthProvider = ({children}) => {
     }, []);
 
     // 토큰 재발급 함수
-    const reToken = (aToken, grantType) => {
+    const reissueToken = (aToken, grantType) => {
         const accessToken = grantType + aToken;
         setAccessToken(accessToken);
         Cookies.set('accessToken', accessToken, {secure: true, sameSite: 'strict'});
@@ -50,9 +50,9 @@ export const AuthProvider = ({children}) => {
     }
 
     // 토큰 저장 함수
-    const saveToken = (aToken, rToken, grantType) => {
-        const accessToken = grantType + aToken;
-        const refreshToken = grantType + rToken;
+    const saveToken = (newAccessToken, newRefreshToken, grantType) => {
+        const accessToken = grantType + newAccessToken;
+        const refreshToken = grantType + newRefreshToken;
         setAccessToken(accessToken);
         setRefreshToken(refreshToken);
         // const newToken = {accessToken, refreshToken}
@@ -91,7 +91,7 @@ export const AuthProvider = ({children}) => {
 
     return (
         <AuthContext.Provider
-            value={{accessToken, refreshToken, permissions: auth, sub, reToken, saveToken, clearToken, signOut}}>
+            value={{accessToken, refreshToken, permissions: auth, sub, reissueToken, saveToken, clearToken, signOut}}>
             {children}
         </AuthContext.Provider>
     );
@@ -101,9 +101,9 @@ export const AuthProvider = ({children}) => {
 export const useAuth = () => useContext(AuthContext);
 
 // 리프레시 토큰 로직
-export const refreshToken = (data, reToken) => {
+export const refreshToken = (data, reissueToken) => {
     if (data.grantType) {  // 토큰 다시 발급을 받으면 자기 자신를 다시 호출
-        reToken(data.accessToken, data.grantType);
+        reissueToken(data.accessToken, data.grantType);
         window.location.reload(true);
     }
 }
@@ -119,6 +119,6 @@ export const urlList = (path) => {
         url: path,
         method: 'post',
         baseURL: host,
-        headers: {Authorization1: Cookies.get('accessToken'), Authorization2: Cookies.get('refreshToken')}
+        headers: {Authorization_Access: Cookies.get('accessToken'), Authorization_Refresh: Cookies.get('refreshToken')}
     }
 }
