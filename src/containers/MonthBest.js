@@ -30,7 +30,7 @@ const MonthBest = () => {
       }, []);
 
       const resDetailClick = (id) => {
-        navigate(`/restaurant/detail/${id}`);
+        navigate(`/restaurant/${id}`);
       };
 
   return (

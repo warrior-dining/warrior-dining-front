@@ -24,14 +24,14 @@ const HeroSection = () => {
 const RestaurantSection = ({ title, items, onMoreClick ,id}) => {
   const navigate = useNavigate(id); 
     const detailClick = (id) => {
-        navigate(`/restaurant/detail/${id}`);
+        navigate(`/restaurant/${id}`);
     }
 
   return (
   <section>
     <div className="section-title">
       <h2>{title}</h2>
-      <a className="more-link" onClick={() => onMoreClick(title)}>더보기</a>
+      <button className="more-link" onClick={() => onMoreClick(title)}>더보기</button>
     </div>
     <div className="section-container">
       {items.map((item, index) => (

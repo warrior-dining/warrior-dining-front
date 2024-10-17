@@ -37,10 +37,12 @@
     color: #ff6f61;
     font-weight: bold;
     cursor: pointer;
+    background-color: #fff8f0;
 }
 
 .more-link:hover {
     text-decoration: underline;
+    background-color: #fff8f0;
 }
 
 .section-container {

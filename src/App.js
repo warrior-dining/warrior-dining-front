@@ -115,6 +115,56 @@ function App() {
                     </div>
               </Router>
           </AuthProvider>
+      <AuthProvider>
+    <Router>
+    <div className="App">
+      <Header adminClick={setIsAdmin} />
+        {isAdmin ? (<NavBarAdmin />) : (<NavBar />)}
+        <Routes>
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/admin/members" element={<MembersAdmin />} />
+            <Route path="/admin/members/info/:id" element={<MemberDetail />} />
+            <Route path="/admin/places" element={<PlacesAdmin />} />
+            <Route path="/admin/reviews" element={<ReviewsAdmin />} />
+            <Route path="/admin/reservations" element={<ReservationAdmin/>} />
+            <Route path="/admin/inquiries" element={<InquiriesAdmin />} />
+            <Route path="/admin/inquiries/detail/:id" element={<InquirieDtailsAdmin />} />
+            <Route path="/admin/places/add" element={<PlaceAdd />} />
+            <Route path="/admin/places/info/:id" element={<PlaceDetail />} />
+            <Route path="/admin/places/edit/:id" element={<PlaceEdit />} />
+          <Route path="/topreservation" element={<TopReservation />} />
+          <Route path="/monthbest" element={<MonthBest />} />
+          <Route path="/restaurantlist" element={<RestaurantList />} />
+          <Route path="/inquiryfaq" element={<InquiryFaq />} />
+          <Route path="/inquirycreate" element={<InquiryCreate />} />
+          <Route path="/admin" element={<MainAdmin />} />
+          <Route path="/mypage" element={<Mypage />} />
+            <Route path="/topreservation" element={<TopReservation />} />
+            <Route path="/monthbest" element={<MonthBest />} />
+            <Route path="/restaurantlist" element={<RestaurantList />} />
+            <Route path="/inquiryfaq" element={<InquiryFaq />} />
+            <Route path="/inquirycreate" element={<InquiryCreate />} />
+            <Route path="/admin" element={<MainAdmin />} />
+            <Route path="/mypage/main" element={<Mypage />} />
+            <Route path="/mypage/reservationlist" element={<Reservationlist />} />
+            <Route path="/mypage/reservationdetail" element={<ReservationDetail />} />
+            <Route path="/mypage/edit" element={<MypageEdit />} />
+            <Route path="/mypage/delete" element={<MypageDelete />} />
+            <Route path="/reviewcomment" element={<ReviewComment />} />
+            <Route path="/mypage/reviewlist" element={<MypageReviewlist />} />
+            <Route path="/mypage/reviewEdit" element={<MypageReviewEdit />} />
+            <Route path="/mypage/bookmark" element={<MypageBookmark />} />
+            <Route path="/mypage/inquiry" element={<MypageInquiry />} />
+            <Route path="/inquiry/detail" element={<InquiryDetail />} />
+            <Route path="/restaurant/:id" element={<Detail />} />
+          {/* 다른 경로들도 여기 추가할 수 있습니다. */}
+        <Route path="/" element={<Main />} />
+      </Routes>
+      <Footer />
+    </div>
+  </Router>
+      </AuthProvider>
       </>
   );
 }
