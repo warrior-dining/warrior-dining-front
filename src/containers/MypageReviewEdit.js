@@ -1,39 +1,56 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import '../css/default.css';
 import '../css/home.css';
 import '../css/reviewCreate.css';
+import { useParams } from 'react-router-dom';
+
+const host = "http://localhost:8080/api/member/reviews/info/";
 
 const MypageReviewEdit = () => {
-    const [rating, setRating] = useState(3); 
-    const [review, setReview] = useState(''); 
+  const [rating, setRating] = useState(); 
+  const [review, setReview] = useState(''); 
+  const [data, setData] = useState([]);
+  const {id} = useParams();
+  const reviewId = Number(id);
 
-    useEffect(() => {
-       
-        updateSelection(rating);
-    }, [rating]);
 
+  useEffect(() => {
+      const url = host + reviewId;
+       axios.get(url)
+       .then(res => {
+        setData(res.data.results);
+        setReview(res.data.results.content);
+        setRating(res.data.results.rating);
+       })
+       .catch(error => console.log(error));
+        // updateSelection(rating);
+    }, [reviewId]);
+
+
+    
     const handleRatingClick = (value) => {
-        
-        setRating(rating === value ? null : value);
-    };
-
-    const updateSelection = (selectedValue) => {
-        const labels = document.querySelectorAll('.star-rating label');
-        labels.forEach((label) => {
-        const value = label.dataset.value;
-        if (value <= selectedValue) {
-            label.classList.add('selected');
-        } else {
-            label.classList.remove('selected');
-        }
-        });
+      setRating(value);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-       
-    console.log({ reviewId: 12345, rating, review });
+        const updateData = {"rating": rating, "review": review}
+        axios.put(`${host}${id}`, updateData)
+        .then(res => {
+        })
+        .catch(error => console.log(error));
     };
+
+    const handleUpdateStatus = (id) => {
+      axios.delete(`${host}${id}`) // 상태 업데이트를 위한 요청
+          .then(res => {
+              window.location.reload();
+          })
+          .catch(error => console.log(error));
+  };
+
+
     return (
         <>
         <main className="container">
@@ -43,7 +60,7 @@ const MypageReviewEdit = () => {
           <input type="hidden" name="reviewId" value="12345" />
           <div className="form-group">
             <label htmlFor="restaurant-name" id="restaurant-name-label">
-              레스토랑 이름
+              {data.placeName}
             </label>
           </div>
 
@@ -77,7 +94,6 @@ const MypageReviewEdit = () => {
               id="review"
               name="review"
               rows="10"
-              placeholder="리뷰를 작성하세요"
               value={review}
               onChange={(e) => setReview(e.target.value)}
               required
@@ -86,7 +102,13 @@ const MypageReviewEdit = () => {
 
           <div className="form-group buttons">
             <button type="submit">수정</button>
-            <button type="button">삭제</button>
+            {data.status === '0' ? '1' : (
+            <button type="button" 
+                style={{display: data.deleted ? 'none' : ''}}
+                onClick={(e) => {
+                  handleUpdateStatus(data.id);
+                }}>삭제</button>
+          )}
           </div>
         </form>
       </div>

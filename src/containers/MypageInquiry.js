@@ -1,41 +1,56 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
+import { useNavigate } from "react-router-dom";
+import {useAuth} from '../context/AuthContext';
 import '../css/default.css';
 import '../css/mypageMutual.css';
 import '../css/inquiry.css';
 import '../css/myPageInquiryHistory.css';
 import { Link } from 'react-router-dom';
 import MypageSidebar from "../components/MypageSidebar";
+import axios from "axios";
 
+const host = "http://localhost:8080/api/member/inquiries/";
 
 const MypageInquiry = () => {
-    const inquiries = [
-        {
-            id: 3,
-            title: "문의 제목 1",
-            date: "2024-08-20",
-            status: "처리중",
-            link: "/inquiry/detail",
-        },
-        {
-            id: 2,
-            title: "문의 제목 2",
-            date: "2024-08-18",
-            status: "완료",
-            link: "/inquiry/detail",
-        },
-        {
-            id: 1,
-            title: "문의 제목 3",
-            date: "2024-08-15",
-            status: "대기중",
-            link: "/inquiry/detail",
-        },
-    ];
+    const navigate = useNavigate();
+    const [data, setData] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [pageSize, setPageSize]  = useState(10);
+    const {sub} = useAuth();
+
+    useEffect(()=> {
+        if(sub){
+        let url = `${host}?email=${sub}&page=${page}&size=${pageSize}`;
+        axios.get(url)
+        .then(res => {
+            setData(res.data.results.content); 
+            setTotalPages(res.data.results.totalPages);
+        })
+        .catch(error => console.log(error));
+        }
+    }, [sub, page, pageSize])
+
+    const handleEdit = (id) => {
+        navigate(`/inquiry/detail/${id}`); 
+      };
+
+    const getPaginationNumbers = () => {
+        const maxPagesToShow = 5;
+        const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
+        const endPage = Math.min(totalPages, startPage + maxPagesToShow);
+
+        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+    };
+
+    const paginationNumbers = getPaginationNumbers();
+
 return (
     <>
      <main className="mypage-container">
         <MypageSidebar />
             <div className="content">
+                <section className="myReview">
                 <h1>내 문의내역</h1>
                 <div className="inquiries-container">
                     <div className="inquiry-list">
@@ -49,21 +64,45 @@ return (
                                 </tr>
                             </thead>
                             <tbody>
-                                {inquiries.map((inquiry) => (
+                                {data.map((inquiry) => (
                                     <tr key={inquiry.id}>
                                         <td>{inquiry.id}</td>
-                                        <td>
-                                        <Link to={inquiry.link}>{inquiry.title}</Link>
+                                        <td onClick={() => handleEdit(inquiry.id)}>
+                                            {inquiry.title}
                                         </td>
-                                        <td>{inquiry.date}</td>
+                                        <td>{inquiry.createdAt}</td>
                                         <td className={`status ${inquiry.status}`}>
-                                            {inquiry.status}
+                                            {inquiry.code.value}
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
+                        </div>    
                     </div>
+                    </section>
+                    <div className="inquiry-pagination-container">
+                            <div className="inquiry-pagination">
+                                <a href="#"
+                                    onClick={(e) => {
+                                    e.preventDefault();
+                                        if (page > 0) { setPage(page - 1); }
+                                    }}
+                                disabled={page === 0}> 이전 </a>
+                                {paginationNumbers.map((num) => (
+                                    <a key={num} href="#" className={num === page ? "active" : ""}
+                                        onClick={(e) => {
+                                        e.preventDefault();
+                                        setPage(num);
+                                    }}> {num + 1} </a>
+                                ))}
+                                <a href="#"
+                                    onClick={(e) => {
+                                    e.preventDefault();
+                                    if (page < totalPages - 1) { setPage(page + 1); }
+                                }}
+                                disabled={page >= totalPages - 1}> 다음 </a>
+                            </div>
                 </div>
             </div>
         </main>
