@@ -20,7 +20,7 @@ const Detail = () => {
 
     const fetchRestaurantDetail = async () => {
         try {
-            const response = await fetch(`${host}/detail/${id}`);
+            const response = await fetch(`${host}/${id}`);
             const data = await response.json();
 
             if (data.content && data.content.length > 0) {
