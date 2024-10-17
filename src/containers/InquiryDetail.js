@@ -4,7 +4,7 @@ import '../css/inquiry.css';
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 
-const host = "http://localhost:8080/api/member/inquiries/info/"
+const host = "http://localhost:8080/api/member/inquiries/"
 const InquiryDetail = () => {
     const {id} = useParams();
     const inquiryId = Number(id);
