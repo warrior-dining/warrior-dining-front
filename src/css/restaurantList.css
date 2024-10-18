@@ -116,6 +116,15 @@
     opacity: 0.8;
 }
 
+.none-data {
+    margin-left: 40px; 
+    font-size: 32px;   
+    color: #666;       
+    text-align: center; 
+    font-weight: bold;  
+}
+
+
 /* 반응형 디자인 추가 */
 @media (max-width: 768px) {
     .restaurant-wrapper {

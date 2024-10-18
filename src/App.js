@@ -66,8 +66,8 @@ function App() {
 
   return (
       <>
-          <AuthProvider>
-                <Router>
+            <Router>
+                <AuthProvider>
                     <div className="App">
                         <Header adminClick={setIsAdmin} />
                         {isAdmin ? (<NavBarAdmin />) : (<NavBar />)}
@@ -113,8 +113,8 @@ function App() {
                         </Routes>
                         <Footer />
                     </div>
-              </Router>
-          </AuthProvider>
+                </AuthProvider>
+            </Router>
       </>
   );
 }
