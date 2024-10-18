@@ -5,7 +5,7 @@ import '../css/home.css';
 import '../css/reviewCreate.css';
 import { useParams } from 'react-router-dom';
 
-const host = "http://localhost:8080/api/member/reviews/info/";
+const host = "http://localhost:8080/api/member/reviews/";
 
 const MypageReviewEdit = () => {
   const [rating, setRating] = useState(); 
