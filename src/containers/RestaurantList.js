@@ -23,28 +23,25 @@ const fetchRestaurants = async ({ pageParam = 0, queryKey }) => {
     return data;
 };
 
-const RestaurantSidbar = () => {
+const RestaurantSidebar = ({ onFilterChange }) => {
     return (
         <aside className="sidebar">
             <form action="">
                 <h2>필터</h2>
-                <h3>지역 선택</h3>
-                <select id="location" name="location">
-                    <option value="">지역을 선택하세요</option>
-                    <option value="seoul">서울</option>
-                    <option value="busan">부산</option>
-                    <option value="incheon">인천</option>
-                </select>
                 <h3>카테고리</h3>
-                <select id="category" name="category">
-                    <option value="">카테고리 선택</option>
-                    <option value="korean">한식</option>
-                    <option value="chinese">중식</option>
-                    <option value="japanese">일식</option>
+                <select id="category" name="category" onChange={onFilterChange}>
+                    <option value="none">카테고리 선택</option>
+                    <option value="5">한식</option>
+                    <option value="6">중식</option>
+                    <option value="7">일식</option>
+                    <option value="8">양식</option>
+                    <option value="9">분식</option>
+                    <option value="10">아시안</option>
+                    <option value="11">기타</option>
                 </select>
                 <h3>가격대</h3>
-                <select id="price" name="price">
-                    <option value="">가격대 선택</option>
+                <select id="price" name="price" onChange={onFilterChange}>
+                    <option value="none">가격 선택</option>
                     <option value="low">20,000원 이하</option>
                     <option value="medium">20,000 ~ 50,000원</option>
                     <option value="high">50,000 ~ 80,000원</option>
@@ -62,6 +59,8 @@ const RestaurantList = () => {
     const searchParams = new URLSearchParams(location.search);
     const searchTerm = searchParams.get('search') || '';
 
+    const [categoryFilter, setCategoryFilter] = useState('none');
+    const [priceFilter, setPriceFilter] = useState('none');
     const [isVisible, setIsVisible] = useState(false);
 
     const toggleVisibility = () => {
@@ -111,16 +110,50 @@ const RestaurantList = () => {
 
     const restaurants = data?.pages.flatMap(page => page.content) || [];
 
+     // 필터링 로직
+     const filteredRestaurants = restaurants.filter((restaurant) => {
+        const matchesCategory = categoryFilter === 'none' || restaurant.code.id === Number(categoryFilter);
+        const matchesPrice = priceFilter === 'none' || restaurant.placeMenus.some(menu => {
+            const price = menu.price;
+            switch (priceFilter) {
+                case 'low':
+                    return price <= 20000;
+                case 'medium':
+                    return price > 20000 && price <= 50000;
+                case 'high':
+                    return price > 50000 && price <= 80000;
+                case 'veryhigh':
+                    return price > 80000 && price <= 110000;
+                case 'superhigh':
+                    return price > 110000;
+                default:
+                    return true;
+            }
+        });
+        return matchesCategory && matchesPrice;
+    });
+
+    const handleFilterChange = (event) => {
+        const { name, value } = event.target;
+        if (name === 'category') {
+            setCategoryFilter(value);
+        } else if (name === 'price') {
+            setPriceFilter(value);
+        }
+    };
+
+    
+
     return (
         <section className="restaurant-list-container">
             <div className="restaurant-wrapper">
-                <RestaurantSidbar />
+                <RestaurantSidebar onFilterChange={handleFilterChange}/>
                 <div className="restaurant-list">
                     <h1>{searchTerm ? `검색 결과: ${searchTerm}` : '맛집 전체 리스트'}</h1>
 
-                    {restaurants.length > 0 ? (
+                    {filteredRestaurants.length > 0 ? (
                         <ul>
-                            {restaurants.map((restaurant) => (
+                            {filteredRestaurants.map((restaurant) => (
                                 <li key={restaurant.id} className="restaurant-item2" onClick={() => resDetailClick(restaurant.id)}>
                                     <img 
                                         src={searchTerm ? (restaurant.url && restaurant.url.length > 0 ? 
