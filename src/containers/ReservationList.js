@@ -17,6 +17,7 @@ const ReservationList = () => {
     const [pageSize, setPageSize] = useState(3);
     const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [reservationId, setReservationId] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -77,12 +78,14 @@ const ReservationList = () => {
                                         onClick={() => navigate(`/mypage/reservationdetail/`)}> 예약 수정/취소 </button>
                                     : ""
                                 }
-                                {row.reservationStatus === "완료" ?
-                                    <button
-                                        className="myreservationList-button"
-                                        onClick={() => navigate('/reviewcomment')}> 리뷰 작성하기 </button>
-                                    : ""
-                                }
+                                {row.reservationStatus === "완료" ? (
+                                 row.reviewExists ? (  // 리뷰 작성 여부에 따라 버튼 텍스트 변경
+                                    <button className="myreservationList-button" disabled> 리뷰 작성 완료 </button>
+                                ) : (
+                                <button
+                                    className="myreservationList-button"
+                                    onClick={() => navigate(`/reviewcomment/${row.id}`)}> 리뷰 작성하기 </button>
+                                     )) : null}
                                 {row.reservationStatus === "완료" && !row.bookMark ?
                                     <button
                                         className="myreservationList-button"

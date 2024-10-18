@@ -102,7 +102,7 @@ function App() {
                             <Route path="/mypage/reservationdetail" element={<ReservationDetail />} />
                             <Route path="/mypage/edit" element={<MypageEdit />} />
                             <Route path="/mypage/delete" element={<MypageDelete />} />
-                            <Route path="/reviewcomment" element={<ReviewComment />} />
+                            <Route path="/reviewcomment/:id" element={<ReviewComment />} />
                             <Route path="/mypage/reviewlist" element={<MypageReviewlist />} />
                             <Route path="/mypage/reviewedit/:id" element={<MypageReviewEdit />} />
                             <Route path="/mypage/bookmark" element={<MypageBookmark />} />
