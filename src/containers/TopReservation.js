@@ -12,7 +12,7 @@ const TopReservation = () => {
   const [ratings, setRatings] = useState([]);
   const [filteredRatings, setFilteredRatings] = useState([]); // 필터링된 데이터
   const [selectedCategory, setSelectedCategory] = useState('all'); // 선택된 카테고리 ('all'로 기본값 설정)
-
+  const [loading, setLoading] = useState(true);
 
   const categories = {
     all: '전체',
@@ -39,6 +39,8 @@ const TopReservation = () => {
         }
       } catch (error) {
         console.error("에러에용", error);
+      } finally {
+        setLoading(false); 
       }
     };
 
@@ -82,7 +84,9 @@ const TopReservation = () => {
           
           
           <div className="restaurant-list">
-            {filteredRatings.length > 0 ? (
+            {loading ? (
+              <p>데이터를 불러오는 중입니다...</p>
+            ) : filteredRatings.length > 0 ? (
               filteredRatings.map((rating, index) => (
                 <div className="restaurant-item" key={index} onClick={() => resDetailClick(rating.id)}>
                   <div className="restaurant-rank">{index + 1}</div>
@@ -95,7 +99,7 @@ const TopReservation = () => {
                 </div>
               ))
             ) : (
-              <p>데이터를 불러오는 중입니다...</p>
+              <p>데이터가 존재하지 않습니다.</p>
             )}
           </div>
         </div>
