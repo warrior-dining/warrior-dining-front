@@ -109,27 +109,37 @@ const RestaurantList = () => {
         };
     }, [hasNextPage, isFetching, fetchNextPage]);
 
+    const restaurants = data?.pages.flatMap(page => page.content) || [];
+
     return (
         <section className="restaurant-list-container">
             <div className="restaurant-wrapper">
                 <RestaurantSidbar />
                 <div className="restaurant-list">
                     <h1>{searchTerm ? `검색 결과: ${searchTerm}` : '맛집 전체 리스트'}</h1>
-                    <ul>
-                        {data?.pages.flatMap(page => page.content).map((restaurant) => (
-                            <li key={restaurant.id} className="restaurant-item2" onClick={() => resDetailClick(restaurant.id)}>
-                                <img 
-                                    src={searchTerm ? (restaurant.url && restaurant.url.length > 0 ? restaurant.url[0] : "https://via.placeholder.com/200x150") : (restaurant.placeFiles[0]?.url || "https://via.placeholder.com/200x150")}
-                                    alt={`${restaurant.name} 이미지`} 
-                                    onError={(e) => { e.target.src = "https://via.placeholder.com/200x150"; }} // 이미지 로딩 실패 시 대체 이미지
-                                />
-                                <div className="restaurant-details2">
-                                    <h2>{restaurant.name}</h2>
-                                    <p>{restaurant.comment}</p>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+
+                    {restaurants.length > 0 ? (
+                        <ul>
+                            {restaurants.map((restaurant) => (
+                                <li key={restaurant.id} className="restaurant-item2" onClick={() => resDetailClick(restaurant.id)}>
+                                    <img 
+                                        src={searchTerm ? (restaurant.url && restaurant.url.length > 0 ? 
+                                            restaurant.url[0] : "https://via.placeholder.com/200x150") : (
+                                            restaurant.placeFiles[0]?.url || "https://via.placeholder.com/200x150")}
+                                        alt={`${restaurant.name} 이미지`} 
+                                        onError={(e) => { e.target.src = "https://via.placeholder.com/200x150"; }} 
+                                    />
+                                    <div className="restaurant-details2">
+                                        <h2>{restaurant.name}</h2>
+                                        <p>{restaurant.comment}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className='none-data'>검색 결과가 존재하지 않습니다.</p> 
+                    )}
+
                     {isFetching && <p>Loading more...</p>}
                 </div>
             </div>
