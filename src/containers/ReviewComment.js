@@ -19,7 +19,6 @@ const ReviewComment = () => {
             const url = host + reservationId;
             axios.get(url) // 여기가 예약 정보를 가져오는 부분
                 .then(res => {
-                    console.log(res);
                     setData(res.data.results); // 예약 정보 상태에 저장
                 })
                 .catch(error => console.log(error));
@@ -41,8 +40,6 @@ const ReviewComment = () => {
             // 예약 정보도 함께 전송할 필요가 있다면, 아래와 같이 요청을 보낼 수 있습니다.
             axios.post(host + reservationId, createData)
                 .then(res => {
-                    console.log("리뷰 작성 성공:", res.data);
-                    console.log("응답데이터", res.data);
                     // 성공 후 페이지 이동
                     navigate('/mypage/reservationlist');
                 })
