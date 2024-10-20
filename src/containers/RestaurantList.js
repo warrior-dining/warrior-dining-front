@@ -79,7 +79,7 @@ const RestaurantList = () => {
         data,
         fetchNextPage,
         hasNextPage,
-        isFetching,
+        isFetchingNextPage, // 새 페이지 로딩 중인지 확인
     } = useInfiniteQuery({
         queryKey: ['restaurants', searchTerm],
         queryFn: fetchRestaurants,
@@ -97,7 +97,11 @@ const RestaurantList = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            if (hasNextPage && window.innerHeight + window.scrollY >= document.body.offsetHeight + 1000 && !isFetching) {
+            const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
+            const isBottom = scrollTop + clientHeight >= scrollHeight - 10;
+
+            // 스크롤이 끝에 도달하고, 새로운 페이지를 로드 중이지 않으면 fetchNextPage 호출
+            if (isBottom && hasNextPage && !isFetchingNextPage) {
                 fetchNextPage();
             }
         };
@@ -106,12 +110,12 @@ const RestaurantList = () => {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-    }, [hasNextPage, isFetching, fetchNextPage]);
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     const restaurants = data?.pages.flatMap(page => page.content) || [];
 
-     // 필터링 로직
-     const filteredRestaurants = restaurants.filter((restaurant) => {
+    // 필터링 로직
+    const filteredRestaurants = restaurants.filter((restaurant) => {
         const matchesCategory = categoryFilter === 'none' || restaurant.code.id === Number(categoryFilter);
         const matchesPrice = priceFilter === 'none' || restaurant.placeMenus.some(menu => {
             const price = menu.price;
@@ -142,12 +146,10 @@ const RestaurantList = () => {
         }
     };
 
-    
-
     return (
         <section className="restaurant-list-container">
             <div className="restaurant-wrapper">
-                <RestaurantSidebar onFilterChange={handleFilterChange}/>
+                <RestaurantSidebar onFilterChange={handleFilterChange} />
                 <div className="restaurant-list">
                     <h1>{searchTerm ? `검색 결과: ${searchTerm}` : '맛집 전체 리스트'}</h1>
 
@@ -170,10 +172,10 @@ const RestaurantList = () => {
                             ))}
                         </ul>
                     ) : (
-                        <p className='none-data'>검색 결과가 존재하지 않습니다.</p> 
+                        <p className='none-data'>검색 결과가 존재하지 않습니다.</p>
                     )}
 
-                    {isFetching && <p>Loading more...</p>}
+                    {isFetchingNextPage && <p>Loading more...</p>}
                 </div>
             </div>
             {isVisible && (
