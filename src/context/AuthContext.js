@@ -12,6 +12,8 @@ export const AuthProvider = ({children}) => {
     const [auth, setAuth] = useState([]);
     const [sub, setSub] = useState(null);
     const [isAdminNav, setIsAdminNav] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
     const navigate = useNavigate();
 
     // 컴포넌트가 마운트 될 때 쿠키에서 토큰 읽기
@@ -21,7 +23,8 @@ export const AuthProvider = ({children}) => {
         if (savedAccessToken && savedRefreshToken) {
             setAccessToken(savedAccessToken);
             setRefreshToken(savedRefreshToken);
-        }
+            setIsLoggedIn(true);
+        
         try {
             const decodedToken = jwtDecode(savedAccessToken);
             setAuth(decodedToken.auth);
@@ -30,6 +33,7 @@ export const AuthProvider = ({children}) => {
         } catch (error) {
             console.error('토큰 디코딩 오류:', error);
         }
+    }
     }, []);
 
     // 토큰 재발급 함수
@@ -66,6 +70,7 @@ export const AuthProvider = ({children}) => {
             setAuth(decodedToken.auth);
             setSub(decodedToken.sub);
             setIsAdminNav(decodedToken.auth.includes('ADMIN'));
+            setIsLoggedIn(true);
         } catch (error) {
             console.error('토큰 디코딩 오류:', error);
         }
@@ -79,6 +84,7 @@ export const AuthProvider = ({children}) => {
         setAuth([]);
         Cookies.remove('accessToken');
         Cookies.remove('refreshToken');
+        setIsLoggedIn(false);
         navigate("/signin");
     };
 
@@ -91,7 +97,7 @@ export const AuthProvider = ({children}) => {
 
     return (
         <AuthContext.Provider
-            value={{accessToken, refreshToken, permissions: auth, sub, reissueToken, saveToken, clearToken, signOut}}>
+            value={{accessToken, refreshToken, permissions: auth, sub, reissueToken, saveToken, clearToken, signOut, isLoggedIn, setIsLoggedIn}}>
             {children}
         </AuthContext.Provider>
     );
