@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Link, useNavigate} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import '../css/mypageMutual.css';
 import '../css/myPage.css';
 import '../css/default.css';
@@ -10,11 +10,10 @@ import axiosInstance from '../context/AxiosInstance';
 
 const Mypage = () => {
     const {reissueToken} = useAuth();
-    const navigate = useNavigate();
     const [user, setUser] = useState({name: '', email: '', phone: ''});
 
     useEffect(() => {
-        axiosInstance(urlList("/api/user/test/2"))
+        axiosInstance(urlList("get", "/api/user"), )
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 if (res.data.status) {
@@ -31,7 +30,7 @@ const Mypage = () => {
                     console.log(error);
                 }
             )
-    }, [reissueToken, navigate]);
+    }, [reissueToken]);
 
     const changeEvent = e => {
         const {name, value} = e.target;
