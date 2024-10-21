@@ -2,13 +2,21 @@ import React from 'react';
 import '../css/default.css';
 import '../css/inquiry.css';
 import { useNavigate } from 'react-router-dom';
+import {useAuth} from '../context/AuthContext';
 
 const InquiryFaq = () => {
   const navigate = useNavigate();
+  const {isLoggedIn} = useAuth();
 
   const InquiryClick = () => {
-    navigate('/inquirycreate'); 
+    if(!isLoggedIn) {
+      alert("로그인 후 이용가능한 서비스입니다.");
+      navigate('/signin'); 
+    }else {
+      navigate('/inquirycreate');
+    }
   };
+
   const InquiryDetailClick = () => {
     navigate('/mypage/inquiry')
   }
