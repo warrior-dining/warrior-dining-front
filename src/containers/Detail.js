@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import '../css/default.css';
 import '../css/detail.css';
+import {useAuth, urlList} from '../context/AuthContext';
+import axiosInstance from '../context/AxiosInstance';
+
 
 const host = "http://localhost:8080/api/restaurant";
 
@@ -93,7 +96,7 @@ const Detail = () => {
                 showMoreReviews={showMoreReviews} 
                 toggleReviews={toggleReviews} 
             />
-            {isModalOpen && <ReservationModal onClose={handleCloseModal} />}
+            {isModalOpen && <ReservationModal restaurant={restaurantDetail} onClose={handleCloseModal} />}
         </div>
     );
 };
@@ -196,52 +199,95 @@ const ReviewCard = ({ review }) => (
     </div>
 );
 
-const ReservationModal = ({ onClose }) => (
+const ReservationModal = ({restaurant ,onClose }) => {
+    return (
     <div className="modal" style={{ display: 'flex' }}>
         <div className="modal-content">
             <button className="modal-close" onClick={onClose}>&times;</button>
             <h1>레스토랑 예약</h1>
-            <ReservationForm />
+            <ReservationForm restaurant={restaurant}/>
         </div>
     </div>
-);
+    );
+};
 
-const ReservationForm = () => {
-    const handleSubmit = (e) => {
+const ReservationForm = ({ restaurant }) => {
+    const restaurantData = restaurant;
+    const [reservationDate, setReservationDate] = useState(null);
+    const [reservationTime, setReservationTime] = useState(null);
+    const [count, setCount] = useState(1);
+    const [orderNote, setOrderNote] = useState('');
+    const {sub} = useAuth();
+
+    const [startHours, startMinutes] = restaurantData.startTime.split(':').map(Number);
+    const [endHours, endMinutes] = restaurantData.endTime.split(':').map(Number);
+    const timeOptions = [];
+    const startInMinutes = startHours * 60 + startMinutes;
+    const endInMinutes = endHours * 60 + endMinutes;
+
+    for (let time = startInMinutes; time <= endInMinutes; time += 30) {
+        const hours = String(Math.floor(time / 60)).padStart(2, '0');
+        const minutes = String(time % 60).padStart(2, '0');
+        timeOptions.push(`${hours}:${minutes}`); // 'HH:mm' 형식으로 변환
+    }
+
+    const getMinMaxDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const minDate = `${year}-${month}-${day}`;
+
+        // 최대 날짜 설정 (현재 날짜 + 7일)
+        today.setDate(today.getDate() + 30);
+        const maxYear = today.getFullYear();
+        const maxMonth = String(today.getMonth() + 1).padStart(2, '0');
+        const maxDay = String(today.getDate()).padStart(2, '0');
+        const maxDate = `${maxYear}-${maxMonth}-${maxDay}`;
+
+        return { minDate, maxDate };
+    };
+
+    const { minDate, maxDate } = getMinMaxDate();
+
+    const submitEvent = (e) => {
         e.preventDefault();
-        // 예약 처리 로직 추가
+        const test = urlList("/api/member/reservation/");
+        const reservationData = {
+            userEmail : sub,
+            placeId : restaurantData.id,
+            reservationDate : reservationDate,
+            reservationTime : reservationDate + " " + reservationTime,
+            count : count,
+            orderNote : orderNote
+        }
+        console.log(reservationData);
+        axiosInstance.post(test.baseURL + test.url, reservationData , test.headers )
+            .then(res => {
+                alert("성공");
+            }).catch(error => alert(error));
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={submitEvent}>
             <div className="form-group date-time-group">
                 <div className="form-group half">
                     <label htmlFor="date">예약 날짜</label>
-                    <input type="date" id="date" name="date" required />
+                    <input type="date" id="date" name="date" min={minDate} max={maxDate} onChange={(e)=> setReservationDate(e.target.value)} required />
                 </div>
                 <div className="form-group half">
                     <label htmlFor="time">예약 시간</label>
-                    <select id="time" name="time" required>
-                        <option value="11:00">11:00</option>
-                        <option value="11:30">11:30</option>
-                        <option value="12:00">12:00</option>
-                        <option value="12:30">12:30</option>
-                        <option value="13:00">13:00</option>
-                        <option value="13:30">13:30</option>
-                        <option value="14:00">14:00</option>
-                        <option value="14:30">14:30</option>
-                        <option value="18:00">18:00</option>
-                        <option value="18:30">18:30</option>
-                        <option value="19:00">19:00</option>
-                        <option value="19:30">19:30</option>
-                        <option value="20:00">20:00</option>
-                        <option value="20:30">20:30</option>
+                    <select id="time" name="time" onChange={(e) => setReservationTime(e.target.value)} required>
+                            <option>선택하세요.</option>
+                        {timeOptions.map((row, index) => (
+                            <option key={index} value={row}>{row}</option>
+                        ))}
                     </select>
                 </div>
             </div>
             <div className="form-group">
                 <label htmlFor="guests">인원 수</label>
-                <select id="guests" name="guests" required>
+                <select id="guests" name="guests" onChange={e=> setCount(e.target.value)} required>
                     {[...Array(10)].map((_, index) => (
                         <option key={index} value={index + 1}>{index + 1}명</option>
                     ))}
@@ -249,7 +295,7 @@ const ReservationForm = () => {
             </div>
             <div className="form-group">
                 <label htmlFor="special-requests">요청 사항</label>
-                <textarea id="special-requests" name="special-requests" rows="4"></textarea>
+                <textarea id="special-requests" name="special-requests" rows="4" onChange={e=> setOrderNote(e.target.value)}></textarea>
             </div>
             <div className="form-group">
                 <button type="submit" style={{ float: 'right' }}>예약 확인</button>
