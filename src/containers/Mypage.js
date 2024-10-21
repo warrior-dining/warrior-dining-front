@@ -13,7 +13,7 @@ const Mypage = () => {
     const [user, setUser] = useState({name: '', email: '', phone: ''});
 
     useEffect(() => {
-        axiosInstance(urlList("get", "/api/user"), )
+        axiosInstance(urlList("get", "/api/user"))
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 if (res.data.status) {
