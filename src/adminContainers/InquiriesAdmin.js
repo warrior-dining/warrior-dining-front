@@ -20,7 +20,9 @@ const InquiresList = ({data}) => {
                 </tr>
                 </thead>
                 <tbody>
-                {
+                {data.length === 0 ? (
+                    <tr></tr>
+                ) : (
                     data.map((row) => (
                         <tr key={row.id} onClick={() => {
                             navigate(`/admin/inquiries/detail/${row.id}`)
@@ -32,7 +34,7 @@ const InquiresList = ({data}) => {
                             <td>{row.code.value}</td>
                         </tr>
                     ))
-                }
+                )}
                 </tbody>
             </table>
         </>

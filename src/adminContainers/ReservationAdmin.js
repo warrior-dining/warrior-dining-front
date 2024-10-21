@@ -17,7 +17,6 @@ const ReservationAdmin = () => {
 
 
     useEffect(() => {
-         // URL 정의 type=${searchType}&keyword=${searchKeyword}&
         let url = `${host}?page=${page}&size=${pageSize}&status=${sortType}&type=${searchType}&keyword=${searchKeyword}`;
         axios.get(url)
             .then(res => {
@@ -65,10 +64,6 @@ const ReservationAdmin = () => {
     };
 
     const paginationNumbers = getPaginationNumbers();
-    
-    if (!data || data.length === 0) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <main>
@@ -96,8 +91,11 @@ const ReservationAdmin = () => {
                         </form>
                     </div>
                     <div className="reservation-container">
-                        {data.map((row) => (
-                            <div className="reservation-item" key={row.id} onClick={() => toggleDetails(row.id)} style={{ cursor: 'pointer' }}>
+                        {data.length === 0 ? (
+                            <div></div>
+                        ) : (
+                        data.map((row) => (
+                            <div className="reservation-item" key={row.id} onClick={() => toggleDetails(row.id)}>
                                 <h3>예약 ID: {row.id}</h3>
                                 <p>
                                     고객 이름: {row.user.name}
@@ -120,7 +118,8 @@ const ReservationAdmin = () => {
                                     )}
                                 </div>
                             </div>
-                        ))}
+                        ))
+                    )}
                     </div>
                     <div className="reservation-pagination-container">
                         <div className="reservation-pagination">
