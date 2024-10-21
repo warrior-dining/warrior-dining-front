@@ -1,15 +1,29 @@
-import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useLocation, useParams} from 'react-router-dom';
 import '../css/default.css';
 import '../css/mypageMutual.css';
 import '../css/myPageReservationDetail.css'
 import MypageSidebar from "../components/MypageSidebar";
+import axios from "axios";
 
 const ReservationDetail = () => {
+    const {id} = useParams();
+    const reservationId = Number(id);
     const location = useLocation();
+    const [data, setData] = useState([]);
     const reservation = location.state; // 이전 페이지에서 전달받은 상태
 
     useEffect(() => {
+        const fetchData = async () => {
+            let url = '';
+            axios.get(url)
+                .then(res => {
+                    setData( res.data.status ? res.data.results.content : [] );
+                })
+                .catch(error => console.log(error))
+        };
+        fetchData();
+
         const timeSelect = document.getElementById('time');
         const existingTime = reservation?.time; // 기존에 설정된 시간
 
