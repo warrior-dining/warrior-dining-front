@@ -34,6 +34,7 @@ const ReservationList = () => {
                 })
         };
         fetchData();
+        console.log(data);
     }, [page, pageSize]);
 
     const bookMark = (placeId) => {
