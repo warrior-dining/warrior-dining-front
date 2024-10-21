@@ -73,3 +73,10 @@
 .reply-containers button:hover {
     background-color: #e63946;
 }
+
+.backList {
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: center; 
+    gap: 10px; 
+}
