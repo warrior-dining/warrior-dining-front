@@ -95,7 +95,7 @@ const ReservationAdmin = () => {
                             <div></div>
                         ) : (
                         data.map((row) => (
-                            <div className="reservation-item" key={row.id} onClick={() => toggleDetails(row.id)} style={{ cursor: 'pointer' }}>
+                            <div className="reservation-item" key={row.id} onClick={() => toggleDetails(row.id)}>
                                 <h3>예약 ID: {row.id}</h3>
                                 <p>
                                     고객 이름: {row.user.name}
