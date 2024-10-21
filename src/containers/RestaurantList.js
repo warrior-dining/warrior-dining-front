@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import '../css/default.css';
 import '../css/home.css';
 import '../css/restaurantList.css';
@@ -8,49 +10,75 @@ import '../css/restaurantList.css';
 const host = "http://localhost:8080/api/restaurant";
 
 const fetchRestaurants = async ({ pageParam = 0, queryKey }) => {
-    const [,search] = queryKey;
-    const endpoint = search 
-        ? `/search?keyword=${encodeURIComponent(search)}&page=${pageParam}` 
-        : `?page=${pageParam}`;
+    const [, search, category, price] = queryKey;
+    let endpoint = search ? `/search?keyword=${encodeURIComponent(search)}&page=${pageParam}` : `?page=${pageParam}`;
+    
+    if (category && category !== 'none') {
+        endpoint += `&categoryId=${category}`;
+    }
+    
+    if (price && price !== 'none') {
+        const [minPrice, maxPrice] = getPriceRange(price);
+        if (minPrice !== null) endpoint += `&minPrice=${minPrice}`;
+        if (maxPrice !== null) endpoint += `&maxPrice=${maxPrice}`;
+    }
 
     const response = await fetch(`${host}${endpoint}`);
     
     if (!response.ok) {
-        throw new Error(`서버연결 불가능: ${response.status}`); // 오류처리
+        throw new Error(`서버 연결 불가능: ${response.status}`); // 오류처리
     }
 
     const data = await response.json();
     return data;
 };
 
-const RestaurantSidbar = () => {
+// 가격대에 따라 minPrice와 maxPrice를 반환하는 함수
+const getPriceRange = (priceFilter) => {
+    switch (priceFilter) {
+        case 'low':
+            return [0, 20000];
+        case 'medium':
+            return [20001, 50000];
+        case 'high':
+            return [50001, 80000];
+        case 'veryhigh':
+            return [80001, 110000];
+        case 'superhigh':
+            return [110001, 999999];
+        default:
+            return [null, null];
+    }
+};
+
+const RestaurantSidebar = ({ onFilterChange, onReset, categoryFilter, priceFilter }) => {
     return (
         <aside className="sidebar">
             <form action="">
                 <h2>필터</h2>
-                <h3>지역 선택</h3>
-                <select id="location" name="location">
-                    <option value="">지역을 선택하세요</option>
-                    <option value="seoul">서울</option>
-                    <option value="busan">부산</option>
-                    <option value="incheon">인천</option>
-                </select>
                 <h3>카테고리</h3>
-                <select id="category" name="category">
-                    <option value="">카테고리 선택</option>
-                    <option value="korean">한식</option>
-                    <option value="chinese">중식</option>
-                    <option value="japanese">일식</option>
+                <select id="category" name="category" value={categoryFilter} onChange={onFilterChange}>
+                    <option value="none">카테고리 선택</option>
+                    <option value="5">한식</option>
+                    <option value="6">중식</option>
+                    <option value="7">일식</option>
+                    <option value="8">양식</option>
+                    <option value="9">분식</option>
+                    <option value="10">아시안</option>
+                    <option value="11">기타</option>
                 </select>
                 <h3>가격대</h3>
-                <select id="price" name="price">
-                    <option value="">가격대 선택</option>
+                <select id="price" name="price" value={priceFilter} onChange={onFilterChange}>
+                    <option value="none">가격 선택</option>
                     <option value="low">20,000원 이하</option>
                     <option value="medium">20,000 ~ 50,000원</option>
                     <option value="high">50,000 ~ 80,000원</option>
                     <option value="veryhigh">80,000 ~ 110,000원</option>
                     <option value="superhigh">110,000원 이상</option>
                 </select>
+                <button type="button" onClick={onReset} className="reset-button">
+                    <FontAwesomeIcon icon={faArrowRotateLeft} /> 초기화
+                </button>
             </form>
         </aside>
     );
@@ -62,6 +90,9 @@ const RestaurantList = () => {
     const searchParams = new URLSearchParams(location.search);
     const searchTerm = searchParams.get('search') || '';
 
+    // 카테고리 및 가격 필터 상태를 정의
+    const [categoryFilter, setCategoryFilter] = useState('none');
+    const [priceFilter, setPriceFilter] = useState('none');
     const [isVisible, setIsVisible] = useState(false);
 
     const toggleVisibility = () => {
@@ -80,9 +111,9 @@ const RestaurantList = () => {
         data,
         fetchNextPage,
         hasNextPage,
-        isFetching,
+        isFetchingNextPage,
     } = useInfiniteQuery({
-        queryKey: ['restaurants', searchTerm],
+        queryKey: ['restaurants', searchTerm, categoryFilter, priceFilter],
         queryFn: fetchRestaurants,
         getNextPageParam: (lastPage) => {
             return lastPage.number + 1 < lastPage.totalPages ? lastPage.number + 1 : undefined;
@@ -98,7 +129,10 @@ const RestaurantList = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            if (hasNextPage && window.innerHeight + window.scrollY >= document.body.offsetHeight + 1000 && !isFetching) {
+            const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
+            const isBottom = scrollTop + clientHeight >= scrollHeight - 10;
+
+            if (isBottom && hasNextPage && !isFetchingNextPage) {
                 fetchNextPage();
             }
         };
@@ -107,14 +141,35 @@ const RestaurantList = () => {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-    }, [hasNextPage, isFetching, fetchNextPage]);
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     const restaurants = data?.pages.flatMap(page => page.content) || [];
+
+    const handleFilterChange = (event) => {
+        const { name, value } = event.target;
+        if (name === 'category') {
+            setCategoryFilter(value);
+        } else if (name === 'price') {
+            setPriceFilter(value);
+        }
+        fetchNextPage();
+    };
+
+    const handleReset = () => {
+        setCategoryFilter('none');
+        setPriceFilter('none');
+        navigate('/restaurantlist');
+    };
 
     return (
         <section className="restaurant-list-container">
             <div className="restaurant-wrapper">
-                <RestaurantSidbar />
+                <RestaurantSidebar 
+                    onFilterChange={handleFilterChange} 
+                    onReset={handleReset} 
+                    categoryFilter={categoryFilter} 
+                    priceFilter={priceFilter} 
+                />
                 <div className="restaurant-list">
                     <h1>{searchTerm ? `검색 결과: ${searchTerm}` : '맛집 전체 리스트'}</h1>
 
@@ -137,10 +192,10 @@ const RestaurantList = () => {
                             ))}
                         </ul>
                     ) : (
-                        <p className='none-data'>검색 결과가 존재하지 않습니다.</p> 
+                        <p className='none-data'>검색 결과가 존재하지 않습니다.</p>
                     )}
 
-                    {isFetching && <p>Loading more...</p>}
+                    {isFetchingNextPage && <p>Loading more...</p>}
                 </div>
             </div>
             {isVisible && (
