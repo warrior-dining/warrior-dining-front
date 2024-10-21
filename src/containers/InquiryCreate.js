@@ -14,7 +14,7 @@ const InquiryCreate = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const createData = { title, content, email: sub };
+        const createData = { title: title, content: content, email: sub };
         axiosInstance.post(`${host}`, createData)
         .then(res => {
             refreshToken(reissueToken);
