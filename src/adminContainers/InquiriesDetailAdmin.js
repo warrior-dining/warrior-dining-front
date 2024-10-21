@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams} from "react-router-dom";
-import axios from "axios";
+import axiosInstance from '../context/AxiosInstance';
 import { useAuth } from "../context/AuthContext";
 import '../css/InquiriesDetailAdmin.css';
 
@@ -15,7 +15,7 @@ const InquirieDtailsAdmin = () => {
     const {sub} = useAuth();
 
     useEffect(() => {
-        axios.get(host + inquiriesId)
+        axiosInstance.get(host + inquiriesId)
             .then(res => {
                 setData(res.data.results);
                 setContent(res.data.results.answer ? res.data.results.answer.content : ""); // 초기 content 설정
@@ -29,7 +29,7 @@ const InquirieDtailsAdmin = () => {
 
     const SubmitEvent = e => {
         e.preventDefault();
-        axios.post(host + inquiriesId, { content: content, email: sub })
+        axiosInstance.post(host + inquiriesId, { content: content, email: sub })
             .then(res => {
                 // 필요 시 추가 로직
                 window.location.reload();
