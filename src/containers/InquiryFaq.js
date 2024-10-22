@@ -18,9 +18,13 @@ const InquiryFaq = () => {
   };
 
   const InquiryDetailClick = () => {
-    navigate('/mypage/inquiry')
+    if(!isLoggedIn) {
+      alert("로그인 후 이용가능한 서비스입니다.");
+      navigate('/signin');
+    }else {
+      navigate('/mypage/inquiry')
+    }
   }
-
 
     return (
         <>

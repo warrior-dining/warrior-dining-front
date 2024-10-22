@@ -14,21 +14,22 @@ const PlaceEdit = () => {
     const [daum, setDaum] = useState(null);
     const { id } = useParams();
     const url = infoHost + Number(id);
-    const [response, error] = FindById(url);
+    const [response, fetchError] = FindById(url);
     const [data, setData] = useState([]);
     const [viewImages, setViewImages] = useState([]);
     const [uploadImages, setUploadImages] = useState([]);
     const [existingImages, setExistingImages] = useState([])
     const [menuItems, setMenuItems] = useState([{ id: 1, menu: '', price: '' }]);
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        if(error) {
-            console.log(error);
+        if(fetchError) {
+            console.log(fetchError);
         }
         if(response.data) {
             setData(response.data.status ? response.data.results : []);
         }
-    }, [response, error]);
+    }, [response, fetchError]);
 
 
     const navigator = useNavigate();
@@ -176,12 +177,16 @@ const PlaceEdit = () => {
 
         axios.put(editHost+Number(id), formData)
             .then((res) => {
+                if(res.data.status === true) {
                 alert('정보가 수정되었습니다.!');
                 console.log(res);
                 navigator("/admin/places/info/"+ res.data.results.id);
                 // 예시
+                }
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+                if (error.response) { setError(error.response.data.message);}
+            });
     }
 
     if (!data || data.length === 0) {
@@ -328,6 +333,7 @@ const PlaceEdit = () => {
                             <div className="form-actions">
                                 <button type="submit">저장하기</button>
                             </div>
+                            {error && <div className="error">{error}</div>}
                         </form>
                     </div>
                 </div>
