@@ -1,9 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate 임포트
 import '../css/managerInquiryList.css';
-import axios from 'axios';
-
-const host = "http://localhost:8080/api/admin/inquiries/";
+import axiosInstance from '../context/AxiosInstance';
+import { urlList, refreshToken, useAuth } from '../context/AuthContext';
 
 const InquiresList = ({data}) => {
     const navigate = useNavigate();
@@ -50,12 +49,13 @@ const InquiriesAdmin = () => {
     const [searchKeyword, setSearchKeyword] = useState('');
     const searchKeywordRef = useRef('');
     const [error, setError] = useState('');
+    const {reissueToken} = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
-            const url = `${host}?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`
-            axios.get(url)
+            axiosInstance(urlList("get", `/api/admin/inquiries/?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`))
             .then(res => {
+                refreshToken(res.data, reissueToken);
                 setData(res.data.results.content);
                 setTotalPages(res.data.results.totalPages);
             })

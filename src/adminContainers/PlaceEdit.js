@@ -3,17 +3,13 @@ import '../css/restaurantCreate.css';
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import {FindById} from "../api/DataApi";
-
-
-const infoHost = "http://localhost:8080/api/admin/places/info/"
-
-
-const editHost = "http://localhost:8080/api/admin/places/"
+import { urlList, useAuth, refreshToken } from '../context/AuthContext';
+import axiosInstance from '../context/AxiosInstance';
 
 const PlaceEdit = () => {
     const [daum, setDaum] = useState(null);
     const { id } = useParams();
-    const url = infoHost + Number(id);
+    const {url} = urlList("get", `/api/admin/places/info/${id}`);
     const [response, fetchError] = FindById(url);
     const [data, setData] = useState([]);
     const [viewImages, setViewImages] = useState([]);
@@ -21,6 +17,8 @@ const PlaceEdit = () => {
     const [existingImages, setExistingImages] = useState([])
     const [menuItems, setMenuItems] = useState([{ id: 1, menu: '', price: '' }]);
     const [error, setError] = useState('');
+    const {reissueToken} = useAuth();
+    
 
     useEffect(() => {
         if(fetchError) {
@@ -166,7 +164,7 @@ const PlaceEdit = () => {
             alert("이미지를 한개이상 입력하세요.");
             return;
         }
-
+        const {url} = urlList("put", `/api/admin/places/${id}`)
         const formData = new FormData();
         uploadImages.forEach(img => {
             formData.append("file", img );
@@ -175,11 +173,11 @@ const PlaceEdit = () => {
         formData.append("menu", JSON.stringify(menuItems) );
         formData.append("place", JSON.stringify(placeInfo) );
 
-        axios.put(editHost+Number(id), formData)
+        axiosInstance.put(url, formData)
             .then((res) => {
+                refreshToken(res.data, reissueToken);
                 if(res.data.status === true) {
                 alert('정보가 수정되었습니다.!');
-                console.log(res);
                 navigator("/admin/places/info/"+ res.data.results.id);
                 // 예시
                 }

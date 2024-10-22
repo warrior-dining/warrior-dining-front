@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import '../css/restaurantCreate.css';
 import {useNavigate, useParams} from "react-router-dom";
 import {FindById} from "../api/DataApi";
-
-const host = "http://localhost:8080/api/admin/places/info/"
+import { urlList } from '../context/AuthContext';
 
 
 const PlaceDetail = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const url = host + Number(id);
+    const {url} = urlList("get", `/api/admin/places/info/${id}`);
     const [response, error] = FindById(url);
     const [data, setData] = useState([]);
+
     useEffect(() => {
         if(error) {
             console.log(error);

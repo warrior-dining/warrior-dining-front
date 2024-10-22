@@ -1,12 +1,14 @@
 import React, {useRef, useState} from 'react';
 import {useEffect} from 'react';
-import axios from 'axios';
 import '../css/reviewsAdmin.css';
+import { urlList, refreshToken, useAuth } from '../context/AuthContext';
+import axiosInstance from '../context/AxiosInstance';
 
-const host = "http://localhost:8080/api/admin/reviews/";
 
 const ReviewList = ({data, setData}) => {
     const [expandedRowIds, setExpandedRowIds] = useState([]);
+    const {reissueToken} = useAuth();
+    
 
     const handleRowClick = (id) => {
         setExpandedRowIds((prev) =>
@@ -31,11 +33,13 @@ const ReviewList = ({data, setData}) => {
     };
 
     const handleUpdateStatus = (id) => {
+        const {url} = urlList("patch", `/api//admin/reviews/${id}`);
         setData(prevData => prevData.map(item =>
             item.id === id ? {...item, isDeleted: true} : item
         ));
-        axios.patch(`${host}${id}`) // 상태 업데이트를 위한 요청
+        axiosInstance.patch(url) // 상태 업데이트를 위한 요청
             .then(res => {
+                refreshToken(res.data, reissueToken);
                 window.location.reload();
             })
             .catch(error => {
@@ -114,14 +118,17 @@ const ReviewsAdmin = () => {
     const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [sortType, setSortType] = useState('');
+    const {reissueToken} = useAuth();
+
     
     useEffect(() => {
         const fetchData = async () => {
-            let url = `${host}?searchtype=${searchType}&searchkeyword=${searchKeyword}&page=${page}&size=${pageSize}&sorttype=${sortType}`;
-            axios.get(url)
-                .then(res => {
-                    setData(res.data.status ? res.data.results.content : []);
-                    setTotalPages(res.data.status ? res.data.results.totalPages : 0);
+            const {url} = urlList("get", `/api/admin/reviews/?searchtype=${searchType}&searchkeyword=${searchKeyword}&page=${page}&size=${pageSize}&sorttype=${sortType}`);
+            axiosInstance(url)
+            .then(res => {
+                refreshToken(res.data, reissueToken);
+                setData(res.data.status ? res.data.results.content : []);
+                setTotalPages(res.data.status ? res.data.results.totalPages : 0);
                 })
                 .catch(error => console.log(error));
         }

@@ -1,9 +1,9 @@
 import '../css/restaurantManagement.css';
 import {useNavigate} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react";
-import axios from "axios";
+import axiosInstance from '../context/AxiosInstance';
+import { urlList, useAuth, refreshToken } from '../context/AuthContext';
 
-const host = "http://localhost:8080/api/admin/places/";
 
 const PlaceList = ({list}) => {
     const navigate = useNavigate();
@@ -50,12 +50,14 @@ const PlacesAdmin = () => {
     const [list, setList] = useState([])
     const [error, setError] = useState(null);
     const searchKeywordRef= useRef();
+    const {reissueToken} = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
-            const url = `${host}?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`
-            await axios.get(url)
+            const {url} = urlList("get", `/api/admin/places/?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`);
+            await axiosInstance(url)
             .then(res => {
+                refreshToken(res.data, reissueToken);
                 setList(res.data.status ? res.data.results.content : []);
                 setTotalPages(res.data.status ? res.data.results.totalPages : 0);
             })
