@@ -22,7 +22,7 @@ const ReservationList = () => {
     useEffect(() => {
         const fetchData = async () => {
             let url = `${host}?email=${sub}&page=${page}&size=${pageSize}`
-            axios.get(url)
+            await axios.get(url)
                 .then(res => {
                     setData( res.data.status ? res.data.results.content : [] );
                     setTotalPages(res.data.status ? res.data.results.totalPages : 0);

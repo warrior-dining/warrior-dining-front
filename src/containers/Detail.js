@@ -252,7 +252,7 @@ const ReservationForm = ({ restaurant }) => {
 
     const submitEvent = (e) => {
         e.preventDefault();
-        const test = urlList("/api/member/reservation/");
+        const host = urlList("/api/member/reservation/");
         const reservationData = {
             userEmail : sub,
             placeId : restaurantData.id,
@@ -262,7 +262,7 @@ const ReservationForm = ({ restaurant }) => {
             orderNote : orderNote
         }
         console.log(reservationData);
-        axiosInstance.post(test.baseURL + test.url, reservationData , test.headers )
+        axiosInstance.post(host.baseURL + host.url, reservationData , host.headers )
             .then(res => {
                 alert("성공");
             }).catch(error => alert(error));
