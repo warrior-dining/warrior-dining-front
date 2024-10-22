@@ -18,7 +18,6 @@ const PlaceDetail = () => {
         }
         if(response.data) {
             setData(response.data.status ? response.data.results : []);
-            console.log(data);
         }
     }, [response, error]);
     const images = [];
