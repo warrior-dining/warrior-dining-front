@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import '../css/reservationManagement.css';
-
-const host = "http://localhost:8080/api/admin/reservations/";
+import axiosInstance from "../context/AxiosInstance";
+import { urlList, useAuth, refreshToken } from "../context/AuthContext";
 
 const ReservationAdmin = () => {
     const [sortType, setSortType] = useState('');
@@ -14,12 +13,13 @@ const ReservationAdmin = () => {
     const searchKeywordRef= useRef('');
     const [searchType, setSearchType] = useState('id');
     const [searchKeyword, setSearchKeyword] = useState('');
-
+    const {reissueToken} = useAuth();
 
     useEffect(() => {
-        let url = `${host}?page=${page}&size=${pageSize}&status=${sortType}&type=${searchType}&keyword=${searchKeyword}`;
-        axios.get(url)
+        const {url} = urlList("get", `/api/admin/reservations/?page=${page}&size=${pageSize}&status=${sortType}&type=${searchType}&keyword=${searchKeyword}`);
+        axiosInstance(url)
             .then(res => {
+                refreshToken(res.data, reissueToken);
                 setData(res.data.results.content);
                 setTotalPages(res.data.results.totalPages);
             })
@@ -27,11 +27,12 @@ const ReservationAdmin = () => {
     }, [page, pageSize, sortType, searchKeyword]);
 
     const handleUpdateStatus = (id) => {
+        const {url} = urlList("patch", `/api/admin/reservations/${id}`)
         const confirmCancel = window.confirm("예약을 취소하시겠습니까?");
         if (!confirmCancel) {
             return;
         }
-        axios.patch(`${host}${id}`, { status: 14 })
+        axiosInstance.patch(url, { status: 14 })
             .then(res => {
                 alert("예약이 정상적으로 취소되었습니다.")
                 setSortType('13');

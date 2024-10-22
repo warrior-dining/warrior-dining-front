@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅 import
 import '../css/mainAdmin.css';
-import axios from "axios";
+import axiosInstance from '../context/AxiosInstance';
+import { urlList, useAuth, refreshToken } from '../context/AuthContext';
 
-const host = "http://localhost:8080/api/admin/"
 
 const DashboardSection = ({data}) => {
     return (
@@ -88,10 +87,13 @@ const NoticeSection = ({data}) => {
 
 const MainContent = () => {
     const [data, setData] = useState([]);
+    const {reissueToken} = useAuth();
+
     useEffect(() => {
         const fetchData = async () => {
-            axios.get(host)
+            axiosInstance(urlList("get", "/api/admin/"))
                 .then(res => {
+                    refreshToken(res.data, reissueToken);
                     setData(res.data.status ? res.data.results: []);
                 })
                 .catch(error => console.log(error));

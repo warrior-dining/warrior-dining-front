@@ -1,10 +1,10 @@
 import '../css/memberDetail.css';
-import axios from "axios";
-import { useP,useEffect, useState} from "react";
+import axiosInstance from '../context/AxiosInstance';
+import { useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 import { FindById } from '../api/DataApi'
+import { urlList, useAuth, refreshToken } from '../context/AuthContext';
 
-const host = "http://localhost:8080/api/admin/members/info/";
 
 const openModal = (type) => {
     document.getElementById(type+'Modal').style.display = 'flex';
@@ -16,7 +16,7 @@ const closeModal = (type) => {
 
 const Grant = ({callback, data}) => {
     const { id } = useParams();
-    const url = host + Number(id);
+    const {url} = urlList("post", `/api/admin/members/info/${id}`)
 
     const initialRole = () => {
         const hasAdmin = data.roles.some(r => r.role === 'ADMIN');
@@ -29,20 +29,21 @@ const Grant = ({callback, data}) => {
     };
 
     const [selectedRole, setSelectedRole] = useState(initialRole());
+    const {reissueToken} = useAuth();
 
     const grantRole = () =>{
         const role = {
             type: true,
             role: selectedRole
         };
-        axios.post(url,  role)
-            .then(() => {
-                console.log("권한 부여 성공");
+        axiosInstance.post(url,  role)
+            .then(res => {
+                refreshToken(res.data, reissueToken);
                 callback();
             })
             .catch(error => console.log(error));
-        alert('권한이 부여되었습니다.');
-        closeModal('grant');
+                alert('권한이 부여되었습니다.');
+                closeModal('grant');
     }
     return (
         <>
@@ -73,7 +74,7 @@ const Grant = ({callback, data}) => {
 
 const Revoke = ({callback , data}) => {
     const { id } = useParams();
-    const url = host + Number(id);
+    const {url} = urlList("post", `/api/admin/members/info/${id}`)
     // 사용자 권한 확인
 
     const userRoles = data.roles.map(row => row.role);
@@ -93,14 +94,13 @@ const Revoke = ({callback , data}) => {
             type: false,
             role: selectedRole
         };
-            axios.post(url, role)
-                .then(() => {
-                    callback();
-                })
-                .catch(error => console.log(error));
-
-            alert('권한이 제거되었습니다.');
-            closeModal('revoke');
+        axiosInstance.post(url, role)
+            .then(() => {
+                callback();
+            })
+            .catch(error => console.log(error));
+                alert('권한이 제거되었습니다.');
+                closeModal('revoke');
     }
     return (
         <>
@@ -134,7 +134,7 @@ const Revoke = ({callback , data}) => {
 const MemberDetail = () => {
     const [load, setLoad] = useState(false);
     const { id } = useParams();
-    const url = host + Number(id) +`?q=${load}`;
+    const {url} = urlList("get", `/api/admin/members/info/${id}?q=${load}`);
     const [response, error] = FindById(url);
     const [data, setData] = useState([]);
     const callback = () => {

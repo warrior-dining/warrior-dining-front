@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import '../css/restaurantCreate.css';
-import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import { urlList, useAuth, refreshToken } from '../context/AuthContext';
+import axiosInstance from '../context/AxiosInstance';
 
-const host = "http://localhost:8080/api/admin/places/"
 
 const PlaceAdd = () => {
+    const {reissueToken} = useAuth();
     const [daum, setDaum] = useState(null);
     const navigator = useNavigate();
     const [viewImages, setViewImages] = useState([]);
@@ -122,6 +123,7 @@ const PlaceAdd = () => {
 
     const submitEvent = (e) => {
         e.preventDefault();
+        const {url} = urlList("post", "/api/admin/places/")
         const formData = new FormData();
         uploadImages.forEach(img => {
             formData.append("file", img );
@@ -129,8 +131,9 @@ const PlaceAdd = () => {
         formData.append("menu", JSON.stringify(menuItems) );
         formData.append("place", JSON.stringify(placeInfo) );
 
-        axios.post(host, formData)
+        axiosInstance.post(url, formData)
             .then((res) => {
+                refreshToken(res.data, reissueToken);
                 if(res.data.status === true) {
                     alert('저장 되었습니다.');
                     navigator("/admin/places/info/" + res.data.results.id);
