@@ -9,11 +9,12 @@ import axiosInstance from '../context/AxiosInstance';
 
 
 const Mypage = () => {
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const {reissueToken} = useAuth();
     const [user, setUser] = useState({name: '', email: '', phone: ''});
 
     useEffect(() => {
-        axiosInstance(urlList("get", "/api/user"))
+        axiosInstance.get(`${backendUrl}/api/user`)
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 if (res.data.status) {

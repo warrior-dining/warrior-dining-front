@@ -115,6 +115,5 @@ export const clearCookie = () => {
 
 export const urlList = () => {
     return {
-        headers: {Authorization_Access: Cookies.get('accessToken'), Authorization_Refresh: Cookies.get('refreshToken')}
     }
 }
