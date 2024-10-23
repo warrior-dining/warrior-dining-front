@@ -91,7 +91,7 @@ const MainContent = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            axiosInstance.get("/api/admin/")
+            await axiosInstance.get("/api/admin/")
                 .then(res => {
                     refreshToken(res.data, reissueToken);
                     setData(res.data.status ? res.data.results: []);

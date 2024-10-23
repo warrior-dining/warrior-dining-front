@@ -31,8 +31,7 @@ const InquirieDtailsAdmin = () => {
         e.preventDefault();
         const requestData = { content: content, email: sub };
         axiosInstance.post(`/api/admin/inquiries/${inquiriesId}`, requestData)
-            .then(res => {
-                // 필요 시 추가 로직 
+            .then(res => { 
                 refreshToken(res.data, reissueToken);
                 window.location.reload();
             })

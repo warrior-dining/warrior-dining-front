@@ -140,16 +140,15 @@ const MemberDetail = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await axiosInstance.get(`/api/admin/members/info/${id}?q=${load}`);
-                setData(response.data.status ? response.data.results : []);
-            } catch (error) {
+            await axiosInstance.get(`/api/admin/members/info/${id}?q=${load}`)
+                .then(res => {
+                    setData(res.data.status ? res.data.results : []);
+                })
+                .catch
                 setError(error);
             }
-        };
-
-        fetchData();
-    }, [id, load]); // id와 load가 변경될 때마다 호출
+            fetchData();
+        }, [id, load]); // id와 load가 변경될 때마다 호출
 
     // 에러 처리와 로딩 상태를 여기서 처리
     if (error) {

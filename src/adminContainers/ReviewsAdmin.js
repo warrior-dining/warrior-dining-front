@@ -122,7 +122,7 @@ const ReviewsAdmin = () => {
     
     useEffect(() => {
         const fetchData = async () => {
-            axiosInstance.get(`/api/admin/reviews/?searchtype=${searchType}&searchkeyword=${searchKeyword}&page=${page}&size=${pageSize}&sorttype=${sortType}`)
+            await axiosInstance.get(`/api/admin/reviews/?searchtype=${searchType}&searchkeyword=${searchKeyword}&page=${page}&size=${pageSize}&sorttype=${sortType}`)
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 setData(res.data.status ? res.data.results.content : []);

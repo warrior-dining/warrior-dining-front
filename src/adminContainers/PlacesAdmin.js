@@ -54,17 +54,16 @@ const PlacesAdmin = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const {url} = urlList("get", );
             await axiosInstance.get(`/api/admin/places/?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`)
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 setList(res.data.status ? res.data.results.content : []);
                 setTotalPages(res.data.status ? res.data.results.totalPages : 0);
             })
-                .catch (error => setError(error) );
+            .catch (error => setError(error) );
             }
-        fetchData();
-    }, [page, pageSize, searchKeyword]);
+            fetchData();
+        }, [page, pageSize, searchKeyword]);
 
     const searchEvent = (e) => {
         e.preventDefault();

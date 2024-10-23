@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import '../css/restaurantCreate.css';
 import {useNavigate, useParams} from "react-router-dom";
-import {FindById} from "../api/DataApi";
-import { urlList, useAuth, refreshToken } from '../context/AuthContext';
+import { useAuth, refreshToken } from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
 
 const PlaceEdit = () => {
     const [daum, setDaum] = useState(null);
     const { id } = useParams();
-    // const {url} = urlList("get", `/api/admin/places/info/${id}`);
-    // const [response, fetchError] = FindById(url);
     const [data, setData] = useState([]);
     const [viewImages, setViewImages] = useState([]);
     const [uploadImages, setUploadImages] = useState([]);
