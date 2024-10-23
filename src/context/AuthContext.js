@@ -21,14 +21,14 @@ export const AuthProvider = ({children}) => {
         if (savedAccessToken && savedRefreshToken) {
             setAccessToken(savedAccessToken);
             setRefreshToken(savedRefreshToken);
-        }
-        try {
-            const decodedToken = jwtDecode(savedAccessToken);
-            setAuth(decodedToken.auth);
-            setSub(decodedToken.sub);
-            setIsAdminNav(decodedToken.auth.includes('ADMIN'));
-        } catch (error) {
-            console.error('토큰 디코딩 오류:', error);
+            try {
+                const decodedToken = jwtDecode(savedAccessToken);
+                setAuth(decodedToken.auth);
+                setSub(decodedToken.sub);
+                setIsAdminNav(decodedToken.auth.includes('ADMIN'));
+            } catch (error) {
+                console.error('토큰 디코딩 오류:', error);
+            }
         }
     }, []);
 

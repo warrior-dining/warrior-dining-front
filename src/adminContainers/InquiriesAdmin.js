@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate 임포트
 import '../css/managerInquiryList.css';
 import axiosInstance from '../context/AxiosInstance';
-import { urlList, refreshToken, useAuth } from '../context/AuthContext';
+import { refreshToken, useAuth } from '../context/AuthContext';
 
 const InquiresList = ({data}) => {
     const navigate = useNavigate();
@@ -53,7 +53,7 @@ const InquiriesAdmin = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            axiosInstance(urlList("get", `/api/admin/inquiries/?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`))
+            axiosInstance.get(`/api/admin/inquiries/?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`)
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 setData(res.data.results.content);

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import '../css/mainAdmin.css';
 import axiosInstance from '../context/AxiosInstance';
-import { urlList, useAuth, refreshToken } from '../context/AuthContext';
+import { useAuth, refreshToken } from '../context/AuthContext';
 
 
 const DashboardSection = ({data}) => {
@@ -91,7 +91,7 @@ const MainContent = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            axiosInstance(urlList("get", "/api/admin/"))
+            axiosInstance.get("/api/admin/")
                 .then(res => {
                     refreshToken(res.data, reissueToken);
                     setData(res.data.status ? res.data.results: []);

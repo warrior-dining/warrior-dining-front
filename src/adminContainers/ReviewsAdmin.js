@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react';
 import {useEffect} from 'react';
 import '../css/reviewsAdmin.css';
-import { urlList, refreshToken, useAuth } from '../context/AuthContext';
+import { refreshToken, useAuth } from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
 
 
@@ -27,17 +27,16 @@ const ReviewList = ({data, setData}) => {
 
     const truncateContent = (content) => {
         if (content.length > 5) {
-            return content.slice(0, 5) + '...'; // 5글자 이상이면 잘라내고 ... 추가
+            return content.slice(0, 5) + '...'; // 5글자 이상이면 잘라내고 ... 
         }
         return content;
     };
 
     const handleUpdateStatus = (id) => {
-        const {url} = urlList("patch", `/api//admin/reviews/${id}`);
         setData(prevData => prevData.map(item =>
             item.id === id ? {...item, isDeleted: true} : item
         ));
-        axiosInstance.patch(url) // 상태 업데이트를 위한 요청
+        axiosInstance.patch(`/api/admin/reviews/${id}`) // 상태 업데이트를 위한 요청
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 window.location.reload();
@@ -123,8 +122,7 @@ const ReviewsAdmin = () => {
     
     useEffect(() => {
         const fetchData = async () => {
-            const {url} = urlList("get", `/api/admin/reviews/?searchtype=${searchType}&searchkeyword=${searchKeyword}&page=${page}&size=${pageSize}&sorttype=${sortType}`);
-            axiosInstance(url)
+            axiosInstance.get(`/api/admin/reviews/?searchtype=${searchType}&searchkeyword=${searchKeyword}&page=${page}&size=${pageSize}&sorttype=${sortType}`)
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 setData(res.data.status ? res.data.results.content : []);

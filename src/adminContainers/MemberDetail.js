@@ -2,8 +2,7 @@ import '../css/memberDetail.css';
 import axiosInstance from '../context/AxiosInstance';
 import { useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
-import { FindById } from '../api/DataApi'
-import { urlList, useAuth, refreshToken } from '../context/AuthContext';
+import { useAuth, refreshToken } from '../context/AuthContext';
 
 
 const openModal = (type) => {
@@ -16,7 +15,6 @@ const closeModal = (type) => {
 
 const Grant = ({callback, data}) => {
     const { id } = useParams();
-    const {url} = urlList("post", `/api/admin/members/info/${id}`)
 
     const initialRole = () => {
         const hasAdmin = data.roles.some(r => r.role === 'ADMIN');
@@ -36,7 +34,7 @@ const Grant = ({callback, data}) => {
             type: true,
             role: selectedRole
         };
-        axiosInstance.post(url,  role)
+        axiosInstance.post(`/api/admin/members/info/${id}`,  role)
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 callback();
@@ -74,7 +72,6 @@ const Grant = ({callback, data}) => {
 
 const Revoke = ({callback , data}) => {
     const { id } = useParams();
-    const {url} = urlList("post", `/api/admin/members/info/${id}`)
     // 사용자 권한 확인
 
     const userRoles = data.roles.map(row => row.role);
@@ -94,7 +91,7 @@ const Revoke = ({callback , data}) => {
             type: false,
             role: selectedRole
         };
-        axiosInstance.post(url, role)
+        axiosInstance.post(`/api/admin/members/info/${id}`, role)
             .then(() => {
                 callback();
             })
@@ -132,22 +129,34 @@ const Revoke = ({callback , data}) => {
 }
 
 const MemberDetail = () => {
-    const [load, setLoad] = useState(false);
     const { id } = useParams();
-    const {url} = urlList("get", `/api/admin/members/info/${id}?q=${load}`);
-    const [response, error] = FindById(url);
     const [data, setData] = useState([]);
+    const [error, setError] = useState();
+    const [load, setLoad] = useState(false);
+
     const callback = () => {
         setLoad(!load);
     }
+
     useEffect(() => {
-        if(error) {
-            console.log(error);
-        }
-        if(response.data) {
-            setData(response.data.status ? response.data.results : []);
-        }
-    }, [response, error]);
+        const fetchData = async () => {
+            try {
+                const response = await axiosInstance.get(`/api/admin/members/info/${id}?q=${load}`);
+                setData(response.data.status ? response.data.results : []);
+            } catch (error) {
+                setError(error);
+            }
+        };
+
+        fetchData();
+    }, [id, load]); // id와 load가 변경될 때마다 호출
+
+    // 에러 처리와 로딩 상태를 여기서 처리
+    if (error) {
+        console.log(error);
+        return <div>Error: {error.message}</div>;
+    }
+
     if (!data || data.length === 0) {
         return <div>Loading...</div>; // 데이터가 로드 중일 때 로딩 표시
     }

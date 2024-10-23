@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams} from "react-router-dom";
 import axiosInstance from '../context/AxiosInstance';
-import { useAuth, refreshToken, urlList } from "../context/AuthContext";
+import { useAuth, refreshToken } from "../context/AuthContext";
 import '../css/InquiriesDetailAdmin.css';
 
 
@@ -14,7 +14,7 @@ const InquirieDtailsAdmin = () => {
     const {sub,reissueToken } = useAuth();
 
     useEffect(() => {
-        axiosInstance(urlList("get", `/api/admin/inquiries/${inquiriesId}`))
+        axiosInstance.get(`/api/admin/inquiries/${inquiriesId}`)
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 setData(res.data.results);
@@ -30,8 +30,7 @@ const InquirieDtailsAdmin = () => {
     const SubmitEvent = e => {
         e.preventDefault();
         const requestData = { content: content, email: sub };
-        const {url} = urlList("post", `/api/admin/inquiries/${inquiriesId}`)
-        axiosInstance.post(url, requestData)
+        axiosInstance.post(`/api/admin/inquiries/${inquiriesId}`, requestData)
             .then(res => {
                 // 필요 시 추가 로직 
                 refreshToken(res.data, reissueToken);

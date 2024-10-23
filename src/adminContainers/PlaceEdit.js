@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../css/restaurantCreate.css';
 import {useNavigate, useParams} from "react-router-dom";
-import axios from "axios";
 import {FindById} from "../api/DataApi";
 import { urlList, useAuth, refreshToken } from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
@@ -9,8 +8,8 @@ import axiosInstance from '../context/AxiosInstance';
 const PlaceEdit = () => {
     const [daum, setDaum] = useState(null);
     const { id } = useParams();
-    const {url} = urlList("get", `/api/admin/places/info/${id}`);
-    const [response, fetchError] = FindById(url);
+    // const {url} = urlList("get", `/api/admin/places/info/${id}`);
+    // const [response, fetchError] = FindById(url);
     const [data, setData] = useState([]);
     const [viewImages, setViewImages] = useState([]);
     const [uploadImages, setUploadImages] = useState([]);
@@ -21,13 +20,21 @@ const PlaceEdit = () => {
     
 
     useEffect(() => {
-        if(fetchError) {
-            console.log(fetchError);
+        const fetchData = async () => {
+            await axiosInstance.get(`/api/admin/places/info/${id}`)
+            .then(res =>{
+                if(res.data) {
+                    setData(res.data.status ? res.data.results : []);
+                }
+            })
+            .catch(error => {
+                if(error) {
+                    console.log(error);
+                }
+            })
         }
-        if(response.data) {
-            setData(response.data.status ? response.data.results : []);
-        }
-    }, [response, fetchError]);
+        fetchData();
+    }, []);
 
 
     const navigator = useNavigate();
@@ -164,7 +171,6 @@ const PlaceEdit = () => {
             alert("이미지를 한개이상 입력하세요.");
             return;
         }
-        const {url} = urlList("put", `/api/admin/places/${id}`)
         const formData = new FormData();
         uploadImages.forEach(img => {
             formData.append("file", img );
@@ -173,7 +179,7 @@ const PlaceEdit = () => {
         formData.append("menu", JSON.stringify(menuItems) );
         formData.append("place", JSON.stringify(placeInfo) );
 
-        axiosInstance.put(url, formData)
+        axiosInstance.put(`/api/admin/places/${id}`, formData)
             .then((res) => {
                 refreshToken(res.data, reissueToken);
                 if(res.data.status === true) {

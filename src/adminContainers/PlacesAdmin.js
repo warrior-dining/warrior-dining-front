@@ -54,8 +54,8 @@ const PlacesAdmin = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const {url} = urlList("get", `/api/admin/places/?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`);
-            await axiosInstance(url)
+            const {url} = urlList("get", );
+            await axiosInstance.get(`/api/admin/places/?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`)
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 setList(res.data.status ? res.data.results.content : []);
