@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../context/AuthContext';
 import '../css/SignIn.css';
@@ -52,7 +52,7 @@ const SignIn = () => {
         setError(null);
 
         try {
-            const response = await fetch('/api/user/signin', {
+            const response = await fetch(`${backendUrl}/api/user/signin`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({email: email, password: password}),
