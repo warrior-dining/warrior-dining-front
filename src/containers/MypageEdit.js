@@ -5,7 +5,7 @@ import '../css/myPageEdit.css';
 import MypageSidebar from "../components/MypageSidebar";
 import {Link, useNavigate} from "react-router-dom";
 import axiosInstance from "../context/AxiosInstance";
-import {refreshToken, urlList, useAuth} from '../context/AuthContext';
+import {refreshToken, useAuth} from '../context/AuthContext';
 
 const MypageEdit = () => {
     const [error, setError] = useState(null);
@@ -17,10 +17,9 @@ const MypageEdit = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // 유저 정보를 가져와 상태를 업데이트
-        axiosInstance.get(`/api/user`, urlList())
+        axiosInstance.get(`/api/user`)
             .then(res => {
-                refreshToken(res.data, reissueToken);  // 토큰 갱신
+                refreshToken(res.data, reissueToken);
                 if (res.data.status) {
                     const userData = {
                         name: res.data.name,
@@ -28,19 +27,18 @@ const MypageEdit = () => {
                         phone: res.data.phone,
                         flag: res.data.flag
                     };
-                    setUser(userData);  // 유저 정보 업데이트
+                    setUser(userData);
 
-                    // 소셜 로그인 사용자일 경우 리다이렉트
                     if (userData.flag !== 1) {
                         alert("warrior-dining 계정만 정보수정이 가능합니다.")
                         navigate('/mypage');
                     }
 
-                    setError(null);  // 성공하면 에러 초기화
+                    setError(null);
                 }
             })
             .catch(error => {
-                setError('유저 정보를 불러오는 데 실패했습니다.');  // 에러 발생 시 에러 메시지 설정
+                setError('유저 정보를 불러오는 데 실패했습니다.');
                 console.log(error);
             });
     }, [reissueToken]);
@@ -57,13 +55,13 @@ const MypageEdit = () => {
         e.preventDefault();
 
         if (!user.currentPassword) {
-            setError('현재 비밀번호를 입력하세요.');  // 에러 메시지 설정
+            setError('현재 비밀번호를 입력하세요.');
             console.log('현재 비밀번호 없음');
             return;
         }
 
         if (user.newPassword && user.newPassword !== user.confirmPassword) {
-            setError('새 비밀번호와 비밀번호 확인이 일치하지 않습니다.');  // 에러 메시지 설정
+            setError('새 비밀번호와 비밀번호 확인이 일치하지 않습니다.');
             console.log('비밀번호 불일치');
             return;
         }
@@ -75,14 +73,10 @@ const MypageEdit = () => {
             newPassword: user.newPassword
         };
 
-        console.log(edits)
-
-        console.log('서버로 전송할 데이터:', edits);
-
         if (user.phone) edits.phone = user.phone;
         if (user.newPassword) edits.newPassword = user.newPassword;
 
-        axiosInstance.put(`/api/user`, edits, urlList())
+        axiosInstance.put(`/api/user`, edits)
             .then(response => {
                 if (response.data.success) {
                     setEditStatus('정보가 성공적으로 수정되었습니다.');
@@ -133,7 +127,6 @@ const MypageEdit = () => {
                                     readOnly
                                 />
 
-                                {/* 전화번호 수정 가능 */}
                                 <label htmlFor="phone">전화번호</label>
                                 <input
                                     type="tel"
@@ -143,7 +136,6 @@ const MypageEdit = () => {
                                     onChange={changeEvent}
                                 />
 
-                                {/* 현재 비밀번호 입력 필드 (필수) */}
                                 <label htmlFor="currentPassword">현재 비밀번호</label>
                                 <input
                                     type="password"
@@ -153,7 +145,6 @@ const MypageEdit = () => {
                                     onChange={changeEvent}
                                 />
 
-                                {/* 새 비밀번호 입력 필드 */}
                                 <label htmlFor="newPassword">새 비밀번호</label>
                                 <input
                                     type="password"
@@ -163,7 +154,6 @@ const MypageEdit = () => {
                                     onChange={changeEvent}
                                 />
 
-                                {/* 새 비밀번호 확인 입력 필드 */}
                                 <label htmlFor="confirmPassword">새 비밀번호 확인</label>
                                 <input
                                     type="password"
@@ -178,7 +168,6 @@ const MypageEdit = () => {
                             <p>{editStatus}</p>
                         </div>
 
-                        {/* 회원 탈퇴 섹션 */}
                         <div className="settings-section">
                             <h2>회원 탈퇴</h2>
                             <p>회원 탈퇴를 원하시면 아래 버튼을 클릭하세요.</p>

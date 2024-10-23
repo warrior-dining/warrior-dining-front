@@ -4,7 +4,7 @@ import '../css/mypageMutual.css';
 import '../css/myPage.css';
 import '../css/default.css';
 import MypageSidebar from "../components/MypageSidebar";
-import {useAuth, urlList, refreshToken} from '../context/AuthContext';
+import {refreshToken, useAuth} from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
 
 
