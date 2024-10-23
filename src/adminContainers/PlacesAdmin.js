@@ -2,7 +2,7 @@ import '../css/restaurantManagement.css';
 import {useNavigate} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react";
 import axiosInstance from '../context/AxiosInstance';
-import { urlList, useAuth, refreshToken } from '../context/AuthContext';
+import {refreshToken, useAuth} from '../context/AuthContext';
 
 
 const PlaceList = ({list}) => {
@@ -22,9 +22,9 @@ const PlaceList = ({list}) => {
                 </thead>
                 <tbody>
                 {
-                    list.map((row,index) => (
+                    list.map((row, index) => (
                         <tr key={index} onClick={() => {
-                            navigate("/admin/places/info/"+ row.id)
+                            navigate("/admin/places/info/" + row.id)
                         }}>
                             <td>{row.id}</td>
                             <td>{row.name}</td>
@@ -49,25 +49,25 @@ const PlacesAdmin = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [list, setList] = useState([])
     const [error, setError] = useState(null);
-    const searchKeywordRef= useRef();
+    const searchKeywordRef = useRef();
     const {reissueToken} = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
             await axiosInstance.get(`/api/admin/places/?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`)
-            .then(res => {
-                refreshToken(res.data, reissueToken);
-                setList(res.data.status ? res.data.results.content : []);
-                setTotalPages(res.data.status ? res.data.results.totalPages : 0);
-            })
-            .catch (error => setError(error) );
-            }
-            fetchData();
-        }, [page, pageSize, searchKeyword]);
+                .then(res => {
+                    refreshToken(res.data, reissueToken);
+                    setList(res.data.status ? res.data.results.content : []);
+                    setTotalPages(res.data.status ? res.data.results.totalPages : 0);
+                })
+                .catch(error => setError(error));
+        }
+        fetchData();
+    }, [page, pageSize, searchKeyword]);
 
     const searchEvent = (e) => {
         e.preventDefault();
-        if(searchKeyword === null) {
+        if (searchKeyword === null) {
             alert("검색어를 입력하세요.");
             return;
         }
@@ -80,7 +80,7 @@ const PlacesAdmin = () => {
         const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
         const endPage = Math.min(totalPages, startPage + maxPagesToShow);
 
-        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+        return Array.from({length: endPage - startPage}, (_, index) => startPage + index);
     };
 
     const paginationNumbers = getPaginationNumbers();
@@ -93,30 +93,33 @@ const PlacesAdmin = () => {
                     <h2 className="main-title">음식점 목록</h2>
 
                     <div className="header-container">
-                        <button type="button" onClick={()=>{
+                        <button type="button" onClick={() => {
                             navigate('/admin/places/add');
-                        }}>음식점 등록</button>
+                        }}>음식점 등록
+                        </button>
                         <form onSubmit={searchEvent}>
                             <div className="search-bar">
-                                <select value={searchType} onChange={(e)=> {setSearchType(e.target.value)}}>
+                                <select value={searchType} onChange={(e) => {
+                                    setSearchType(e.target.value)
+                                }}>
                                     <option value="name">음식점 이름</option>
                                     <option value="location">위치</option>
                                 </select>
                                 <input type="text" placeholder="검색어 입력..." ref={searchKeywordRef}/>
-                                <button type="submit" >검색</button>
+                                <button type="submit">검색</button>
                             </div>
                         </form>
                     </div>
-                    <PlaceList  list={list}/>
+                    <PlaceList list={list}/>
                     <div className="pagination">
-                            <a href="#"
-                               onClick={(e) => {
-                                   e.preventDefault();
-                                   if(page > 0){
-                                       setPage(page - 1);
-                                   }
-                               }}
-                               disabled={page === 0} > 이전 </a>
+                        <a href="#"
+                           onClick={(e) => {
+                               e.preventDefault();
+                               if (page > 0) {
+                                   setPage(page - 1);
+                               }
+                           }}
+                           disabled={page === 0}> 이전 </a>
                         {paginationNumbers.map((num) => (
                             <a key={num} href="#" className={num === page ? "active" : ""}
                                onClick={(e) => {
@@ -124,14 +127,14 @@ const PlacesAdmin = () => {
                                    setPage(num);
                                }}> {num + 1} </a>
                         ))}
-                            <a href="#"
-                               onClick={(e) => {
-                                   e.preventDefault();
-                                   if(page < totalPages-1){
-                                       setPage(page + 1);
-                                   }
-                                }}
-                                disabled={page >= totalPages - 1}> 다음 </a>
+                        <a href="#"
+                           onClick={(e) => {
+                               e.preventDefault();
+                               if (page < totalPages - 1) {
+                                   setPage(page + 1);
+                               }
+                           }}
+                           disabled={page >= totalPages - 1}> 다음 </a>
                     </div>
                 </div>
             </main>

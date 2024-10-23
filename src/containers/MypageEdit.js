@@ -1,172 +1,181 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import '../css/mypageMutual.css';
 import '../css/default.css';
 import '../css/myPageEdit.css';
 import MypageSidebar from "../components/MypageSidebar";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import axiosInstance from "../context/AxiosInstance";
+import {refreshToken, useAuth} from '../context/AuthContext';
 
 const MypageEdit = () => {
-    const [username, setUsername] = useState('홍길동');
-    const [email, setEmail] = useState('hong@example.com');
-    const [phone, setPhone] = useState('010-1234-5678');
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [emailNotifications, setEmailNotifications] = useState(true);
-    const [smsNotifications, setSmsNotifications] = useState(false);
-    const [pushNotifications, setPushNotifications] = useState(true);
+    const [error, setError] = useState(null);
+    const {reissueToken} = useAuth();
+    const [user, setUser] = useState({
+        name: '', email: '', phone: '', currentPassword: '', newPassword: '', confirmPassword: ''
+    });
+    const [editStatus, setEditStatus] = useState('');
+    const navigate = useNavigate();
 
-    const handleProfileSubmit = (e) => {
+    useEffect(() => {
+        axiosInstance.get(`/api/user`)
+            .then(res => {
+                refreshToken(res.data, reissueToken);
+                if (res.data.status) {
+                    const userData = {
+                        name: res.data.name,
+                        email: res.data.email,
+                        phone: res.data.phone,
+                        flag: res.data.flag
+                    };
+                    setUser(userData);
+
+                    if (userData.flag !== 1) {
+                        alert("warrior-dining 계정만 정보수정이 가능합니다.")
+                        navigate('/mypage');
+                    }
+
+                    setError(null);
+                }
+            })
+            .catch(error => {
+                setError('유저 정보를 불러오는 데 실패했습니다.');
+                console.log(error);
+            });
+    }, [reissueToken]);
+
+    const changeEvent = (e) => {
+        const {name, value} = e.target;
+        setUser((prevUser) => ({
+            ...prevUser,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        alert('변경 사항이 저장되었습니다.');
-        console.log({ username, email, phone });
-      };
-    
-      const handlePasswordSubmit = (e) => {
-        e.preventDefault();
-        if (newPassword !== confirmPassword) {
-          alert('새 비밀번호와 확인 비밀번호가 일치하지 않습니다.');
-        } else {
-          alert('비밀번호가 변경되었습니다.');
-          console.log({ currentPassword, newPassword });
+
+        if (!user.currentPassword) {
+            setError('현재 비밀번호를 입력하세요.');
+            console.log('현재 비밀번호 없음');
+            return;
         }
-      };
-    
-      const handleNotificationsSubmit = (e) => {
-        e.preventDefault();
-        alert('알림 설정이 저장되었습니다.');
-        console.log({ emailNotifications, smsNotifications, pushNotifications });
-      };
+
+        if (user.newPassword && user.newPassword !== user.confirmPassword) {
+            setError('새 비밀번호와 비밀번호 확인이 일치하지 않습니다.');
+            console.log('비밀번호 불일치');
+            return;
+        }
+
+        const edits = {
+            email: user.email,
+            phone: user.phone,
+            password: user.currentPassword,
+            newPassword: user.newPassword
+        };
+
+        if (user.phone) edits.phone = user.phone;
+        if (user.newPassword) edits.newPassword = user.newPassword;
+
+        axiosInstance.put(`/api/user`, edits)
+            .then(response => {
+                if (response.data.success) {
+                    setEditStatus('정보가 성공적으로 수정되었습니다.');
+                    setError(null);
+                }
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.log('서버 응답:', error.response.data);
+                    console.log('상태 코드:', error.response.status);
+                    setError('정보 수정에 실패했습니다. 오류: ' + error.response.data.message);
+                } else {
+                    console.log('네트워크 오류:', error);
+                    setError('서버오류가 발생했습니다. 다시 시도해주세요.');
+                }
+            });
+    }
 
     return (
         <>
-         <main className="mypage-container">
-         <MypageSidebar />
-         <div className="content">
-        <section id="settings">
-          <h1>설정</h1>
+            <main className="mypage-container">
+                <MypageSidebar/>
+                <div className="content">
+                    <section id="settings">
+                        <h1>설정</h1>
 
-          {/* 프로필 수정 */}
-          <div className="settings-section">
-            <h2>프로필 수정</h2>
-            <form onSubmit={handleProfileSubmit}>
-              <label htmlFor="username">사용자 이름</label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
+                        <div className="settings-section">
+                            <h2>정보 수정</h2>
 
-              <label htmlFor="email">이메일</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+                            {error && <p className="error">{error}</p>}
 
-              <label htmlFor="phone">전화번호</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
+                            <form onSubmit={handleSubmit}>
+                                <label htmlFor="name">사용자 이름</label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    value={user.name}
+                                    readOnly
+                                />
 
-              <button type="submit" className="save-button">저장</button>
-            </form>
-          </div>
+                                <label htmlFor="email">이메일</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value={user.email}
+                                    readOnly
+                                />
 
-          {/* 비밀번호 변경 */}
-          <div className="settings-section">
-            <h2>비밀번호 변경</h2>
-            <form onSubmit={handlePasswordSubmit}>
-              <label htmlFor="current-password">현재 비밀번호</label>
-              <input
-                type="password"
-                id="current-password"
-                name="current-password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                required
-              />
+                                <label htmlFor="phone">전화번호</label>
+                                <input
+                                    type="tel"
+                                    id="phone"
+                                    name="phone"
+                                    value={user.phone}
+                                    onChange={changeEvent}
+                                />
 
-              <label htmlFor="new-password">새 비밀번호</label>
-              <input
-                type="password"
-                id="new-password"
-                name="new-password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-              />
+                                <label htmlFor="currentPassword">현재 비밀번호</label>
+                                <input
+                                    type="password"
+                                    id="currentPassword"
+                                    name="currentPassword"
+                                    placeholder={"현재 비밀번호를 입력하세요."}
+                                    onChange={changeEvent}
+                                />
 
-              <label htmlFor="confirm-password">새 비밀번호 확인</label>
-              <input
-                type="password"
-                id="confirm-password"
-                name="confirm-password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
+                                <label htmlFor="newPassword">새 비밀번호</label>
+                                <input
+                                    type="password"
+                                    id="newPassword"
+                                    name="newPassword"
+                                    placeholder={"새로운 비밀번호를 입력하세요."}
+                                    onChange={changeEvent}
+                                />
 
-              <button type="submit" className="save-button">변경</button>
-            </form>
-          </div>
+                                <label htmlFor="confirmPassword">새 비밀번호 확인</label>
+                                <input
+                                    type="password"
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    placeholder={"새로운 비밀번호를 입력하세요."}
+                                    onChange={changeEvent}
+                                />
 
-          {/* 알림 설정 */}
-          <div className="settings-section">
-            <h2>알림 설정</h2>
-            <form onSubmit={handleNotificationsSubmit}>
-              <label>
-                <input
-                  type="checkbox"
-                  name="email-notifications"
-                  checked={emailNotifications}
-                  onChange={(e) => setEmailNotifications(e.target.checked)}
-                />
-                이메일 알림 받기
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="sms-notifications"
-                  checked={smsNotifications}
-                  onChange={(e) => setSmsNotifications(e.target.checked)}
-                />
-                SMS 알림 받기
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  name="push-notifications"
-                  checked={pushNotifications}
-                  onChange={(e) => setPushNotifications(e.target.checked)}
-                />
-                푸시 알림 받기
-              </label>
+                                <button type="submit" className="save-button">저장</button>
+                            </form>
+                            <p>{editStatus}</p>
+                        </div>
 
-              <button type="submit" className="save-button">저장</button>
-            </form>
-          </div>
-
-          {/* 회원 탈퇴 */}
-          <div className="settings-section">
-            <h2>회원 탈퇴</h2>
-            <p>회원 탈퇴를 원하시면 아래 버튼을 클릭하세요.</p>
-            <Link to="/mypage/delete" className="delete-link">회원 탈퇴</Link>
-          </div>
-        </section>
-      </div>
-
-        </main>
+                        <div className="settings-section">
+                            <h2>회원 탈퇴</h2>
+                            <p>회원 탈퇴를 원하시면 아래 버튼을 클릭하세요.</p>
+                            <Link to="/mypage/delete" className="delete-link">회원 탈퇴</Link>
+                        </div>
+                    </section>
+                </div>
+            </main>
         </>
     );
 }
