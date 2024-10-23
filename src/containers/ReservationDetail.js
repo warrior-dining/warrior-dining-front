@@ -22,7 +22,7 @@ const ReservationDetail = () => {
     useEffect(() => {
 
         const fetchData = async () => {
-            axiosInstance.get(`${host}/api/member/reservation/${reservationId}`, urlList())
+            axiosInstance.get(`${host}/api/member/reservation/${reservationId}`)
                 .then(res => {
                     refreshToken(res.data, reissueToken);
                     setData( res.data.status ? res.data.results : {} );
@@ -93,7 +93,7 @@ const ReservationDetail = () => {
                 ...editData,
                 reservationTime: combinedDateTime, // 결합된 값을 사용
             };
-            await axiosInstance.put( `${host}/api/member/reservation/${reservationId}`, requestData, urlList())
+            await axiosInstance.put( `${host}/api/member/reservation/${reservationId}`, requestData)
                 .then(res => {
                     refreshToken(res.data, reissueToken);
                     alert('수정 성공');
@@ -110,7 +110,7 @@ const ReservationDetail = () => {
     
     const confirmCancel = async () => {
         if (window.confirm('정말로 예약을 취소하시겠습니까?')) {
-           await axiosInstance.delete(`${host}/api/member/reservation/${reservationId}`, urlList())
+           await axiosInstance.delete(`${host}/api/member/reservation/${reservationId}`)
                 .then(res => {
                     refreshToken(res.data, reissueToken);
                     alert('예약이 취소되었습니다.');
