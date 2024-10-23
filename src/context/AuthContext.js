@@ -113,12 +113,8 @@ export const clearCookie = () => {
     Cookies.remove('refreshToken');
 }
 
-export const urlList = (method, path) => {
-    const host = 'http://localhost:8080';
+export const urlList = () => {
     return {
-        url: path,
-        method: method,
-        baseURL: host,
         headers: {Authorization_Access: Cookies.get('accessToken'), Authorization_Refresh: Cookies.get('refreshToken')}
     }
 }

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useLocation, useParams} from 'react-router-dom';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import '../css/default.css';
 import '../css/mypageMutual.css';
 import '../css/myPageReservationDetail.css'
@@ -7,7 +7,10 @@ import MypageSidebar from "../components/MypageSidebar";
 import {refreshToken, sub, urlList, useAuth} from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
 
+const host = process.env.REACT_APP_BACKEND_URL;
+
 const ReservationDetail = () => {
+    const navigate = useNavigate();
     const {id} = useParams();
     const {reissueToken} = useAuth();
     const reservationId = Number(id);
@@ -17,8 +20,9 @@ const ReservationDetail = () => {
     const [editData, setEditData] = useState({})
 
     useEffect(() => {
+
         const fetchData = async () => {
-            axiosInstance(urlList('get',`/api/member/reservation/${reservationId}`))
+            axiosInstance.get(`${host}/api/member/reservation/${reservationId}`, urlList())
                 .then(res => {
                     refreshToken(res.data, reissueToken);
                     setData( res.data.status ? res.data.results : {} );
@@ -51,7 +55,6 @@ const ReservationDetail = () => {
             options.push(start.toTimeString().slice(0, 5)); // HH:mm 형식으로 추가
             start.setMinutes(start.getMinutes() + 30); // 30분 단위로 증가
         }
-
         setTimeOptions(options);
     };
 
@@ -82,7 +85,7 @@ const ReservationDetail = () => {
             }));
     };
 
-    const confirmSave = () => {
+    const confirmSave = async () => {
         if (window.confirm('정말로 수정 내용을 저장하시겠습니까?')) {
             const [date, time] = [editData.reservationDate, editData.reservationTime];
             const combinedDateTime = `${date} ${time}`;
@@ -90,9 +93,9 @@ const ReservationDetail = () => {
                 ...editData,
                 reservationTime: combinedDateTime, // 결합된 값을 사용
             };
-            const host  = urlList('put', `/api/member/reservation/${reservationId}`);
-            axiosInstance.put(host.baseURL + host.url, requestData, host.headers)
+            await axiosInstance.put( `${host}/api/member/reservation/${reservationId}`, requestData, urlList())
                 .then(res => {
+                    refreshToken(res.data, reissueToken);
                     alert('수정 성공');
                 })
                 .catch(error => console.log(error));
@@ -101,15 +104,21 @@ const ReservationDetail = () => {
     
     const cancelEdit = () => {
         if (window.confirm('수정 내용을 취소하시겠습니까? 변경 사항이 저장되지 않습니다.')) {
-            window.location.href = '/mypage/reservationList';
+            navigate('/mypage/reservationlist');
         }
     };
     
-    const confirmCancel = () => {
+    const confirmCancel = async () => {
         if (window.confirm('정말로 예약을 취소하시겠습니까?')) {
-            alert('예약이 취소되었습니다.');
-            // 취소 요청을 서버로 전송하는 코드 추가
-            window.location.href = '/mypage/reservationList';
+           await axiosInstance.delete(`${host}/api/member/reservation/${reservationId}`, urlList())
+                .then(res => {
+                    refreshToken(res.data, reissueToken);
+                    alert('예약이 취소되었습니다.');
+                    navigate('/mypage/reservationlist');
+                })
+                .catch(error => {
+                    alert(error);
+                });
         }
     };
     return (
