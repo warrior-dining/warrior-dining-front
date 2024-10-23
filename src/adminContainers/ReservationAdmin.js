@@ -16,8 +16,7 @@ const ReservationAdmin = () => {
     const {reissueToken} = useAuth();
 
     useEffect(() => {
-        const {url} = urlList("get", `/api/admin/reservations/?page=${page}&size=${pageSize}&status=${sortType}&type=${searchType}&keyword=${searchKeyword}`);
-        axiosInstance(url)
+        axiosInstance.get(`/api/admin/reservations/?page=${page}&size=${pageSize}&status=${sortType}&type=${searchType}&keyword=${searchKeyword}`)
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 setData(res.data.results.content);
@@ -27,12 +26,11 @@ const ReservationAdmin = () => {
     }, [page, pageSize, sortType, searchKeyword]);
 
     const handleUpdateStatus = (id) => {
-        const {url} = urlList("patch", `/api/admin/reservations/${id}`)
         const confirmCancel = window.confirm("예약을 취소하시겠습니까?");
         if (!confirmCancel) {
             return;
         }
-        axiosInstance.patch(url, { status: 14 })
+        axiosInstance.patch(`/api/admin/reservations/${id}`, { status: 14 })
             .then(res => {
                 alert("예약이 정상적으로 취소되었습니다.")
                 setSortType('13');

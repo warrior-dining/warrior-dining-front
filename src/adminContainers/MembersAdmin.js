@@ -1,7 +1,7 @@
 import {useNavigate} from "react-router-dom";
 import '../css/memberList.css';
 import React, {useEffect, useRef, useState} from "react";
-import { urlList, useAuth, refreshToken } from "../context/AuthContext";
+import { useAuth, refreshToken } from "../context/AuthContext";
 import axiosInstance from "../context/AxiosInstance";
 
 
@@ -60,17 +60,16 @@ const MembersAdmin = () => {
     // 검색어가 있을 때는 FindByKeyword, 없을 때는 FindByAll 사용
     useEffect(() => {
         const fetchData = async () => {
-            const {url} =  urlList("get", `/api/admin/members/?type=${searchType}&keyword=${searchKeyword}&page=${0}&size=${pageSize}`);
-            try {
-                const result = await axiosInstance(url);
-                refreshToken(result.data, reissueToken);
-                setList(result.data.status ? result.data.results.content : []);
-                setTotalPages(result.data.status ? result.data.results.totalPages : 0);
-            } catch (error) {
+            await axiosInstance.get(`/api/admin/members/?type=${searchType}&keyword=${searchKeyword}&page=${0}&size=${pageSize}`)
+            .then(res => {
+                refreshToken(res.data, reissueToken);
+                setList(res.data.status ? res.data.res.content : []);
+                setTotalPages(res.data.status ? res.data.results.totalPages : 0);
+            })
+            .catch(error => {
                 setError(error);
-                console.log(error);
-            }
-        };
+            })
+        }
         fetchData();
     }, [page, pageSize, searchKeyword]);
 

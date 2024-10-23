@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../css/restaurantCreate.css';
 import {useNavigate} from "react-router-dom";
-import { urlList, useAuth, refreshToken } from '../context/AuthContext';
+import { useAuth, refreshToken } from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
 
 
@@ -123,7 +123,6 @@ const PlaceAdd = () => {
 
     const submitEvent = (e) => {
         e.preventDefault();
-        const {url} = urlList("post", "/api/admin/places/")
         const formData = new FormData();
         uploadImages.forEach(img => {
             formData.append("file", img );
@@ -131,7 +130,7 @@ const PlaceAdd = () => {
         formData.append("menu", JSON.stringify(menuItems) );
         formData.append("place", JSON.stringify(placeInfo) );
 
-        axiosInstance.post(url, formData)
+        axiosInstance.post("/api/admin/places/", formData)
             .then((res) => {
                 refreshToken(res.data, reissueToken);
                 if(res.data.status === true) {

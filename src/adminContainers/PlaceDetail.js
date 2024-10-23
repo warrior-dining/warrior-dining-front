@@ -1,25 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import '../css/restaurantCreate.css';
 import {useNavigate, useParams} from "react-router-dom";
-import {FindById} from "../api/DataApi";
-import { urlList } from '../context/AuthContext';
-
+import axiosInstance from "../context/AxiosInstance";
 
 const PlaceDetail = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const {url} = urlList("get", `/api/admin/places/info/${id}`);
-    const [response, error] = FindById(url);
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        if(error) {
-            console.log(error);
+        const fetchData = async () => {
+            await axiosInstance.get(`/api/admin/places/info/${id}`)
+            .then(res => {
+                if(res.data) {
+                    setData(res.data.status ? res.data.results : []);
+                }
+            })
+            .catch(error => {
+                if(error) {
+                    console.log(error);
+                }
+            })
         }
-        if(response.data) {
-            setData(response.data.status ? response.data.results : []);
-        }
-    }, [response, error]);
+        fetchData();
+    }, []);
+
     const images = [];
     const clickEvent = () => {
         navigate("/admin/places/edit/"+Number(id));
