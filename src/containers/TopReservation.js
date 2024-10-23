@@ -4,8 +4,9 @@ import '../css/reservationTop10.css';
 import '../css/home.css';
 import '../css/monthBest.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const host = "http://localhost:8080/api/restaurant/top";
+const host = process.env.REACT_APP_BACKEND_URL;
 
 const TopReservation = () => {
   const navigate = useNavigate();
@@ -28,8 +29,8 @@ const TopReservation = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(host);
-        const data = await response.json();
+        const response = await axios.get(`${host}/api/restaurant/top`);
+        const data = response.data;
 
         if (Array.isArray(data)) {
           setRatings(data.slice(0, 10)); 
