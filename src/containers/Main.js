@@ -4,8 +4,6 @@ import { useNavigate} from 'react-router-dom';
 import { initReviewSlider } from '../components/ReviewSlider';
 import axios from 'axios';
 
-const host = process.env.REACT_APP_BACKEND_URL;
-
 const HeroSection = () => {
     const navigate = useNavigate();
 
@@ -59,7 +57,7 @@ const ReviewSection = () => {
       const reviewWrapper = reviewWrapperRef.current; 
       const fetchRestaurantsReviews = async () => {
         try {
-          const response = await axios.get(`${host}/api/restaurant/reviews`);
+          const response = await axios.get(`/api/restaurant/reviews`);
           setRestaurantsReviews(response.data);
         } catch (error) {
           console.error("리뷰가 존재 하지 않습니다 : " , error);
@@ -104,7 +102,7 @@ const MainContent = () => {
   useEffect(() => {
     const fetchTopRestaurants = async () => {
       try {
-        const response = await axios.get(`${host}/api/restaurant/top`);
+        const response = await axios.get(`/api/restaurant/top`);
         setTopRestaurants(response.data.slice(0, 4));
       } catch (error) {
         console.error("데이터가 존재 하지 않습니다 : ", error);
@@ -113,7 +111,7 @@ const MainContent = () => {
 
     const fetchMonthBestRestaurants = async () => {
       try {
-        const response = await axios.get(`${host}/api/restaurant/month`);
+        const response = await axios.get(`/api/restaurant/month`);
         setMonthBestRestaurants(response.data.slice(0, 4)); 
       } catch (error) {
         console.error("데이터가 존재 하지 않습니다 : ", error);
