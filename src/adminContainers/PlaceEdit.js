@@ -1,34 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import '../css/restaurantCreate.css';
 import {useNavigate, useParams} from "react-router-dom";
-import axios from "axios";
-import {FindById} from "../api/DataApi";
-
-
-const infoHost = "http://localhost:8080/api/admin/places/info/"
-
-
-const editHost = "http://localhost:8080/api/admin/places/"
+import { useAuth, refreshToken } from '../context/AuthContext';
+import axiosInstance from '../context/AxiosInstance';
 
 const PlaceEdit = () => {
     const [daum, setDaum] = useState(null);
     const { id } = useParams();
-    const url = infoHost + Number(id);
-    const [response, error] = FindById(url);
     const [data, setData] = useState([]);
     const [viewImages, setViewImages] = useState([]);
     const [uploadImages, setUploadImages] = useState([]);
     const [existingImages, setExistingImages] = useState([])
     const [menuItems, setMenuItems] = useState([{ id: 1, menu: '', price: '' }]);
+    const [error, setError] = useState('');
+    const {reissueToken} = useAuth();
+    
 
     useEffect(() => {
-        if(error) {
-            console.log(error);
+        const fetchData = async () => {
+            await axiosInstance.get(`/api/admin/places/info/${id}`)
+            .then(res =>{
+                if(res.data) {
+                    setData(res.data.status ? res.data.results : []);
+                }
+            })
+            .catch(error => {
+                if(error) {
+                    console.log(error);
+                }
+            })
         }
-        if(response.data) {
-            setData(response.data.status ? response.data.results : []);
-        }
-    }, [response, error]);
+        fetchData();
+    }, []);
 
 
     const navigator = useNavigate();
@@ -165,7 +168,6 @@ const PlaceEdit = () => {
             alert("이미지를 한개이상 입력하세요.");
             return;
         }
-
         const formData = new FormData();
         uploadImages.forEach(img => {
             formData.append("file", img );
@@ -174,14 +176,18 @@ const PlaceEdit = () => {
         formData.append("menu", JSON.stringify(menuItems) );
         formData.append("place", JSON.stringify(placeInfo) );
 
-        axios.put(editHost+Number(id), formData)
+        axiosInstance.put(`/api/admin/places/${id}`, formData)
             .then((res) => {
+                refreshToken(res.data, reissueToken);
+                if(res.data.status === true) {
                 alert('정보가 수정되었습니다.!');
-                console.log(res);
                 navigator("/admin/places/info/"+ res.data.results.id);
                 // 예시
+                }
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+                if (error.response) { setError(error.response.data.message);}
+            });
     }
 
     if (!data || data.length === 0) {
@@ -328,6 +334,7 @@ const PlaceEdit = () => {
                             <div className="form-actions">
                                 <button type="submit">저장하기</button>
                             </div>
+                            {error && <div className="error">{error}</div>}
                         </form>
                     </div>
                 </div>

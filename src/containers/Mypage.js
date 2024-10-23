@@ -4,16 +4,16 @@ import '../css/mypageMutual.css';
 import '../css/myPage.css';
 import '../css/default.css';
 import MypageSidebar from "../components/MypageSidebar";
-import {refreshToken, urlList, useAuth} from '../context/AuthContext';
+import {useAuth, urlList, refreshToken} from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
 
 
 const Mypage = () => {
     const {reissueToken} = useAuth();
-    const [user, setUser] = useState({name: '', email: '', phone: '', flag: ''});
+    const [user, setUser] = useState({name: '', email: '', phone: ''});
 
     useEffect(() => {
-        axiosInstance.get(`/api/user`, urlList())
+        axiosInstance.get(`/api/user`)
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 if (res.data.status) {

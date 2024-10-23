@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams} from "react-router-dom";
 import axiosInstance from '../context/AxiosInstance';
-import { useAuth } from "../context/AuthContext";
+import { useAuth, refreshToken } from "../context/AuthContext";
 import '../css/InquiriesDetailAdmin.css';
 
-const host = "http://localhost:8080/api/admin/inquiries/";
 
 const InquirieDtailsAdmin = () => {
 
@@ -12,11 +11,12 @@ const InquirieDtailsAdmin = () => {
     const inquiriesId = Number(id);
     const [data, setData] = useState(null);
     const [content, setContent] = useState("");
-    const {sub} = useAuth();
+    const {sub,reissueToken } = useAuth();
 
     useEffect(() => {
-        axiosInstance.get(host + inquiriesId)
+        axiosInstance.get(`/api/admin/inquiries/${inquiriesId}`)
             .then(res => {
+                refreshToken(res.data, reissueToken);
                 setData(res.data.results);
                 setContent(res.data.results.answer ? res.data.results.answer.content : ""); // 초기 content 설정
             })
@@ -29,12 +29,13 @@ const InquirieDtailsAdmin = () => {
 
     const SubmitEvent = e => {
         e.preventDefault();
-        axiosInstance.post(host + inquiriesId, { content: content, email: sub })
-            .then(res => {
-                // 필요 시 추가 로직
+        const requestData = { content: content, email: sub };
+        axiosInstance.post(`/api/admin/inquiries/${inquiriesId}`, requestData)
+            .then(res => { 
+                refreshToken(res.data, reissueToken);
                 window.location.reload();
             })
-            .catch(error => console.log(error));
+            .catch(error => console.log("Error:", error.response));
     }
 
     const handleKeyDown = (e) => {

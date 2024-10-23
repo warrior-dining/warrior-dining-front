@@ -1,12 +1,14 @@
 import React, {useRef, useState} from 'react';
 import {useEffect} from 'react';
-import axios from 'axios';
 import '../css/reviewsAdmin.css';
+import { refreshToken, useAuth } from '../context/AuthContext';
+import axiosInstance from '../context/AxiosInstance';
 
-const host = "http://localhost:8080/api/admin/reviews/";
 
 const ReviewList = ({data, setData}) => {
     const [expandedRowIds, setExpandedRowIds] = useState([]);
+    const {reissueToken} = useAuth();
+    
 
     const handleRowClick = (id) => {
         setExpandedRowIds((prev) =>
@@ -25,7 +27,7 @@ const ReviewList = ({data, setData}) => {
 
     const truncateContent = (content) => {
         if (content.length > 5) {
-            return content.slice(0, 5) + '...'; // 5글자 이상이면 잘라내고 ... 추가
+            return content.slice(0, 5) + '...'; // 5글자 이상이면 잘라내고 ... 
         }
         return content;
     };
@@ -34,8 +36,9 @@ const ReviewList = ({data, setData}) => {
         setData(prevData => prevData.map(item =>
             item.id === id ? {...item, isDeleted: true} : item
         ));
-        axios.patch(`${host}${id}`) // 상태 업데이트를 위한 요청
+        axiosInstance.patch(`/api/admin/reviews/${id}`) // 상태 업데이트를 위한 요청
             .then(res => {
+                refreshToken(res.data, reissueToken);
                 window.location.reload();
             })
             .catch(error => {
@@ -64,25 +67,28 @@ const ReviewList = ({data, setData}) => {
                 </tr>
                 </thead>
                 <tbody>
-                {data.map((row, index) => (
-                    <React.Fragment key={index}>
-                        <tr onClick={() => handleRowClick(row.id)}>
-                            <td>{row.id}</td>
-                            <td>{row.user.name}</td>
-                            <td>{row.place.name}</td>
-                            <td>{getStars(row.rating)}</td>
-                            <td>{truncateContent(row.content)}</td>
-                            <td>{row.createdAt}</td>
-                            <td>{row.deleted ? '비활성화' : '활성화'}</td>
-                            <td className="actions">
-                                {row.status === '0' ? '1' : (
-                                        <button className="delete"
-                                                style={{display: row.deleted ? 'none' : ''}}
-                                                onClick={(e) => {
-                                                    e.stopPropagation(); //tr 태그의 온클릭 이벤트 비활성화.
-                                                    handleUpdateStatus(row.id)
-                                                }}>삭제</button>
-                                )}
+                {data.length === 0 ? (
+                    <tr></tr>
+                ) : (
+                    data.map((row) => (
+                        <React.Fragment key={row.id}>
+                            <tr onClick={() => handleRowClick(row.id)}>
+                                <td>{row.id}</td>
+                                <td>{row.user.name}</td>
+                                <td>{row.place.name}</td>
+                                <td>{getStars(row.rating)}</td>
+                                <td>{truncateContent(row.content)}</td>
+                                <td>{row.createdAt}</td>
+                                <td>{row.deleted ? '비활성화' : '활성화'}</td>
+                                <td className="actions">
+                                    {row.status === '0' ? '1' : (
+                                            <button className="delete"
+                                                    style={{display: row.deleted ? 'none' : ''}}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation(); //tr 태그의 온클릭 이벤트 비활성화.
+                                                        handleUpdateStatus(row.id)
+                                                    }}>삭제</button>
+                                    )}
                             </td>
                         </tr>
                         {expandedRowIds.includes(row.id) && (
@@ -94,7 +100,8 @@ const ReviewList = ({data, setData}) => {
                             </tr>
                         )}
                     </React.Fragment>
-                ))}
+                ))
+            )}
                 </tbody>
             </table>
         </>
@@ -110,14 +117,16 @@ const ReviewsAdmin = () => {
     const [pageSize, setPageSize] = useState(10);
     const [totalPages, setTotalPages] = useState(0);
     const [sortType, setSortType] = useState('');
+    const {reissueToken} = useAuth();
+
     
     useEffect(() => {
         const fetchData = async () => {
-            let url = `${host}?searchtype=${searchType}&searchkeyword=${searchKeyword}&page=${page}&size=${pageSize}&sorttype=${sortType}`;
-            axios.get(url)
-                .then(res => {
-                    setData(res.data.status ? res.data.results.content : []);
-                    setTotalPages(res.data.status ? res.data.results.totalPages : 0);
+            await axiosInstance.get(`/api/admin/reviews/?searchtype=${searchType}&searchkeyword=${searchKeyword}&page=${page}&size=${pageSize}&sorttype=${sortType}`)
+            .then(res => {
+                refreshToken(res.data, reissueToken);
+                setData(res.data.status ? res.data.results.content : []);
+                setTotalPages(res.data.status ? res.data.results.totalPages : 0);
                 })
                 .catch(error => console.log(error));
         }
@@ -143,13 +152,10 @@ const ReviewsAdmin = () => {
     };
     const paginationNumbers = getPaginationNumbers();
 
-    if (!data || (Array.isArray(data) && data.length === 0)) {
-        return <div>Loading...</div>; // 데이터가 로드되기 전까지 로딩 메시지 표시
-    }
     return (
         <>
             <main>
-                <div className="container">
+                <div className="review-container">
                     <h2 className="main-title">사용자 리뷰 전체 목록</h2>
                     <div className="admin-filter-search-container">
                         <div className="admin-filter-bar">
@@ -163,8 +169,8 @@ const ReviewsAdmin = () => {
                             </select>
                             <select value={sortType} onChange={(e) => { setSortType(e.target.value) }}>
                                 <option>상태</option>
-                                <option value="true">활성화</option>
-                                <option value="false">비활성화</option>
+                                <option value="true">비활성화</option>
+                                <option value="false">활성화</option>
                             </select>
                             <select value={sortType} onChange={(e) => { setSortType(e.target.value) }}>
                                 <option>정렬 기준</option>
@@ -184,8 +190,9 @@ const ReviewsAdmin = () => {
                             </div>
                         </form>
                     </div>
-                    <ReviewList data={data} setData={setData}/>
-                    <div className="pagination">
+                    <ReviewList data={data} setData={setData} />
+                </div>
+                <div className="review-pagination">
                         <a href="#"
                            onClick={(e) => {
                                e.preventDefault();
@@ -210,7 +217,6 @@ const ReviewsAdmin = () => {
                            }}
                            disabled={page >= totalPages - 1}> 다음 </a>
                     </div>
-                </div>
             </main>
         </>
     );

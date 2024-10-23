@@ -2,8 +2,9 @@
 import React, { useState,useEffect, useRef } from 'react';
 import { useNavigate} from 'react-router-dom'; 
 import { initReviewSlider } from '../components/ReviewSlider';
+import axios from 'axios';
 
-const host = "http://localhost:8080/api/restaurant"
+const host = process.env.REACT_APP_BACKEND_URL;
 
 const HeroSection = () => {
     const navigate = useNavigate();
@@ -58,9 +59,8 @@ const ReviewSection = () => {
       const reviewWrapper = reviewWrapperRef.current; 
       const fetchRestaurantsReviews = async () => {
         try {
-          const response = await fetch(`${host}/reviews`);
-          const data = await response.json();
-          setRestaurantsReviews(data);
+          const response = await axios.get(`${host}/api/restaurant/reviews`);
+          setRestaurantsReviews(response.data);
         } catch (error) {
           console.error("리뷰가 존재 하지 않습니다 : " , error);
         }
@@ -104,9 +104,8 @@ const MainContent = () => {
   useEffect(() => {
     const fetchTopRestaurants = async () => {
       try {
-        const response = await fetch(`${host}/top`);
-        const data = await response.json();
-        setTopRestaurants(data.slice(0, 4));
+        const response = await axios.get(`${host}/api/restaurant/top`);
+        setTopRestaurants(response.data.slice(0, 4));
       } catch (error) {
         console.error("데이터가 존재 하지 않습니다 : ", error);
       }
@@ -114,15 +113,13 @@ const MainContent = () => {
 
     const fetchMonthBestRestaurants = async () => {
       try {
-        const response = await fetch(`${host}/month`);
-        const data = await response.json();
-        setMonthBestRestaurants(data.slice(0, 4)); 
+        const response = await axios.get(`${host}/api/restaurant/month`);
+        setMonthBestRestaurants(response.data.slice(0, 4)); 
       } catch (error) {
         console.error("데이터가 존재 하지 않습니다 : ", error);
       }
     };
 
-    
     fetchTopRestaurants();
     fetchMonthBestRestaurants();
   }, []);

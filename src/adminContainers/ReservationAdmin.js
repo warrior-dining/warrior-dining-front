@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import '../css/reservationManagement.css';
-
-const host = "http://localhost:8080/api/admin/reservations/";
+import axiosInstance from "../context/AxiosInstance";
+import { urlList, useAuth, refreshToken } from "../context/AuthContext";
 
 const ReservationAdmin = () => {
     const [sortType, setSortType] = useState('');
@@ -14,13 +13,12 @@ const ReservationAdmin = () => {
     const searchKeywordRef= useRef('');
     const [searchType, setSearchType] = useState('id');
     const [searchKeyword, setSearchKeyword] = useState('');
-
+    const {reissueToken} = useAuth();
 
     useEffect(() => {
-         // URL 정의 type=${searchType}&keyword=${searchKeyword}&
-        let url = `${host}?page=${page}&size=${pageSize}&status=${sortType}&type=${searchType}&keyword=${searchKeyword}`;
-        axios.get(url)
+        axiosInstance.get(`/api/admin/reservations/?page=${page}&size=${pageSize}&status=${sortType}&type=${searchType}&keyword=${searchKeyword}`)
             .then(res => {
+                refreshToken(res.data, reissueToken);
                 setData(res.data.results.content);
                 setTotalPages(res.data.results.totalPages);
             })
@@ -32,7 +30,7 @@ const ReservationAdmin = () => {
         if (!confirmCancel) {
             return;
         }
-        axios.patch(`${host}${id}`, { status: 14 })
+        axiosInstance.patch(`/api/admin/reservations/${id}`, { status: 14 })
             .then(res => {
                 alert("예약이 정상적으로 취소되었습니다.")
                 setSortType('13');
@@ -65,10 +63,6 @@ const ReservationAdmin = () => {
     };
 
     const paginationNumbers = getPaginationNumbers();
-    
-    if (!data || data.length === 0) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <main>
@@ -96,8 +90,11 @@ const ReservationAdmin = () => {
                         </form>
                     </div>
                     <div className="reservation-container">
-                        {data.map((row) => (
-                            <div className="reservation-item" key={row.id} onClick={() => toggleDetails(row.id)} style={{ cursor: 'pointer' }}>
+                        {data.length === 0 ? (
+                            <div></div>
+                        ) : (
+                        data.map((row) => (
+                            <div className="reservation-item" key={row.id} onClick={() => toggleDetails(row.id)}>
                                 <h3>예약 ID: {row.id}</h3>
                                 <p>
                                     고객 이름: {row.user.name}
@@ -120,7 +117,8 @@ const ReservationAdmin = () => {
                                     )}
                                 </div>
                             </div>
-                        ))}
+                        ))
+                    )}
                     </div>
                     <div className="reservation-pagination-container">
                         <div className="reservation-pagination">

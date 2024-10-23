@@ -1,12 +1,32 @@
 import axios from 'axios';
 import { clearCookie } from './AuthContext'; // AuthContext 가져오기
+import Cookies from 'js-cookie';
 
+// Axios 인스턴스 생성
 const axiosInstance = axios.create({
-    baseURL: process.env.REACT_APP_API_BASE_URL, // API 기본 URL 설정
-    timeout: 10000, // 요청 후 10초 이내에 응답이 없으면 오류 발생
+    baseURL: process.env.REACT_APP_API_BASE_URL,
+    timeout: 10000,
 });
 
-// 응답에 대한 인터셉터 설정
+// 요청 인터셉터 설정
+axiosInstance.interceptors.request.use(
+    config => {
+        const accessToken = Cookies.get('accessToken');
+        const refreshToken = Cookies.get('refreshToken');
+        if (accessToken) {
+            config.headers['Authorization_Access'] = accessToken; // 액세스 토큰 추가
+        }
+        if (refreshToken) {
+            config.headers['Authorization_Refresh'] = refreshToken; // 리프레시 토큰 추가
+        }
+        return config;
+    },
+    error => {
+        return Promise.reject(error);
+    }
+);
+
+// 응답 인터셉터 설정
 axiosInstance.interceptors.response.use(
     response => response,
     error => {
