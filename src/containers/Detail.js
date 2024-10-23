@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import '../css/default.css';
 import '../css/detail.css';
-import {useAuth, urlList} from '../context/AuthContext';
+import {useAuth } from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
+import axios from "axios";
+import {Map, MapMarker , useKakaoLoader} from "react-kakao-maps-sdk";
+import markerImage from '../image/warriors_dining_marker.png';
 
-
-const host = "http://localhost:8080/api/restaurant";
 
 const Detail = () => {
     const [restaurantDetail, setRestaurantDetail] = useState(null);
@@ -18,23 +19,17 @@ const Detail = () => {
     const { id } = useParams(); // URL에서 placeId 가져오기
 
     useEffect(() => {
-        fetchRestaurantDetail();
-    }, [id]);
-
-    const fetchRestaurantDetail = async () => {
-        try {
-            const response = await fetch(`${host}/${id}`);
-            const data = await response.json();
-
-            if (data.content && data.content.length > 0) {
-                setRestaurantDetail(data.content[0]); 
-            } else {
-                setRestaurantDetail(null); 
-            }
-        } catch (error) {
-            console.error("Failed to fetch restaurant detail:", error);
-        }
-    };
+        const fetchData = async () => {
+            await axios.get(`/api/restaurant/${id}`)
+                .then(res => {
+                    if(res.data.content && res.data.content.length > 0) {
+                        setRestaurantDetail(res.data.content[0]);
+                    }
+                })
+                .catch(error => alert(error));
+        };
+        fetchData();
+    }, []);
 
     const handleOpenModal = (e) => {
         e.preventDefault();
@@ -82,6 +77,7 @@ const Detail = () => {
     return (
         <div className="container">
             <RestaurantDetails restaurant={restaurantDetail} onOpenModal={handleOpenModal} />
+            <LocationSection restaurant={restaurantDetail} />
             <MenuSection 
                 menus={restaurantDetail.placeMenus} 
                 visibleMenus={visibleMenus} 
@@ -142,11 +138,63 @@ const RestaurantDetails = ({ restaurant, onOpenModal }) => {
     );
 };
 
-const MenuSection = ({ menus, visibleMenus, loadMoreMenus, showMoreMenus, toggleMenus }) => (
+const LocationSection = ({restaurant}) => {
+    const [state, setState] = useState({
+        // 지도의 초기 위치
+        center: { lat: 37.49676871972202, lng: 127.02474726969814 },
+        // 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
+        isPanto: true,
+    });
+
+    useEffect(() => {
+        SearchMap();
+    }, [restaurant.addressNew]);
+
+    const SearchMap = () => {
+        const geocoder = new window.kakao.maps.services.Geocoder();
+
+        let callback = function(result, status) {
+            if (status === window.kakao.maps.services.Status.OK) {
+                const newSearch = result[0]
+                setState({
+                    center: { lat: newSearch.y, lng: newSearch.x }
+                })
+            }
+        };
+        geocoder.addressSearch(`${restaurant.addressNew}`, callback);
+    }
+
+    return (
+        <section className="location-detail">
+            <h2 className="section-title">위치</h2>
+            <div className="location-content">
+                <Map center={state.center} isPanto={state.isPanto} style={{ width: "100%", height: "450px" }} level={3}>
+                    <MapMarker position={state.center}
+                               image={{
+                                   src: markerImage, // 마커이미지의 주소입니다
+                                   size: {
+                                       width: 64,
+                                       height: 69,
+                                   }, // 마커이미지의 크기입니다
+                                   options: {
+                                       offset: {
+                                           x: 27,
+                                           y: 69,
+                                       }, // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+                                   },
+                               }}
+                    ></MapMarker>
+                </Map>
+            </div>
+        </section>
+    );
+}
+
+const MenuSection = ({menus, visibleMenus, loadMoreMenus, showMoreMenus, toggleMenus}) => (
     <section className="RD-menu-section">
         <h2 className="section-title">메뉴</h2>
         {menus.slice(0, visibleMenus).map(item => (
-            <MenuItem key={item.id} item={item} />
+            <MenuItem key={item.id} item={item}/>
         ))}
         {showMoreMenus && (
             <a className="more-link" onClick={loadMoreMenus}>
@@ -161,18 +209,18 @@ const MenuSection = ({ menus, visibleMenus, loadMoreMenus, showMoreMenus, toggle
     </section>
 );
 
-const MenuItem = ({ item }) => (
+const MenuItem = ({item}) => (
     <div className="Detail-menu-item">
         <h3>{item.menu}</h3>
         <p>{item.price.toLocaleString()} 원</p> {/* 가격 포맷팅 */}
     </div>
 );
 
-const ReviewsSection = ({ reviews, visibleReviews, loadMoreReviews, showMoreReviews, toggleReviews }) => (
+const ReviewsSection = ({reviews, visibleReviews, loadMoreReviews, showMoreReviews, toggleReviews}) => (
     <section className="RD-reviews-section">
         <h2 className="section-title">리뷰</h2>
         {reviews.slice(0, visibleReviews).map((review, index) => (
-            <ReviewCard key={index} review={review} />
+            <ReviewCard key={index} review={review}/>
         ))}
         {showMoreReviews && (
             <a className="more-link" onClick={loadMoreReviews}>
@@ -212,6 +260,7 @@ const ReservationModal = ({restaurant ,onClose }) => {
 };
 
 const ReservationForm = ({ restaurant }) => {
+    const navigate = useNavigate();
     const restaurantData = restaurant;
     const [reservationDate, setReservationDate] = useState(null);
     const [reservationTime, setReservationTime] = useState(null);
@@ -252,7 +301,6 @@ const ReservationForm = ({ restaurant }) => {
 
     const submitEvent = (e) => {
         e.preventDefault();
-        const host = urlList("/api/member/reservation/");
         const reservationData = {
             userEmail : sub,
             placeId : restaurantData.id,
@@ -261,10 +309,10 @@ const ReservationForm = ({ restaurant }) => {
             count : count,
             orderNote : orderNote
         }
-        console.log(reservationData);
-        axiosInstance.post(host.baseURL + host.url, reservationData , host.headers )
+        axiosInstance.post("/api/member/reservation/", reservationData)
             .then(res => {
-                alert("성공");
+                alert("예약이 완료 되었습니다.");
+                navigate("/mypage/reservationlist");
             }).catch(error => alert(error));
     };
 
