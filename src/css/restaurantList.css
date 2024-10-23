@@ -134,8 +134,10 @@
 
 /* 반응형 디자인 추가 */
 @media (max-width: 768px) {
+    * {
+        padding-left: 0px;
+    }
     .restaurant-wrapper {
-        
         flex-direction: column;
     }
     .sidebar {
