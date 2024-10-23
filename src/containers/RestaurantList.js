@@ -3,11 +3,12 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 import '../css/default.css';
 import '../css/home.css';
 import '../css/restaurantList.css';
 
-const host = "http://localhost:8080/api/restaurant";
+const host = process.env.REACT_APP_BACKEND_URL;
 
 const fetchRestaurants = async ({ pageParam = 0, queryKey }) => {
     const [, search, category, price] = queryKey;
@@ -23,14 +24,12 @@ const fetchRestaurants = async ({ pageParam = 0, queryKey }) => {
         if (maxPrice !== null) endpoint += `&maxPrice=${maxPrice}`;
     }
 
-    const response = await fetch(`${host}${endpoint}`);
-    
-    if (!response.ok) {
-        throw new Error(`서버 연결 불가능: ${response.status}`); // 오류처리
+    try {
+        const response = await axios.get(`${host}/api/restaurant${endpoint}`);
+        return response.data;
+    } catch (error) {
+        throw new Error(`서버 연결 불가능: ${error.response?.status || error.message}`); // 오류처리
     }
-
-    const data = await response.json();
-    return data;
 };
 
 // 가격대에 따라 minPrice와 maxPrice를 반환하는 함수
