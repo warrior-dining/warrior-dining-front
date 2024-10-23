@@ -21,17 +21,13 @@ const ReservationList = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true);
             let url = `${host}?email=${sub}&page=${page}&size=${pageSize}`
-            axios.get(url)
+            await axios.get(url)
                 .then(res => {
                     setData( res.data.status ? res.data.results.content : [] );
                     setTotalPages(res.data.status ? res.data.results.totalPages : 0);
                 })
                 .catch(error => console.log(error))
-                .finally(() => {
-                    setLoading(false);
-                })
         };
         fetchData();
     }, [page, pageSize]);
@@ -75,7 +71,7 @@ const ReservationList = () => {
                                 {row.reservationStatus === "대기" ?
                                     <button
                                         className="myreservationList-button"
-                                        onClick={() => navigate(`/mypage/reservationdetail/`)}> 예약 수정/취소 </button>
+                                        onClick={() => navigate(`/mypage/reservationdetail/${row.id}`)}> 예약 수정/취소 </button>
                                     : ""
                                 }
                                 {row.reservationStatus === "완료" ? (
