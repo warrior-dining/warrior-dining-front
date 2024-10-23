@@ -1,7 +1,7 @@
 import {useNavigate} from "react-router-dom";
 import '../css/memberList.css';
 import React, {useEffect, useRef, useState} from "react";
-import { useAuth, refreshToken } from "../context/AuthContext";
+import {refreshToken, useAuth} from "../context/AuthContext";
 import axiosInstance from "../context/AxiosInstance";
 
 
@@ -54,28 +54,28 @@ const MembersAdmin = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [list, setList] = useState([]);
     const [error, setError] = useState(null);
-    const searchKeywordRef= useRef();
+    const searchKeywordRef = useRef();
     const {reissueToken} = useAuth();
 
     // 검색어가 있을 때는 FindByKeyword, 없을 때는 FindByAll 사용
     useEffect(() => {
         const fetchData = async () => {
             await axiosInstance.get(`/api/admin/members/?type=${searchType}&keyword=${searchKeyword}&page=${0}&size=${pageSize}`)
-            .then(res => {
-                refreshToken(res.data, reissueToken);
-                setList(res.data.status ? res.data.res.content : []);
-                setTotalPages(res.data.status ? res.data.results.totalPages : 0);
-            })
-            .catch(error => {
-                setError(error);
-            })
+                .then(res => {
+                    refreshToken(res.data, reissueToken);
+                    setList(res.data.status ? res.data.results.content : []);
+                    setTotalPages(res.data.status ? res.data.results.totalPages : 0);
+                })
+                .catch(error => {
+                    setError(error);
+                })
         }
         fetchData();
     }, [page, pageSize, searchKeyword]);
 
     const searchEvent = (e) => {
         e.preventDefault();
-        if(searchKeyword === null) {
+        if (searchKeyword === null) {
             alert("검색어를 입력하세요.");
             return;
         }
@@ -88,7 +88,7 @@ const MembersAdmin = () => {
         const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
         const endPage = Math.min(totalPages, startPage + maxPagesToShow);
 
-        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+        return Array.from({length: endPage - startPage}, (_, index) => startPage + index);
     };
 
     const paginationNumbers = getPaginationNumbers();
