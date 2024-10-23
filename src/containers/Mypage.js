@@ -4,25 +4,26 @@ import '../css/mypageMutual.css';
 import '../css/myPage.css';
 import '../css/default.css';
 import MypageSidebar from "../components/MypageSidebar";
-import {useAuth, urlList, refreshToken} from '../context/AuthContext';
+import {refreshToken, urlList, useAuth} from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
 
 
 const Mypage = () => {
     const {reissueToken} = useAuth();
-    const [user, setUser] = useState({name: '', email: '', phone: ''});
+    const [user, setUser] = useState({name: '', email: '', phone: '', flag: ''});
 
     useEffect(() => {
-        axiosInstance(urlList("get", "/api/user"))
+        axiosInstance.get(`/api/user`, urlList())
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 if (res.data.status) {
                     const userData = {
                         name: res.data.name,
                         email: res.data.email,
-                        phone: res.data.phone
+                        phone: res.data.phone,
+                        flag: res.data.flag
                     };
-                    setUser(userData); // 사용자 정보 업데이트
+                    setUser(userData);
                 }
             })
             .catch(
@@ -48,16 +49,21 @@ const Mypage = () => {
                         <fieldset>
                             <legend>개인정보</legend>
                             <label htmlFor="name">이름:</label>
-                            <input type="text" id="name" name="name" value={user.name} onChange={changeEvent}/>
+                            <input type="text" id="name" name="name" value={user.name} onChange={changeEvent}
+                                   readOnly/>
 
                             <label htmlFor="email">이메일:</label>
-                            <input type="email" id="email" name="email" value={user.email} onChange={changeEvent}/>
+                            <input type="email" id="email" name="email" value={user.email} onChange={changeEvent}
+                                   readOnly/>
 
                             <label htmlFor="phone">전화번호:</label>
-                            <input type="tel" id="phone" name="phone" value={user.phone} onChange={changeEvent}/>
+                            <input type="tel" id="phone" name="phone" value={user.phone} onChange={changeEvent}
+                                   readOnly/>
                         </fieldset>
 
-                        <Link to="/mypage/edit" className="button">정보 수정</Link>
+                        {(user.flag === 1) && (
+                            <Link to="/mypage/edit" className="button">정보 수정</Link>
+                        )}
                     </form>
                 </div>
             </main>
