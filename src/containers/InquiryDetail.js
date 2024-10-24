@@ -1,33 +1,30 @@
 import React, { useEffect, useState } from "react";
 import '../css/default.css';
 import '../css/inquiry.css';
-import axios from "axios";
+import axiosInstance from '../context/AxiosInstance';
 import { useParams, useNavigate } from "react-router-dom";
 
-const host = "http://localhost:8080/api/member/inquiries/"
 const InquiryDetail = () => {
     const {id} = useParams();
-    const inquiryId = Number(id);
     const [data, setData] = useState([]);
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const navigate = useNavigate();
 
     useEffect(()=> {
-        const url = host + inquiryId;
-        axios.get(url)
+        axiosInstance.get(`/api/member/inquiries/${id}`)
         .then(res => {
             setData(res.data.results);
             setTitle(res.data.results.title);
             setContent(res.data.results.content);
         })
         .catch(error => console.log(error));
-    }, [inquiryId]);
+    }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const updateData = {"title": title, "content": content}
-        axios.put(`${host}${inquiryId}`, updateData)
+        axiosInstance.put(`/api/member/inquiries/${id}`, updateData)
         .then(res => {
         })
         .catch(error => console.log(error));

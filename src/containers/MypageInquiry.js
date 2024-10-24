@@ -7,9 +7,8 @@ import '../css/inquiry.css';
 import '../css/myPageInquiryHistory.css';
 import { Link } from 'react-router-dom';
 import MypageSidebar from "../components/MypageSidebar";
-import axios from "axios";
+import axiosInstance from "../context/AxiosInstance";
 
-const host = "http://localhost:8080/api/member/inquiries/";
 
 const MypageInquiry = () => {
     const navigate = useNavigate();
@@ -21,9 +20,9 @@ const MypageInquiry = () => {
 
     useEffect(()=> {
         if(sub){
-        let url = `${host}?email=${sub}&page=${page}&size=${pageSize}`;
-        axios.get(url)
+        axiosInstance.get(`/api/member/inquiries/?email=${sub}&page=${page}&size=${pageSize}`)
         .then(res => {
+            console.log(res);
             setData(res.data.results.content); 
             setTotalPages(res.data.results.totalPages);
         })

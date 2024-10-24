@@ -6,8 +6,8 @@ import '../css/default.css';
 import '../css/mypageMutual.css';
 import '../css/myReview.css';
 import MypageSidebar from "../components/MypageSidebar";
+import axiosInstance from "../context/AxiosInstance";
 
-const host = "http://localhost:8080/api/member/reviews/";
 
 const MypageReviewlist = () => {
     const navigate = useNavigate();
@@ -20,15 +20,18 @@ const MypageReviewlist = () => {
 
     useEffect(() => {
       if(sub){
-      let url = `${host}?email=${sub}&page=${page}&size=${pageSize}`;
-      axios.get(url)
-      .then(res => {
-        setData(res.data.results.content);
-        setTotalPages(res.data.results.totalPages);
-      })
-      .catch(error => console.log(error));
-    }
-    }, [page, pageSize, reload])
+        const fetchData = async () => {
+        await axiosInstance.get(`/api/member/reviews/?email=${sub}&page=${page}&size=${pageSize}`)
+            .then(res => {
+            console.log(res);
+            setData(res.data.results.content);
+            setTotalPages(res.data.results.totalPages);
+        })
+        .catch(error => console.log(error));
+        }
+        fetchData();
+        }
+     }, [page, pageSize, reload])
 
     const getStars = (rating) => {
       const starCount = parseInt(rating, 10); // 평점을 정수로 변환
@@ -51,7 +54,7 @@ const MypageReviewlist = () => {
             item.id === id ? {...item, isDeleted: true} : item
         ));
         confirmDelete();
-        axios.patch(`${host}${id}`) // 상태 업데이트를 위한 요청
+        axiosInstance.patch(`/api/member/reviews/${id}`) // 상태 업데이트를 위한 요청
             .then(res => {
                 setReload(!reload);
             })

@@ -11,12 +11,11 @@ const InquiryCreate = () => {
     const [content, setContent] = useState('');
     const navigate = useNavigate();
 
-    const host = "http://localhost:8080/api/member/inquiries/";
     const handleSubmit = (e) => {
         e.preventDefault();
 
         const createData = {title: title, content: content, email: sub};
-        axiosInstance.post(`${host}`, createData)
+        axiosInstance.post(`/api/member/inquiries/`, createData)
             .then(res => {
                 refreshToken(reissueToken);
                 navigate(`/mypage/inquiry`);

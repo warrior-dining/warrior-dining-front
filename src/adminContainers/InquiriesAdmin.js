@@ -53,7 +53,7 @@ const InquiriesAdmin = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axiosInstance.get(`/api/admin/inquiries/?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`)
+            await axiosInstance.get(`/api/admin/inquiries?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`)
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 setData(res.data.results.content);

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from '../context/AxiosInstance';
 import '../css/default.css';
 import '../css/home.css';
 import '../css/reviewCreate.css';
@@ -16,8 +16,7 @@ const ReviewComment = () => {
         const [data, setData] = useState([]);
     useEffect(()=> {
         if (reservationId) {
-            const url = host + reservationId;
-            axios.get(url) // 여기가 예약 정보를 가져오는 부분
+            axiosInstance.get(`/api/member/reviews/reservation/${reservationId}`) // 여기가 예약 정보를 가져오는 부분
                 .then(res => {
                     setData(res.data.results); // 예약 정보 상태에 저장
                 })
@@ -38,7 +37,7 @@ const ReviewComment = () => {
             const createData = { rating, review };
     
             // 예약 정보도 함께 전송할 필요가 있다면, 아래와 같이 요청을 보낼 수 있습니다.
-            axios.post(host + reservationId, createData)
+            axiosInstance.post(`/api/member/reviews/reservation/${reservationId}`, createData)
                 .then(res => {
                     // 성공 후 페이지 이동
                     navigate('/mypage/reservationlist');

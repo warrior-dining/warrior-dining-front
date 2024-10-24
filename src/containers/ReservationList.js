@@ -5,9 +5,8 @@ import '../css/mypageMutual.css';
 import '../css/default.css';
 import '../css/myPageReservationList.css';
 import MypageSidebar from "../components/MypageSidebar";
-import axios from "axios";
+import axiosInstance from '../context/AxiosInstance';
 
-const host = "http://localhost:8080/api/member/reservation/"
 
 const ReservationList = () => {
     const {sub} = useAuth();
@@ -21,8 +20,7 @@ const ReservationList = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            let url = `${host}?email=${sub}&page=${page}&size=${pageSize}`
-            await axios.get(url)
+            await axiosInstance.get(`/api/member/reservation/?email=${sub}&page=${page}&size=${pageSize}`)
                 .then(res => {
                     setData( res.data.status ? res.data.results.content : [] );
                     setTotalPages(res.data.status ? res.data.results.totalPages : 0);
@@ -33,7 +31,7 @@ const ReservationList = () => {
     }, [page, pageSize]);
 
     const bookMark = (placeId) => {
-        axios.put("http://localhost:8080/api/member/bookmarks/", {"email": sub, "placeId": placeId})
+        axiosInstance.put("/api/member/bookmarks/", {"email": sub, "placeId": placeId})
             .then(res => {
                 alert("즐겨찾기 등록 완료");
                 navigate("/mypage/bookmark");
