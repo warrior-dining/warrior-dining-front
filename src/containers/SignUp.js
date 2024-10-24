@@ -3,6 +3,8 @@ import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import '../css/SignUp.css';
 
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
+
 const SignUp = () => {
         const navigate = useNavigate();
         const [email, setEmail] = useState('');
@@ -25,7 +27,7 @@ const SignUp = () => {
                 return;
             }
 
-            axios.post('/api/user/signup', {
+            axios.post(`${baseUrl}/api/user/signup`, {
                 email,
                 password,
                 name,
