@@ -54,9 +54,23 @@ const ReviewSection = () => {
   const reviewSlidesRef = useRef([]); 
   const [restaurantReviews, setRestaurantsReviews] = useState([]);
 
+  // 리뷰 작성자 이름 가운데 * 처리
+  const maskName = (name) => {
+    if (name.length === 2) {
+        
+        return name[0] + '*';
+    } else if (name.length === 3) {
+        
+        return name[0] + '*' + name[2];
+    } else if (name.length > 3) {
+        
+        const middle = '*'.repeat(name.length - 2); 
+        return name[0] + middle + name[name.length - 1];
+    }
+    return name; 
+};
+
   useEffect(() => {
-      const reviewSlides = reviewSlidesRef.current; 
-      const reviewWrapper = reviewWrapperRef.current; 
       const fetchRestaurantsReviews = async () => {
         try {
           const response = await axios.get(`${baseUrl}/api/restaurant/reviews`);
@@ -66,13 +80,21 @@ const ReviewSection = () => {
         }
       };
       fetchRestaurantsReviews();
-
-      const cleanup = initReviewSlider(reviewWrapper, reviewSlides);
-
-      return () => {
-          cleanup(); 
-      };
   }, []);
+
+  useEffect(() => {
+      if (restaurantReviews.length > 0 && reviewWrapperRef.current) {
+          const reviewSlides = reviewSlidesRef.current; 
+          const reviewWrapper = reviewWrapperRef.current;
+
+          // 슬라이드가 제대로 렌더링된 후에 슬라이더 초기화
+          const cleanup = initReviewSlider(reviewWrapper, reviewSlides);
+
+          return () => {
+              cleanup(); 
+          };
+      }
+  }, [restaurantReviews]);
 
   return (
       <section className="review-section">
@@ -84,8 +106,9 @@ const ReviewSection = () => {
                           <div className="review-card">
                         
                               <div className="review-content">
-                                  <div className="reviewer-name">{review.name}</div>
+                                  <div className="reviewer-name">{maskName(review.name)}</div>
                                   <div className="review-text">{review.content}</div>
+                                  <div className='review-placeName'>{review.placeName}</div>
                               </div>
                           </div>
                       </div>
