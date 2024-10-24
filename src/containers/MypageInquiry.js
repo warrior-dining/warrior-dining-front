@@ -64,11 +64,9 @@ return (
                             </thead>
                             <tbody>
                                 {data.map((inquiry) => (
-                                    <tr key={inquiry.id}>
+                                    <tr key={inquiry.id} onClick={() => handleEdit(inquiry.id)}>
                                         <td>{inquiry.id}</td>
-                                        <td onClick={() => handleEdit(inquiry.id)}>
-                                            {inquiry.title}
-                                        </td>
+                                        <td>{inquiry.title}</td>
                                         <td>{inquiry.createdAt}</td>
                                         <td className={`status ${inquiry.status}`}>
                                             {inquiry.code.value}

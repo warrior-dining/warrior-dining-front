@@ -49,8 +49,8 @@ const StatisticsSection = ({data}) => {
                     <p>{data.userTotalCount}명</p>
                 </div>
                 <div className="stat-card">
-                    <h3>최근 방문</h3>
-                    <p>12명</p>
+                    <h3>1인당 평균 예약 건수</h3>
+                    <p>평균 {(data.reservationTotalCount/data.userTotalCount).toFixed(1)}건</p>
                 </div>
             </div>
         </section>

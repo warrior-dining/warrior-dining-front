@@ -22,7 +22,6 @@ export const AuthProvider = ({children}) => {
         if (savedAccessToken && savedRefreshToken) {
             setAccessToken(savedAccessToken);
             setRefreshToken(savedRefreshToken);
-            setIsLoggedIn(true);
             try {
                 const decodedToken = jwtDecode(savedAccessToken);
                 setAuth(decodedToken.auth);
@@ -69,6 +68,7 @@ export const AuthProvider = ({children}) => {
             setAuth(decodedToken.auth);
             setSub(decodedToken.sub);
             setIsAdminNav(decodedToken.auth.includes('ADMIN'));
+            setIsLoggedIn(true);
         } catch (error) {
             console.error('토큰 디코딩 오류:', error);
         }
