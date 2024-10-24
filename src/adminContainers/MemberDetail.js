@@ -72,7 +72,6 @@ const Grant = ({callback, data}) => {
 
 const Revoke = ({callback , data}) => {
     const { id } = useParams();
-    // 사용자 권한 확인
 
     const userRoles = data.roles.map(row => row.role);
     const hasOnlyUserRole = userRoles.length === 1 && userRoles[0] === 'USER';
@@ -148,16 +147,15 @@ const MemberDetail = () => {
                 setError(error);
             }
             fetchData();
-        }, [id, load]); // id와 load가 변경될 때마다 호출
+        }, [id, load]); 
 
-    // 에러 처리와 로딩 상태를 여기서 처리
     if (error) {
         console.log(error);
         return <div>Error: {error.message}</div>;
     }
 
     if (!data || data.length === 0) {
-        return <div>Loading...</div>; // 데이터가 로드 중일 때 로딩 표시
+        return <div>Loading...</div>; 
     }
     return (
         <>

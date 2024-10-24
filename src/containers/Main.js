@@ -1,4 +1,3 @@
-
 import React, { useState,useEffect, useRef } from 'react';
 import { useNavigate} from 'react-router-dom'; 
 import { initReviewSlider } from '../components/ReviewSlider';
@@ -107,8 +106,8 @@ const ReviewSection = () => {
                         
                               <div className="review-content">
                                   <div className="reviewer-name">{maskName(review.name)}</div>
+                                  <div className='review-placeName'>{`< ${review.placeName} >`}</div>
                                   <div className="review-text">{review.content}</div>
-                                  <div className='review-placeName'>{review.placeName}</div>
                               </div>
                           </div>
                       </div>

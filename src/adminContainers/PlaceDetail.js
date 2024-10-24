@@ -31,7 +31,7 @@ const PlaceDetail = () => {
     }
 
     if (!data || data.length === 0) {
-        return <div>Loading...</div>; // 데이터가 로드 중일 때 로딩 표시
+        return <div>Loading...</div>; 
     }
     return (
         <>
