@@ -1,5 +1,5 @@
-import {useNavigate} from "react-router-dom";
 import '../css/memberList.css';
+import {useNavigate} from "react-router-dom";
 import React, {useEffect, useRef, useState} from "react";
 import {refreshToken, useAuth} from "../context/AuthContext";
 import axiosInstance from "../context/AxiosInstance";
@@ -79,12 +79,12 @@ const MembersAdmin = () => {
             alert("검색어를 입력하세요.");
             return;
         }
-        setPage(0); // 검색할 때 페이지를 0으로 초기화
+        setPage(0); 
         setSearchKeyword(searchKeywordRef.current.value);
     };
 
     const getPaginationNumbers = () => {
-        const maxPagesToShow = 5; // 화면에 보여줄 페이지 갯수
+        const maxPagesToShow = 5; 
         const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
         const endPage = Math.min(totalPages, startPage + maxPagesToShow);
 
@@ -107,7 +107,7 @@ const MembersAdmin = () => {
                                 <option value="name">이름</option>
                                 <option value="roles">권한</option>
                             </select>
-                            <input type="text" placeholder="검색어 입력..." ref={searchKeywordRef}/>
+                            <input type="text" placeholder="검색어를 입력하세요" ref={searchKeywordRef}/>
                             <button type="submit">검색</button>
                         </div>
                     </form>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import '../css/restaurantCreate.css';
+import React, { useState, useEffect } from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import { useAuth, refreshToken } from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
@@ -81,7 +81,6 @@ const PlaceEdit = () => {
             setDaum(loadedDaum);
         });
 
-        // 클린업 함수 (스크립트 제거)
         return () => {
             const scripts = document.querySelectorAll('script[src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"]');
             scripts.forEach((script) => script.remove());
@@ -191,7 +190,7 @@ const PlaceEdit = () => {
     }
 
     if (!data || data.length === 0) {
-        return <div>Loading...</div>; // 데이터가 로드 중일 때 로딩 표시
+        return <div>Loading...</div>; 
     }
     return (
         <>

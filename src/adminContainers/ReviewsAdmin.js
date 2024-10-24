@@ -1,6 +1,6 @@
+import '../css/reviewsAdmin.css';
 import React, {useRef, useState} from 'react';
 import {useEffect} from 'react';
-import '../css/reviewsAdmin.css';
 import { refreshToken, useAuth } from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
 
@@ -17,17 +17,17 @@ const ReviewList = ({data, setData}) => {
     };
 
     const getStars = (rating) => {
-        const starCount = parseInt(rating, 10); // 평점을 정수로 변환
+        const starCount = parseInt(rating, 10); 
         let stars = '';
         for (let i = 0; i < 5; i++) {
-            stars += i < starCount ? '★' : '☆'; // 평점에 따라 채워진 별과 빈 별을 생성
+            stars += i < starCount ? '★' : '☆'; 
         }
         return stars;
     };
 
     const truncateContent = (content) => {
         if (content.length > 5) {
-            return content.slice(0, 5) + '...'; // 5글자 이상이면 잘라내고 ... 
+            return content.slice(0, 5) + '...'; 
         }
         return content;
     };
@@ -36,7 +36,7 @@ const ReviewList = ({data, setData}) => {
         setData(prevData => prevData.map(item =>
             item.id === id ? {...item, isDeleted: true} : item
         ));
-        axiosInstance.patch(`/api/admin/reviews/${id}`) // 상태 업데이트를 위한 요청
+        axiosInstance.patch(`/api/admin/reviews/${id}`) 
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 window.location.reload();
@@ -85,7 +85,7 @@ const ReviewList = ({data, setData}) => {
                                             <button className="delete"
                                                     style={{display: row.deleted ? 'none' : ''}}
                                                     onClick={(e) => {
-                                                        e.stopPropagation(); //tr 태그의 온클릭 이벤트 비활성화.
+                                                        e.stopPropagation(); 
                                                         handleUpdateStatus(row.id)
                                                     }}>삭제</button>
                                     )}
@@ -139,13 +139,13 @@ const ReviewsAdmin = () => {
             alert("검색어를 입력하세요.");
             return;
         }
-        setPage(0); // 검색할 때 페이지를 0으로 초기화
+        setPage(0); 
         setSortType('');
         setSearchKeyword(searchKeywordRef.current.value);
     };
 
     const getPaginationNumbers = () => {
-        const maxPagesToShow = 5; // 화면에 보여줄 페이지 갯수
+        const maxPagesToShow = 5; 
         const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
         const endPage = Math.min(totalPages, startPage + maxPagesToShow);
         return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);

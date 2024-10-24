@@ -84,7 +84,6 @@ const ReservationAdmin = () => {
                                 }}>
                                     <option value="id">예약번호</option>
                                     <option value="name">예약자 이름</option>
-                                    <option value="place">식당</option>
                                 </select>
                                 <input type="text" id="search-input" placeholder="검색어를 입력하세요" ref={searchKeywordRef}/>
                                 <button type="submit">검색</button>
@@ -114,7 +113,6 @@ const ReservationAdmin = () => {
                                         className={`reservation-details ${expandedReservationId === row.id ? 'open' : ''}`}>
                                         {expandedReservationId === row.id && (
                                             <>
-                                                <p>식당: {row.place.name} </p>
                                                 <p>예약 날짜: {row.reservationDate}</p>
                                                 <p>예약 시간: {row.reservationTime}</p>
                                                 <p>요청사항: {row.orderNote}</p>

@@ -157,18 +157,25 @@
 
 .review-card .reviewer-name { /* 리뷰섹션 제목(이름) */
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     color: #ff6f61; /* 식욕을 돋우는 오렌지색 */
+    border-bottom:2px solid #ff6f61;
+    padding-bottom: 10px;
 }
 
 .review-card .review-text {
-    font-size: 0.9em;
+    font-size: 15px;
     color: #555;
     display: -webkit-box;
     -webkit-line-clamp: 3; /* 최대 3줄까지 보이도록 설정 */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis; /* 넘치는 텍스트는 ...으로 표시 */
+    padding: 10px;
+}
+
+.review-placeName{
+    font-weight: bold;
 }
 
 /* 모바일 화면을 위한 미디어 쿼리 */
