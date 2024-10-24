@@ -16,7 +16,7 @@ const HeroSection = () => {
       <section className="hero">
         <h1>한국 최고의 레스토랑을 찾아보세요</h1>
         <p>예약 및 리뷰를 통해 완벽한 식사를 경험하세요.</p>
-        <button type='button' className="cta-button" onClick={RestaurantListClick}>메뉴 보기</button>
+        <button type='button' className="cta-button" onClick={RestaurantListClick}>찾아보기</button>
       </section>
     );
 }
