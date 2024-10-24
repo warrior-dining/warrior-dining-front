@@ -3,7 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import '../css/SignUp.css';
 
-const baseUrl = process.env.REACT_APP_BACKEND_URL;
+const host = process.env.REACT_APP_BACKEND_URL;
 
 const SignUp = () => {
         const navigate = useNavigate();
@@ -27,7 +27,7 @@ const SignUp = () => {
                 return;
             }
 
-            axios.post(`${baseUrl}/api/user/signup`, {
+            axios.post(`${host}/api/user/signup`, {
                 email,
                 password,
                 name,

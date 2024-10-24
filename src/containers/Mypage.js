@@ -44,7 +44,7 @@ const Mypage = () => {
                 <MypageSidebar/>
 
                 <div className="mypage-content">
-                    <h1>내정보</h1>
+                    <h2>내정보</h2>
                     <form id="infoForm">
                         <fieldset>
                             <legend>개인정보</legend>
