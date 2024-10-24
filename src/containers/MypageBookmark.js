@@ -6,7 +6,6 @@ import MypageSidebar from "../components/MypageSidebar";
 import {useAuth} from "../context/AuthContext";
 import axiosInstance from "../context/AxiosInstance";
 
-const host = "http://localhost:8080/api/member/bookmarks/"
 
 const MypageBookmark = () => {
     const {sub} = useAuth('');
