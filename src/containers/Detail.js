@@ -8,7 +8,7 @@ import axios from "axios";
 import {Map, MapMarker , useKakaoLoader} from "react-kakao-maps-sdk";
 import markerImage from '../image/warriors_dining_marker.png';
 
-
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 const Detail = () => {
     const [restaurantDetail, setRestaurantDetail] = useState(null);
@@ -21,7 +21,7 @@ const Detail = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get(`/api/restaurant/${id}`)
+            await axios.get(`${baseUrl}/api/restaurant/${id}`)
                 .then(res => {
                     if(res.data.content && res.data.content.length > 0) {
                         setRestaurantDetail(res.data.content[0]);
@@ -139,49 +139,33 @@ const RestaurantDetails = ({ restaurant, onOpenModal }) => {
     );
 };
 
-const LocationSection = ({restaurant}) => {
+const LocationSection = ({ restaurant }) => {
     const { kakao } = window;
-    const [loading, error] = useKakaoLoader({
+    const { loading, error } = useKakaoLoader({
         appkey: process.env.REACT_APP_KAKAO_MAP_APP_KEY,
-        libraries: ["clusterer", "drawing", "services"]
+        libraries: ["services"]
     });
+
     const [state, setState] = useState({
-        // 지도의 초기 위치
         center: { lat: 37.49676871972202, lng: 127.02474726969814 },
-        // 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
         isPanto: true,
     });
 
     useEffect(() => {
-        // kakao 객체가 로드되고, loading이 false일 때만 실행
         if (!loading && kakao) {
             const geocoder = new kakao.maps.services.Geocoder();
-            const callback = function(result, status) {
+            const callback = function (result, status) {
                 if (status === kakao.maps.services.Status.OK) {
                     const newSearch = result[0];
                     setState({
                         center: { lat: newSearch.y, lng: newSearch.x },
-                        isPanto: true // 필요에 따라 panto 상태 업데이트
+                        isPanto: true,
                     });
                 }
             };
             geocoder.addressSearch(restaurant.addressNew, callback);
         }
-    }, [loading, restaurant.addressNew, kakao]); // dependency 추가
-
-    // const SearchMap = () => {
-    //     const geocoder = new kakao.maps.services.Geocoder();
-    //
-    //     let callback = function(result, status) {
-    //         if (status === kakao.maps.services.Status.OK) {
-    //             const newSearch = result[0]
-    //             setState({
-    //                 center: { lat: newSearch.y, lng: newSearch.x }
-    //             })
-    //         }
-    //     };
-    //     geocoder.addressSearch(`${restaurant.addressNew}`, callback);
-    // }
+    }, [loading, restaurant.addressNew, kakao]);
 
     return (
         <section className="location-detail">
@@ -190,16 +174,16 @@ const LocationSection = ({restaurant}) => {
                 <Map center={state.center} isPanto={state.isPanto} style={{ width: "100%", height: "450px" }} level={3}>
                     <MapMarker position={state.center}
                                image={{
-                                   src: markerImage, // 마커이미지의 주소입니다
+                                   src: markerImage,
                                    size: {
                                        width: 64,
                                        height: 69,
-                                   }, // 마커이미지의 크기입니다
+                                   },
                                    options: {
                                        offset: {
                                            x: 27,
                                            y: 69,
-                                       }, // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+                                       },
                                    },
                                }}
                     ></MapMarker>
