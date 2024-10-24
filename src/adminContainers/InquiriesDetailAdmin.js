@@ -18,13 +18,13 @@ const InquirieDtailsAdmin = () => {
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 setData(res.data.results);
-                setContent(res.data.results.answer ? res.data.results.answer.content : ""); // 초기 content 설정
+                setContent(res.data.results.answer ? res.data.results.answer.content : "");
             })
             .catch(error => console.log(error));
     }, [inquiriesId]);
 
     if (!data) {
-        return <div>Loading...</div>; // 데이터가 로드되기 전까지 로딩 메시지 표시
+        return <div>Loading...</div>;
     }
 
     const SubmitEvent = e => {
@@ -40,8 +40,8 @@ const InquirieDtailsAdmin = () => {
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault(); // 새 줄 추가 방지
-            SubmitEvent(e); // 폼 제출
+            e.preventDefault(); 
+            SubmitEvent(e); 
         }
     };
 
@@ -66,7 +66,7 @@ const InquirieDtailsAdmin = () => {
                             <h4>답변 작성</h4>
                             <form onSubmit={SubmitEvent}>
                                 <textarea 
-                                    placeholder="여기에 답변을 작성하세요..." 
+                                    placeholder="여기에 답변을 작성해주세요..." 
                                     value={content} name="text" 
                                     onChange={(e) => setContent(e.target.value)} 
                                     onKeyDown={handleKeyDown} 

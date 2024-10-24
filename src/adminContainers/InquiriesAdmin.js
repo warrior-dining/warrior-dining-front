@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigate 임포트
-import '../css/managerInquiryList.css';
+import { useNavigate } from 'react-router-dom'; 
 import axiosInstance from '../context/AxiosInstance';
 import { refreshToken, useAuth } from '../context/AuthContext';
+import '../css/managerInquiryList.css';
 
 const InquiresList = ({data}) => {
     const navigate = useNavigate();
@@ -100,7 +100,7 @@ const InquiriesAdmin = () => {
                                     <option value="user">작성자</option>
                                     <option value="status">답변 처리 여부</option>
                                 </select>
-                                <input type="text" placeholder="검색어 입력..." ref={searchKeywordRef}/>
+                                <input type="text" placeholder="검색어 입력를 입력하세요." ref={searchKeywordRef}/>
                                 <button type="submit">검색</button>
                             </div>
                         </div>
