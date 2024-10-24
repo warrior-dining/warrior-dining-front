@@ -8,6 +8,8 @@ import '../css/default.css';
 import '../css/home.css';
 import '../css/restaurantList.css';
 
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
+
 const fetchRestaurants = async ({ pageParam = 0, queryKey }) => {
     const [, search, category, price] = queryKey;
     let endpoint = search ? `/search?keyword=${encodeURIComponent(search)}&page=${pageParam}` : `?page=${pageParam}`;
@@ -23,7 +25,7 @@ const fetchRestaurants = async ({ pageParam = 0, queryKey }) => {
     }
 
     try {
-        const response = await axios.get(`/api/restaurant${endpoint}`);
+        const response = await axios.get(`${baseUrl}/api/restaurant${endpoint}`);
         return response.data;
     } catch (error) {
         throw new Error(`서버 연결 불가능: ${error.response?.status || error.message}`); // 오류처리

@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 
 // Axios 인스턴스 생성
 const axiosInstance = axios.create({
-    baseURL: process.env.REACT_APP_API_BASE_URL,
+    baseURL: process.env.REACT_APP_BACKEND_URL,
     timeout: 10000,
 });
 

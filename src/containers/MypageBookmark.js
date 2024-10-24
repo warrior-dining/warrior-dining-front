@@ -4,9 +4,8 @@ import '../css/mypageMutual.css';
 import '../css/myPageBookmark.css';
 import MypageSidebar from "../components/MypageSidebar";
 import {useAuth} from "../context/AuthContext";
-import axios from "axios";
+import axiosInstance from "../context/AxiosInstance";
 
-const host = "http://localhost:8080/api/member/bookmarks/"
 
 const MypageBookmark = () => {
     const {sub} = useAuth('');
@@ -18,9 +17,8 @@ const MypageBookmark = () => {
 
     useEffect(() => {
         if(sub){
-            const fetchData = () =>{
-                let url = `${host}?email=${sub}&page=${page}&size=${pageSize}`;
-                axios.get(url)
+            const fetchData = async () =>{
+                await axiosInstance.get(`/api/member/bookmarks/?email=${sub}&page=${page}&size=${pageSize}`)
                     .then(res => {
                         setData(res.data.results ? res.data.results.content : []);
                         setTotalPages( res.data.status ? res.data.results.totalPages : 0);
@@ -32,8 +30,7 @@ const MypageBookmark = () => {
     }, [page, pageSize, reload]);
 
     const removeBookmark = (placeId) => {
-        let url = `${host}?email=${sub}&placeId=${placeId}`;
-        axios.delete(url)
+        axiosInstance.delete(`/api/member/bookmarks/?email=${sub}&placeId=${placeId}`)
             .then(res => {
                 alert(`즐겨찾기가 해제되었습니다.`);
                 setReload(!reload);
