@@ -5,6 +5,8 @@ import '../css/monthBest.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
+
 const MonthBest = () => {
     const navigate = useNavigate();
     const [ratings, setRatings] = useState([]); 
@@ -26,7 +28,7 @@ const MonthBest = () => {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await axios.get(`/api/restaurant/month`);
+            const response = await axios.get(`${baseUrl}/api/restaurant/month`);
             const data = response.data;
     
             if (Array.isArray(data)) {
