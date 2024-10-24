@@ -47,6 +47,15 @@ const MypageSidebar = () => {
                         내 문의내역
                     </NavLink>
                 </li>
+                <li>
+                    <NavLink
+                        to="/mypage/delete"
+                        className={({isActive}) => (isActive ? 'active' : '')}
+                    >
+                        회원 탈퇴
+                    </NavLink>
+                </li>
+
             </ul>
         </div>
     );
