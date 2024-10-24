@@ -30,6 +30,18 @@
     line-height: 1.6; 
 }
 
+.location-detail {
+    margin: 20px 0;
+}
+
+.location-content {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin: 10px 0;
+}
+
 .RD-menu-section, .RD-reviews-section {
     margin: 20px 0;
 }

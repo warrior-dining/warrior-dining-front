@@ -53,7 +53,6 @@ function App() {
 
     useEffect(() => {
         updateAdminStatus();
-
         // 뒤로가기 및 앞으로가기 시 admin 상태를 URL에 맞춰 업데이트
         window.addEventListener('popstate', updateAdminStatus);
         window.addEventListener('pushstate', updateAdminStatus); // 커스텀 이벤트를 사용해 상태 업데이트
@@ -64,7 +63,7 @@ function App() {
         };
     }, []);
 
-  return (
+    return (
       <>
             <Router>
                 <AuthProvider>
