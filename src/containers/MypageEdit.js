@@ -37,7 +37,7 @@ const MypageEdit = () => {
                 }
             })
             .catch(error => {
-                setError('유저 정보를 불러오는 데 실패했습니다.');
+                setError(error.response.data.message || '유저 정보를 불러오는 데 실패했습니다.');
             });
     }, [reissueToken]);
 
