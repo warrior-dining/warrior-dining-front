@@ -5,7 +5,7 @@ import '../css/myPageEdit.css';
 import MypageSidebar from "../components/MypageSidebar";
 import {useNavigate} from "react-router-dom";
 import axiosInstance from "../context/AxiosInstance";
-import {refreshToken, useAuth} from '../context/AuthContext';
+import {clearCookie, refreshToken, useAuth} from '../context/AuthContext';
 
 const MypageEdit = () => {
     const [error, setError] = useState(null);
@@ -13,7 +13,6 @@ const MypageEdit = () => {
     const [user, setUser] = useState({
         name: '', email: '', phone: '', currentPassword: '', newPassword: '', confirmPassword: ''
     });
-    const [editStatus, setEditStatus] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,7 +38,6 @@ const MypageEdit = () => {
             })
             .catch(error => {
                 setError('유저 정보를 불러오는 데 실패했습니다.');
-                console.log(error);
             });
     }, [reissueToken]);
 
@@ -56,13 +54,11 @@ const MypageEdit = () => {
 
         if (!user.currentPassword) {
             setError('현재 비밀번호를 입력하세요.');
-            console.log('현재 비밀번호 없음');
             return;
         }
 
         if (user.newPassword && user.newPassword !== user.confirmPassword) {
             setError('새 비밀번호와 비밀번호 확인이 일치하지 않습니다.');
-            console.log('비밀번호 불일치');
             return;
         }
 
@@ -78,18 +74,17 @@ const MypageEdit = () => {
 
         axiosInstance.put(`/api/user`, edits)
             .then(response => {
-                if (response.data.success) {
-                    setEditStatus('정보가 성공적으로 수정되었습니다.');
+                if (response.data.status) {
+                    alert('정보가 성공적으로 수정되었습니다. 재로그인 이용해주세요.');
+                    clearCookie();
+                    window.location.href = "/signin";
                     setError(null);
                 }
             })
             .catch(error => {
                 if (error.response) {
-                    console.log('서버 응답:', error.response.data);
-                    console.log('상태 코드:', error.response.status);
                     setError('정보 수정에 실패했습니다. 오류: ' + error.response.data.message);
                 } else {
-                    console.log('네트워크 오류:', error);
                     setError('서버오류가 발생했습니다. 다시 시도해주세요.');
                 }
             });
@@ -165,7 +160,6 @@ const MypageEdit = () => {
 
                                 <button type="submit" className="save-button">저장</button>
                             </form>
-                            <p>{editStatus}</p>
                         </div>
                     </section>
                 </div>
