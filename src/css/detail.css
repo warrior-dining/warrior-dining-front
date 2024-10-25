@@ -42,6 +42,34 @@
     margin: 10px 0;
 }
 
+.location-text {
+    display: flex;
+    margin-top: 15px;
+    font-size: 20px;
+    border-top: 2px solid #ff6f61;
+    padding-top: 10px;
+}
+
+.location-text p {
+    padding-top: 4px;
+}
+
+.location-text-button {
+    padding: 5px 5px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.location-text-button:hover {
+    background: none;
+}
+
+.location-text-button img{
+    width: 25px;
+    height: 25px;
+}
+
 .RD-menu-section, .RD-reviews-section {
     margin: 20px 0;
 }
