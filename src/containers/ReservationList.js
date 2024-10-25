@@ -20,7 +20,7 @@ const ReservationList = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axiosInstance.get(`/api/member/reservation/?email=${sub}&page=${page}&size=${pageSize}`)
+            await axiosInstance.get(`/api/member/reservation/?page=${page}&size=${pageSize}`)
                 .then(res => {
                     setData( res.data.status ? res.data.results.content : [] );
                     setTotalPages(res.data.status ? res.data.results.totalPages : 0);
@@ -31,7 +31,7 @@ const ReservationList = () => {
     }, [page, pageSize]);
 
     const bookMark = (placeId) => {
-        axiosInstance.put("/api/member/bookmarks/", {"email": sub, "placeId": placeId})
+        axiosInstance.put("/api/member/bookmarks/", {"placeId": placeId})
             .then(res => {
                 alert("즐겨찾기 등록 완료");
                 navigate("/mypage/bookmark");

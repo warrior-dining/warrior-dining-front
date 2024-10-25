@@ -3,16 +3,19 @@ import {Link, useNavigate} from 'react-router-dom';
 import {useAuth} from '../context/AuthContext';
 
 
-const Header = ({adminClick}) => {
+const Header = ({adminClick, ownerClick}) => {
     const {accessToken, permissions: auth = []} = useAuth();
     const {signOut} = useAuth();
     const isLoggedIn = Boolean(accessToken);
     const navigate = useNavigate();
 
-    const changeAdminClick = () => {
+    const changePageClick = () => {
         if (auth.includes('ADMIN')) {
             adminClick(true);
             navigate('/admin');
+        } else if( auth.includes('OWNER')) {
+            navigate('/owner');
+            ownerClick(true);
         } else {
             alert("접근 권한이 없습니다.");
         }
@@ -20,6 +23,7 @@ const Header = ({adminClick}) => {
 
     const changeMainClick = () => {
         adminClick(false);
+        ownerClick(false);
         navigate('/')
     };
 
@@ -46,7 +50,8 @@ const Header = ({adminClick}) => {
                                 </>
                             )
                         }
-                        {auth.includes('ADMIN') && <button onClick={changeAdminClick}>관리자 페이지</button>}
+                        {auth.includes('ADMIN') && <button onClick={changePageClick}>관리자 페이지</button>}
+                        {auth.includes('OWNER') && <button onClick={changePageClick}>오너 페이지</button>}
                         {isLoggedIn && <Link to="/mypage/main">마이페이지</Link>}
                         {isLoggedIn && (<button onClick={signOut}>로그아웃</button>)}
                     </div>
