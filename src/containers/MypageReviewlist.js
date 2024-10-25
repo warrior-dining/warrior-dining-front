@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {useAuth} from '../context/AuthContext';
-import axios from "axios";
+import {useAuth, refreshToken} from '../context/AuthContext';
 import '../css/default.css';
 import '../css/mypageMutual.css';
 import '../css/myReview.css';
@@ -15,29 +14,27 @@ const MypageReviewlist = () => {
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [pageSize, setPageSize]  = useState(5);
-    const {sub} = useAuth();
     const [reload, setReload] = useState(true);
+    const {reissueToken} = useAuth();
 
     useEffect(() => {
-      if(sub){
         const fetchData = async () => {
-        await axiosInstance.get(`/api/member/reviews/?email=${sub}&page=${page}&size=${pageSize}`)
+        await axiosInstance.get(`/api/member/reviews/?page=${page}&size=${pageSize}`)
             .then(res => {
-            console.log(res);
+            refreshToken(reissueToken);
             setData(res.data.results.content);
-            setTotalPages(res.data.results.totalPages);
-        })
-        .catch(error => console.log(error));
+            setTotalPages(res.data.results.totalPages); 
+            })
+            .catch(error => console.log(error));
         }
         fetchData();
-        }
      }, [page, pageSize, reload])
 
     const getStars = (rating) => {
-      const starCount = parseInt(rating, 10); // 평점을 정수로 변환
+      const starCount = parseInt(rating, 10); 
       let stars = '';
       for (let i = 0; i < 5; i++) {
-          stars += i < starCount ? '★' : '☆'; // 평점에 따라 채워진 별과 빈 별을 생성
+          stars += i < starCount ? '★' : '☆'; 
       }
       return stars;
   };
@@ -54,7 +51,7 @@ const MypageReviewlist = () => {
             item.id === id ? {...item, isDeleted: true} : item
         ));
         confirmDelete();
-        axiosInstance.patch(`/api/member/reviews/${id}`) // 상태 업데이트를 위한 요청
+        axiosInstance.patch(`/api/member/reviews/${id}`)
             .then(res => {
                 setReload(!reload);
             })
@@ -103,7 +100,7 @@ const MypageReviewlist = () => {
                 ))}
             </div>
             <div className="message">
-                {data.length === 0 && ( // 리뷰가 없을 때 메시지 표시
+                {data.length === 0 && ( 
                     <p>작성된 리뷰가 없습니다.</p> )}
             </div>
             </section>
