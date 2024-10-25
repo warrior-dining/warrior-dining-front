@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {AuthProvider} from './context/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import './css/default.css';
@@ -40,6 +40,7 @@ import MypageBookmark from './containers/MypageBookmark';
 import MypageInquiry from './containers/MypageInquiry';
 import InquiryDetail from './containers/InquiryDetail';
 import Detail from './containers/Detail';
+import FindPassword from './containers/FindPassword';
 import ReservationOwner from "./ownerContainers/ReservationOwner";
 
 
@@ -78,7 +79,7 @@ function App() {
     }, []);
 
     return (
-      <>
+        <>
             <Router>
                 <AuthProvider>
                     <div className="App">
@@ -88,6 +89,7 @@ function App() {
                             <Route path="/owner" element={<ReservationOwner />} />
                             <Route path="/signin" element={<SignIn />} />
                             <Route path="/signup" element={<SignUp />} />
+                            <Route path="/find" element={<FindPassword/>}/>
                             <Route path="/admin/members" element={<MembersAdmin />} />
                             <Route path="/admin/members/info/:id" element={<MemberDetail />} />
                             <Route path="/admin/places" element={<PlacesAdmin />} />

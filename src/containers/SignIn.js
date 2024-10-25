@@ -17,9 +17,8 @@ const SignIn = () => {
         navigate('/SignUp');
     };
 
-    const forgotPasswordClick = () => {
-        // 비밀번호 찾기 기능 구현
-        alert('비밀번호 찾기 기능은 준비 중입니다.');
+    const findPassword = () => {
+        navigate('/find');
     };
 
     const socialLoginClick = (platform) => {
@@ -113,7 +112,7 @@ const SignIn = () => {
 
                 <div className="login-under">
                     <button type="button" onClick={signUpClick}>회원 가입</button>
-                    <button type="button" onClick={forgotPasswordClick}>비밀번호를 잊으셨나요?</button>
+                    <button type="button" onClick={findPassword}>비밀번호를 잊으셨나요?</button>
                 </div>
             </form>
         </div>

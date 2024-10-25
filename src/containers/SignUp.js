@@ -125,8 +125,6 @@ const SignUp = () => {
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
                                     placeholder="하이픈(-)을 제외한 휴대폰 번호를 전체를 입력하세요"
-                                    pattern="\d*"
-                                    maxLength="11"
                                     required
                                 />
                             </div>
