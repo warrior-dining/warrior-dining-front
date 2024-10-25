@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosInstance from '../context/AxiosInstance';
 import '../css/default.css';
 import '../css/home.css';
 import '../css/reviewCreate.css';
-import { useParams } from 'react-router-dom';
-
-const host = "http://localhost:8080/api/member/reviews/";
+import { useParams, useNavigate } from 'react-router-dom';
 
 const MypageReviewEdit = () => {
   const [rating, setRating] = useState(); 
@@ -13,22 +11,19 @@ const MypageReviewEdit = () => {
   const [data, setData] = useState([]);
   const {id} = useParams();
   const reviewId = Number(id);
+  const navigate = useNavigate();
 
 
   useEffect(() => {
-      const url = host + reviewId;
-       axios.get(url)
+       axiosInstance.get(`/api/member/reviews/${reviewId}`)
        .then(res => {
         setData(res.data.results);
         setReview(res.data.results.content);
         setRating(res.data.results.rating);
        })
        .catch(error => console.log(error));
-        // updateSelection(rating);
     }, [reviewId]);
 
-
-    
     const handleRatingClick = (value) => {
       setRating(value);
     };
@@ -36,20 +31,21 @@ const MypageReviewEdit = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const updateData = {"rating": rating, "review": review}
-        axios.put(`${host}${id}`, updateData)
+        axiosInstance.put(`/api/member/reviews/${reviewId}`, updateData)
         .then(res => {
+          alert("리뷰가 수정 되었습니다.")
+          navigate('/mypage/reviewlist');
         })
         .catch(error => console.log(error));
     };
 
     const handleUpdateStatus = (id) => {
-      axios.delete(`${host}${id}`) // 상태 업데이트를 위한 요청
+      axiosInstance.delete(`/api/member/reviews/${reviewId}`)
           .then(res => {
               window.location.reload();
           })
           .catch(error => console.log(error));
   };
-
 
     return (
         <>

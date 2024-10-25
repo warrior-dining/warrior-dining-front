@@ -1,11 +1,10 @@
 import React, {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import {useAuth} from '../context/AuthContext';
+import {refreshToken, useAuth} from '../context/AuthContext';
 import '../css/default.css';
 import '../css/mypageMutual.css';
 import '../css/inquiry.css';
 import '../css/myPageInquiryHistory.css';
-import { Link } from 'react-router-dom';
 import MypageSidebar from "../components/MypageSidebar";
 import axiosInstance from "../context/AxiosInstance";
 
@@ -16,19 +15,17 @@ const MypageInquiry = () => {
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [pageSize, setPageSize]  = useState(10);
-    const {sub} = useAuth();
+    const {reissueToken} = useAuth();
 
     useEffect(()=> {
-        if(sub){
-        axiosInstance.get(`/api/member/inquiries/?email=${sub}&page=${page}&size=${pageSize}`)
+        axiosInstance.get(`/api/member/inquiries/?page=${page}&size=${pageSize}`)
         .then(res => {
-            console.log(res);
+            refreshToken(reissueToken);
             setData(res.data.results.content); 
             setTotalPages(res.data.results.totalPages);
         })
         .catch(error => console.log(error));
-        }
-    }, [sub, page, pageSize])
+    }, [page, pageSize])
 
     const handleEdit = (id) => {
         navigate(`/inquiry/detail/${id}`); 
