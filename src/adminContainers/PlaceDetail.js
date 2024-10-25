@@ -1,37 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import '../css/restaurantCreate.css';
 import {useNavigate, useParams} from "react-router-dom";
 import axiosInstance from "../context/AxiosInstance";
 
 const PlaceDetail = () => {
     const navigate = useNavigate();
-    const { id } = useParams();
+    const {id} = useParams();
     const [data, setData] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            await axiosInstance.get(`/api/admin/places/info/${id}`)
-            .then(res => {
-                if(res.data) {
-                    setData(res.data.status ? res.data.results : []);
-                }
-            })
-            .catch(error => {
-                if(error) {
-                    console.log(error);
-                }
-            })
+            await axiosInstance.get(`/api/admin/places/${id}`)
+                .then(res => {
+                    if (res.data) {
+                        setData(res.data.status ? res.data.results : []);
+                    }
+                })
+                .catch(error => {
+                    if (error) {
+                        console.log(error);
+                    }
+                })
         }
         fetchData();
     }, []);
 
     const images = [];
     const clickEvent = () => {
-        navigate("/admin/places/edit/"+Number(id));
+        navigate("/admin/places/edit/" + Number(id));
     }
 
     if (!data || data.length === 0) {
-        return <div>Loading...</div>; 
+        return <div>Loading...</div>;
     }
     return (
         <>
@@ -97,7 +97,7 @@ const PlaceDetail = () => {
                         <div className="form-group">
                             <label htmlFor="opening-hours">운영 시간</label>
                             <input type="text" id="opening-hours" name="opening-hours"
-                                   value={data.startTime + " ~ " + data.endTime + " " + data.offDay } readOnly/>
+                                   value={data.startTime + " ~ " + data.endTime + " " + data.offDay} readOnly/>
                         </div>
                         <div className="form-group">
                             <label htmlFor="description">설명</label>

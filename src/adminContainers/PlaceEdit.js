@@ -1,34 +1,34 @@
 import '../css/restaurantCreate.css';
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
-import { useAuth, refreshToken } from '../context/AuthContext';
+import {refreshToken, useAuth} from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
 
 const PlaceEdit = () => {
     const [daum, setDaum] = useState(null);
-    const { id } = useParams();
+    const {id} = useParams();
     const [data, setData] = useState([]);
     const [viewImages, setViewImages] = useState([]);
     const [uploadImages, setUploadImages] = useState([]);
     const [existingImages, setExistingImages] = useState([])
-    const [menuItems, setMenuItems] = useState([{ id: 1, menu: '', price: '' }]);
+    const [menuItems, setMenuItems] = useState([{id: 1, menu: '', price: ''}]);
     const [error, setError] = useState('');
     const {reissueToken} = useAuth();
-    
+
 
     useEffect(() => {
         const fetchData = async () => {
-            await axiosInstance.get(`/api/admin/places/info/${id}`)
-            .then(res =>{
-                if(res.data) {
-                    setData(res.data.status ? res.data.results : []);
-                }
-            })
-            .catch(error => {
-                if(error) {
-                    console.log(error);
-                }
-            })
+            await axiosInstance.get(`/api/admin/places/${id}`)
+                .then(res => {
+                    if (res.data) {
+                        setData(res.data.status ? res.data.results : []);
+                    }
+                })
+                .catch(error => {
+                    if (error) {
+                        console.log(error);
+                    }
+                })
         }
         fetchData();
     }, []);
@@ -134,8 +134,8 @@ const PlaceEdit = () => {
 
     const addMenuItem = () => {
         if (menuItems.length < 10) {
-            setMenuItems(prev => [...prev, { id: prev.length + 1, menu: '', price: '' }]);
-        } else  {
+            setMenuItems(prev => [...prev, {id: prev.length + 1, menu: '', price: ''}]);
+        } else {
             alert('메뉴 항목은 최대 10개 까지 작성할 수 있습니다.');
         }
     };
@@ -151,46 +151,48 @@ const PlaceEdit = () => {
     const handleMenuItemChange = (id, field, value) => {
         setMenuItems(prev =>
             prev.map(item =>
-                item.id === id ? { ...item, [field]: value } : item
+                item.id === id ? {...item, [field]: value} : item
             )
         );
     };
 
     const handlePlaceInfoChange = (field, value) => {
-        setPlaceInfo(prev => ({ ...prev, [field]: value }));
+        setPlaceInfo(prev => ({...prev, [field]: value}));
     };
 
     const submitEvent = (e) => {
         e.preventDefault();
 
-        if(uploadImages.length === 0){
+        if (uploadImages.length === 0) {
             alert("이미지를 한개이상 입력하세요.");
             return;
         }
         const formData = new FormData();
         uploadImages.forEach(img => {
-            formData.append("file", img );
+            formData.append("file", img);
         })
         formData.append("existingImages", JSON.stringify(existingImages));
-        formData.append("menu", JSON.stringify(menuItems) );
-        formData.append("place", JSON.stringify(placeInfo) );
+        formData.append("menu", JSON.stringify(menuItems));
+        formData.append("place", JSON.stringify(placeInfo));
 
         axiosInstance.put(`/api/admin/places/${id}`, formData)
             .then((res) => {
                 refreshToken(res.data, reissueToken);
-                if(res.data.status === true) {
-                alert('정보가 수정되었습니다.!');
-                navigator("/admin/places/info/"+ res.data.results.id);
-                // 예시
+                if (res.data.status === true) {
+                    alert('정보가 수정되었습니다.');
+                    navigator("/admin/places/" + res.data.results.id);
+                    // 예시
                 }
             })
             .catch(error => {
-                if (error.response) { setError(error.response.data.message);}
+                if (error.response) {
+                    setError(error.response.data.message);
+                }
             });
     }
 
     if (!data || data.length === 0) {
-        return <div>Loading...</div>; 
+        return <div>Loading...</div>;
     }
     return (
         <>
@@ -232,7 +234,13 @@ const PlaceEdit = () => {
                             <div className="form-group">
                                 <label htmlFor="file">기존 음식점 사진</label>
                                 <div id="preview-container"
-                                     style={{display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '10px', marginBottom:'10px'}}>
+                                     style={{
+                                         display: 'flex',
+                                         flexWrap: 'wrap',
+                                         gap: '10px',
+                                         marginTop: '10px',
+                                         marginBottom: '10px'
+                                     }}>
                                     {existingImages.map((image, index) => (
                                         <div key={index} className="image-preview">
                                             <img src={image.url} alt={`Preview ${index}`}

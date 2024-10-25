@@ -1,7 +1,7 @@
 import '../css/restaurantCreate.css';
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import { useAuth, refreshToken } from '../context/AuthContext';
+import {refreshToken, useAuth} from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
 
 
@@ -12,17 +12,17 @@ const PlaceAdd = () => {
     const [viewImages, setViewImages] = useState([]);
     const [uploadImages, setUploadImages] = useState([]);
     const [error, setError] = useState('');
-    const [menuItems, setMenuItems] = useState([{ id: 1, name: '', price: '' }]);
+    const [menuItems, setMenuItems] = useState([{id: 1, name: '', price: ''}]);
     const [placeInfo, setPlaceInfo] = useState({
-            email: '',
-            name: '',
-            category: 5,
-            location: '',
-            phone: '',
-            starttime: '',
-            endtime: '',
-            offday: '',
-            description: ''
+        email: '',
+        name: '',
+        category: 5,
+        location: '',
+        phone: '',
+        starttime: '',
+        endtime: '',
+        offday: '',
+        description: ''
     });
     useEffect(() => {
         const loadDaumPostcode = () => {
@@ -95,8 +95,8 @@ const PlaceAdd = () => {
 
     const addMenuItem = () => {
         if (menuItems.length < 10) {
-            setMenuItems(prev => [...prev, { id: prev.length + 1, menu: '', price: '' }]);
-        } else  {
+            setMenuItems(prev => [...prev, {id: prev.length + 1, menu: '', price: ''}]);
+        } else {
             alert('메뉴 항목은 최대 10개 까지 작성할 수 있습니다.');
         }
     };
@@ -112,34 +112,36 @@ const PlaceAdd = () => {
     const handleMenuItemChange = (id, field, value) => {
         setMenuItems(prev =>
             prev.map(item =>
-                item.id === id ? { ...item, [field]: value } : item
+                item.id === id ? {...item, [field]: value} : item
             )
         );
     };
 
     const handlePlaceInfoChange = (field, value) => {
-        setPlaceInfo(prev => ({ ...prev, [field]: value }));
+        setPlaceInfo(prev => ({...prev, [field]: value}));
     };
 
     const submitEvent = (e) => {
         e.preventDefault();
         const formData = new FormData();
         uploadImages.forEach(img => {
-            formData.append("file", img );
+            formData.append("file", img);
         })
-        formData.append("menu", JSON.stringify(menuItems) );
-        formData.append("place", JSON.stringify(placeInfo) );
+        formData.append("menu", JSON.stringify(menuItems));
+        formData.append("place", JSON.stringify(placeInfo));
 
-        axiosInstance.post("/api/admin/places/", formData)
+        axiosInstance.post("/api/admin/places", formData)
             .then((res) => {
                 refreshToken(res.data, reissueToken);
-                if(res.data.status === true) {
+                if (res.data.status === true) {
                     alert('저장 되었습니다.');
-                    navigator("/admin/places/info/" + res.data.results.id);
+                    navigator("/admin/places/" + res.data.results.id);
                 }
             })
             .catch(error => {
-                if (error.response) { setError(error.response.data.message);}
+                if (error.response) {
+                    setError(error.response.data.message);
+                }
             });
     };
 
