@@ -3,7 +3,7 @@ import '../css/mypageMutual.css';
 import '../css/default.css';
 import '../css/myPageEdit.css';
 import MypageSidebar from "../components/MypageSidebar";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import axiosInstance from "../context/AxiosInstance";
 import {refreshToken, useAuth} from '../context/AuthContext';
 
@@ -166,12 +166,6 @@ const MypageEdit = () => {
                                 <button type="submit" className="save-button">저장</button>
                             </form>
                             <p>{editStatus}</p>
-                        </div>
-
-                        <div className="settings-section">
-                            <h2>회원 탈퇴</h2>
-                            <p>회원 탈퇴를 원하시면 아래 버튼을 클릭하세요.</p>
-                            <Link to="/mypage/delete" className="delete-link">회원 탈퇴</Link>
                         </div>
                     </section>
                 </div>

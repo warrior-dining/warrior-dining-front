@@ -1,6 +1,7 @@
 
 .content {
     flex: 1;
+    margin: 0 auto;
     padding: 20px;
     background-color: #fff;
     border: 1px solid #ddd;
@@ -117,30 +118,4 @@
 
 .settings-section input[type="checkbox"] {
     margin-right: 10px;
-}
-
-/* 회원 탈퇴 버튼 스타일 추가 */
-.delete-link {
-    display: inline-block;
-    padding: 0.7em 1.5em;
-    font-size: 1em;
-    color: #fff;
-    background-color: #e74c3c;
-    border: none;
-    border-radius: 4px;
-    text-align: center;
-    text-decoration: none;
-    margin-top: 1em;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.delete-link:hover {
-    background-color: #c0392b;
-    transform: scale(1.05);
-}
-
-.delete-link:active {
-    background-color: #b03a2e;
-    transform: scale(0.98);
 }
