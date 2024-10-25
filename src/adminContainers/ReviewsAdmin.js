@@ -1,14 +1,13 @@
 import '../css/reviewsAdmin.css';
-import React, {useRef, useState} from 'react';
-import {useEffect} from 'react';
-import { refreshToken, useAuth } from '../context/AuthContext';
+import React, {useEffect, useRef, useState} from 'react';
+import {refreshToken, useAuth} from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
 
 
 const ReviewList = ({data, setData}) => {
     const [expandedRowIds, setExpandedRowIds] = useState([]);
     const {reissueToken} = useAuth();
-    
+
 
     const handleRowClick = (id) => {
         setExpandedRowIds((prev) =>
@@ -17,17 +16,17 @@ const ReviewList = ({data, setData}) => {
     };
 
     const getStars = (rating) => {
-        const starCount = parseInt(rating, 10); 
+        const starCount = parseInt(rating, 10);
         let stars = '';
         for (let i = 0; i < 5; i++) {
-            stars += i < starCount ? '★' : '☆'; 
+            stars += i < starCount ? '★' : '☆';
         }
         return stars;
     };
 
     const truncateContent = (content) => {
         if (content.length > 5) {
-            return content.slice(0, 5) + '...'; 
+            return content.slice(0, 5) + '...';
         }
         return content;
     };
@@ -36,7 +35,7 @@ const ReviewList = ({data, setData}) => {
         setData(prevData => prevData.map(item =>
             item.id === id ? {...item, isDeleted: true} : item
         ));
-        axiosInstance.patch(`/api/admin/reviews/${id}`) 
+        axiosInstance.patch(`/api/admin/reviews/${id}`)
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 window.location.reload();
@@ -82,26 +81,26 @@ const ReviewList = ({data, setData}) => {
                                 <td>{row.deleted ? '비활성화' : '활성화'}</td>
                                 <td className="actions">
                                     {row.status === '0' ? '1' : (
-                                            <button className="delete"
-                                                    style={{display: row.deleted ? 'none' : ''}}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation(); 
-                                                        handleUpdateStatus(row.id)
-                                                    }}>삭제</button>
+                                        <button className="delete"
+                                                style={{display: row.deleted ? 'none' : ''}}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleUpdateStatus(row.id)
+                                                }}>삭제</button>
                                     )}
-                            </td>
-                        </tr>
-                        {expandedRowIds.includes(row.id) && (
-                            <tr className="review-detail">
-                                <td colSpan="7">
-                                    <div className="detail-header">상세 내용:</div>
-                                    <p>{row.content}</p>
                                 </td>
                             </tr>
-                        )}
-                    </React.Fragment>
-                ))
-            )}
+                            {expandedRowIds.includes(row.id) && (
+                                <tr className="review-detail">
+                                    <td colSpan="7">
+                                        <div className="detail-header">상세 내용:</div>
+                                        <p>{row.content}</p>
+                                    </td>
+                                </tr>
+                            )}
+                        </React.Fragment>
+                    ))
+                )}
                 </tbody>
             </table>
         </>
@@ -119,36 +118,36 @@ const ReviewsAdmin = () => {
     const [sortType, setSortType] = useState('');
     const {reissueToken} = useAuth();
 
-    
+
     useEffect(() => {
         const fetchData = async () => {
-            await axiosInstance.get(`/api/admin/reviews/?searchtype=${searchType}&searchkeyword=${searchKeyword}&page=${page}&size=${pageSize}&sorttype=${sortType}`)
-            .then(res => {
-                refreshToken(res.data, reissueToken);
-                setData(res.data.status ? res.data.results.content : []);
-                setTotalPages(res.data.status ? res.data.results.totalPages : 0);
+            await axiosInstance.get(`/api/admin/reviews?searchtype=${searchType}&searchkeyword=${searchKeyword}&page=${page}&size=${pageSize}&sorttype=${sortType}`)
+                .then(res => {
+                    refreshToken(res.data, reissueToken);
+                    setData(res.data.status ? res.data.results.content : []);
+                    setTotalPages(res.data.status ? res.data.results.totalPages : 0);
                 })
                 .catch(error => console.log(error));
         }
         fetchData();
-    }, [ page, pageSize, searchKeyword, sortType ]);
+    }, [page, pageSize, searchKeyword, sortType]);
 
     const searchEvent = (e) => {
         e.preventDefault();
-        if(searchKeyword === null) {
+        if (searchKeyword === null) {
             alert("검색어를 입력하세요.");
             return;
         }
-        setPage(0); 
+        setPage(0);
         setSortType('');
         setSearchKeyword(searchKeywordRef.current.value);
     };
 
     const getPaginationNumbers = () => {
-        const maxPagesToShow = 5; 
+        const maxPagesToShow = 5;
         const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
         const endPage = Math.min(totalPages, startPage + maxPagesToShow);
-        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+        return Array.from({length: endPage - startPage}, (_, index) => startPage + index);
     };
     const paginationNumbers = getPaginationNumbers();
 
@@ -159,7 +158,9 @@ const ReviewsAdmin = () => {
                     <h2 className="main-title">사용자 리뷰 전체 목록</h2>
                     <div className="admin-filter-search-container">
                         <div className="admin-filter-bar">
-                            <select value={sortType} onChange={(e) => { setSortType(e.target.value) }}>
+                            <select value={sortType} onChange={(e) => {
+                                setSortType(e.target.value)
+                            }}>
                                 <option>평점</option>
                                 <option value="1">★</option>
                                 <option value="2">★★</option>
@@ -167,12 +168,16 @@ const ReviewsAdmin = () => {
                                 <option value="4">★★★★</option>
                                 <option value="5">★★★★★</option>
                             </select>
-                            <select value={sortType} onChange={(e) => { setSortType(e.target.value) }}>
+                            <select value={sortType} onChange={(e) => {
+                                setSortType(e.target.value)
+                            }}>
                                 <option>상태</option>
                                 <option value="true">비활성화</option>
                                 <option value="false">활성화</option>
                             </select>
-                            <select value={sortType} onChange={(e) => { setSortType(e.target.value) }}>
+                            <select value={sortType} onChange={(e) => {
+                                setSortType(e.target.value)
+                            }}>
                                 <option>정렬 기준</option>
                                 <option value="desc">최신순</option>
                                 <option value="asc">오래된 순</option>
@@ -180,7 +185,9 @@ const ReviewsAdmin = () => {
                         </div>
                         <form onSubmit={searchEvent}>
                             <div className="admin-search-bar">
-                                <select value={searchType} onChange={(e) => { setSearchType(e.target.value) }}>
+                                <select value={searchType} onChange={(e) => {
+                                    setSearchType(e.target.value)
+                                }}>
                                     <option value="user">사용자 이름</option>
                                     <option value="place">음식점명</option>
                                     <option value="content">리뷰 내용</option>
@@ -190,33 +197,33 @@ const ReviewsAdmin = () => {
                             </div>
                         </form>
                     </div>
-                    <ReviewList data={data} setData={setData} />
+                    <ReviewList data={data} setData={setData}/>
                 </div>
                 <div className="review-pagination">
-                        <a href="#"
+                    <a href="#"
+                       onClick={(e) => {
+                           e.preventDefault();
+                           if (page > 0) {
+                               setPage(page - 1);
+                           }
+                       }}
+                       disabled={page === 0}> 이전 </a>
+                    {paginationNumbers.map((num) => (
+                        <a key={num} href="#" className={num === page ? "active" : ""}
                            onClick={(e) => {
                                e.preventDefault();
-                               if (page > 0) {
-                                   setPage(page - 1);
-                               }
-                           }}
-                           disabled={page === 0}> 이전 </a>
-                        {paginationNumbers.map((num) => (
-                            <a key={num} href="#" className={num === page ? "active" : ""}
-                               onClick={(e) => {
-                                   e.preventDefault();
-                                   setPage(num);
-                               }}> {num + 1} </a>
-                        ))}
-                        <a href="#"
-                           onClick={(e) => {
-                               e.preventDefault();
-                               if (page < totalPages - 1) {
-                                   setPage(page + 1);
-                               }
-                           }}
-                           disabled={page >= totalPages - 1}> 다음 </a>
-                    </div>
+                               setPage(num);
+                           }}> {num + 1} </a>
+                    ))}
+                    <a href="#"
+                       onClick={(e) => {
+                           e.preventDefault();
+                           if (page < totalPages - 1) {
+                               setPage(page + 1);
+                           }
+                       }}
+                       disabled={page >= totalPages - 1}> 다음 </a>
+                </div>
             </main>
         </>
     );
