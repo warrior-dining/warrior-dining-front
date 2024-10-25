@@ -24,7 +24,7 @@ const PlaceList = ({list}) => {
                 {
                     list.map((row, index) => (
                         <tr key={index} onClick={() => {
-                            navigate("/admin/places/info/" + row.id)
+                            navigate("/admin/places/" + row.id)
                         }}>
                             <td>{row.id}</td>
                             <td>{row.name}</td>
@@ -54,7 +54,7 @@ const PlacesAdmin = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axiosInstance.get(`/api/admin/places/?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`)
+            await axiosInstance.get(`/api/admin/places?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`)
                 .then(res => {
                     refreshToken(res.data, reissueToken);
                     setList(res.data.status ? res.data.results.content : []);

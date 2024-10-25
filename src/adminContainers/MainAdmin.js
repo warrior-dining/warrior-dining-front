@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axiosInstance from '../context/AxiosInstance';
-import { useAuth, refreshToken } from '../context/AuthContext';
+import {refreshToken, useAuth} from '../context/AuthContext';
 import '../css/mainAdmin.css';
 
 
@@ -23,8 +23,10 @@ const DashboardSection = ({data}) => {
                 </div>
                 <div className="summary-card">
                     <h3>문의 사항</h3>
-                    <p>답변 미완료: {data.countInquiriesByCode && data.countInquiriesByCode.length > 0 ? data.countInquiriesByCode[0].count : 0}건</p>
-                    <p>답변 완료: {data.countInquiriesByCode && data.countInquiriesByCode.length > 1 ? data.countInquiriesByCode[1].count : 0}건</p>
+                    <p>답변
+                        미완료: {data.countInquiriesByCode && data.countInquiriesByCode.length > 0 ? data.countInquiriesByCode[0].count : 0}건</p>
+                    <p>답변
+                        완료: {data.countInquiriesByCode && data.countInquiriesByCode.length > 1 ? data.countInquiriesByCode[1].count : 0}건</p>
                 </div>
             </div>
         </section>
@@ -50,7 +52,7 @@ const StatisticsSection = ({data}) => {
                 </div>
                 <div className="stat-card">
                     <h3>1인당 평균 예약 건수</h3>
-                    <p>평균 {(data.reservationTotalCount/data.userTotalCount).toFixed(1)}건</p>
+                    <p>평균 {(data.reservationTotalCount / data.userTotalCount).toFixed(1)}건</p>
                 </div>
             </div>
         </section>
@@ -59,8 +61,8 @@ const StatisticsSection = ({data}) => {
 
 const NoticeSection = ({data}) => {
     let placeList = [];
-    if(data.placeRecent != null && data.placeRecent.length > 0 ){
-        placeList = [... data.placeRecent];
+    if (data.placeRecent != null && data.placeRecent.length > 0) {
+        placeList = [...data.placeRecent];
     }
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -74,11 +76,11 @@ const NoticeSection = ({data}) => {
         <section className="announcements">
             <h2>최근 등록된 음식점</h2>
             <ul>
-                { placeList.map((row) =>
-                        <li key={row.id}>
-                            {formatDate(row.createdAt)} - {row.name}
-                        </li>
-                    )
+                {placeList.map((row) =>
+                    <li key={row.id}>
+                        {formatDate(row.createdAt)} - {row.name}
+                    </li>
+                )
                 }
             </ul>
         </section>
@@ -91,24 +93,24 @@ const MainContent = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axiosInstance.get("/api/admin/")
+            await axiosInstance.get("/api/admin")
                 .then(res => {
                     refreshToken(res.data, reissueToken);
-                    setData(res.data.status ? res.data.results: []);
+                    setData(res.data.status ? res.data.results : []);
                 })
                 .catch(error => console.log(error));
         }
         fetchData();
     }, []);
-  return (
-    <main>
-      <div className="container">
-          <DashboardSection data={data}/>
-          <StatisticsSection data={data} />
-          <NoticeSection data={data}/>
-      </div>
-    </main>
-  );
+    return (
+        <main>
+            <div className="container">
+                <DashboardSection data={data}/>
+                <StatisticsSection data={data}/>
+                <NoticeSection data={data}/>
+            </div>
+        </main>
+    );
 };
 
 const MainAdmin = () => {
@@ -116,7 +118,7 @@ const MainAdmin = () => {
         <>
             <main>
                 <div className="container">
-                    <MainContent />
+                    <MainContent/>
                 </div>
             </main>
         </>
