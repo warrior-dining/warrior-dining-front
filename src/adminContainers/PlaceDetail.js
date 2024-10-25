@@ -25,7 +25,6 @@ const PlaceDetail = () => {
         fetchData();
     }, []);
 
-    const images = [];
     const clickEvent = () => {
         navigate("/admin/places/edit/" + Number(id));
     }
