@@ -21,7 +21,6 @@ const ReservationAdmin = () => {
                 refreshToken(res.data, reissueToken);
                 setData(res.data.results.content);
                 setTotalPages(res.data.results.totalPages);
-                console.log(res.data);
             })
             .catch(error => console.log(error));
     }, [page, pageSize, sortType, searchKeyword]);
