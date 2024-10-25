@@ -40,26 +40,40 @@ import MypageBookmark from './containers/MypageBookmark';
 import MypageInquiry from './containers/MypageInquiry';
 import InquiryDetail from './containers/InquiryDetail';
 import Detail from './containers/Detail';
+import ReservationOwner from "./ownerContainers/ReservationOwner";
 
 
 function App() {
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isOwner, setIsOwner] = useState(false);
 
     // 페이지 이동에 따라 isAdmin 상태 설정
     const updateAdminStatus = () => {
         const currentPath = window.location.pathname;
         setIsAdmin(currentPath.startsWith('/admin'));
     };
+    const updateOwnerStatus = () => {
+        const currentPath = window.location.pathname;
+        setIsOwner(currentPath.startsWith('/owner'));
+    };
 
     useEffect(() => {
         updateAdminStatus();
+        updateOwnerStatus();
         // 뒤로가기 및 앞으로가기 시 admin 상태를 URL에 맞춰 업데이트
         window.addEventListener('popstate', updateAdminStatus);
-        window.addEventListener('pushstate', updateAdminStatus); // 커스텀 이벤트를 사용해 상태 업데이트
+        window.addEventListener('pushstate', updateAdminStatus);// 커스텀 이벤트를 사용해 상태 업데이트
+
+        window.addEventListener('popstate', updateOwnerStatus);
+        window.addEventListener('pushstate', updateOwnerStatus);
+
 
         return () => {
             window.removeEventListener('popstate', updateAdminStatus);
             window.removeEventListener('pushstate', updateAdminStatus);
+
+            window.removeEventListener('popstate', updateOwnerStatus);
+            window.removeEventListener('pushstate', updateOwnerStatus);
         };
     }, []);
 
@@ -68,9 +82,10 @@ function App() {
             <Router>
                 <AuthProvider>
                     <div className="App">
-                        <Header adminClick={setIsAdmin} />
+                        <Header adminClick={setIsAdmin} ownerClick={setIsOwner}/>
                         {isAdmin ? (<NavBarAdmin />) : (<NavBar />)}
                         <Routes>
+                            <Route path="/owner" element={<ReservationOwner />} />
                             <Route path="/signin" element={<SignIn />} />
                             <Route path="/signup" element={<SignUp />} />
                             <Route path="/admin/members" element={<MembersAdmin />} />

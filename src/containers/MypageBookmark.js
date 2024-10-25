@@ -3,34 +3,33 @@ import '../css/default.css';
 import '../css/mypageMutual.css';
 import '../css/myPageBookmark.css';
 import MypageSidebar from "../components/MypageSidebar";
-import {useAuth} from "../context/AuthContext";
+import {refreshToken,useAuth} from "../context/AuthContext";
 import axiosInstance from "../context/AxiosInstance";
 
 
 const MypageBookmark = () => {
-    const {sub} = useAuth('');
     const [data, setData] = useState([]);
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(4);
     const [totalPages, setTotalPages] = useState(0);
     const [reload, setReload] = useState(false);
+    const {reissueToken} = useAuth();
 
     useEffect(() => {
-        if(sub){
             const fetchData = async () =>{
-                await axiosInstance.get(`/api/member/bookmarks/?email=${sub}&page=${page}&size=${pageSize}`)
+                await axiosInstance.get(`/api/member/bookmarks/?page=${page}&size=${pageSize}`)
                     .then(res => {
+                        refreshToken(res.data, reissueToken);
                         setData(res.data.results ? res.data.results.content : []);
                         setTotalPages( res.data.status ? res.data.results.totalPages : 0);
                     })
                     .catch(error => console.log(error));
             }
             fetchData();
-        }
     }, [page, pageSize, reload]);
 
     const removeBookmark = (placeId) => {
-        axiosInstance.delete(`/api/member/bookmarks/?email=${sub}&placeId=${placeId}`)
+        axiosInstance.delete(`/api/member/bookmarks/?placeId=${placeId}`)
             .then(res => {
                 alert(`즐겨찾기가 해제되었습니다.`);
                 setReload(!reload);
