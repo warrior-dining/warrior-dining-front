@@ -99,10 +99,10 @@ const ReservationAdmin = () => {
                                 <div className="reservation-item" key={row.id} onClick={() => toggleDetails(row.id)}>
                                     <h3>예약 ID: {row.id}</h3>
                                     <p>
-                                        고객 이름: {row.user.name}
-                                        <span className={`status ${row.code.value}`}>{row.code.value}</span>
+                                        고객 이름: {row.userName}
+                                        <span className={`status ${row.reservationStatus}`}>{row.reservationStatus}</span>
                                     </p>
-                                    {row.code.value === '대기' && (
+                                    {row.reservationStatus === '대기' && (
                                         <button className="cancel-button" onClick={(e) => {
                                             e.stopPropagation();
                                             handleUpdateStatus(row.id);
@@ -114,11 +114,11 @@ const ReservationAdmin = () => {
                                         className={`reservation-details ${expandedReservationId === row.id ? 'open' : ''}`}>
                                         {expandedReservationId === row.id && (
                                             <>
-                                                <p>식당: {row.place.name} </p>
+                                                <p>식당: {row.placeName} </p>
                                                 <p>예약 날짜: {row.reservationDate}</p>
                                                 <p>예약 시간: {row.reservationTime}</p>
                                                 <p>요청사항: {row.orderNote}</p>
-                                                <p>인원: {row.count}</p>
+                                                <p>인원: {`${row.count}명`}</p>
                                             </>
                                         )}
                                     </div>
