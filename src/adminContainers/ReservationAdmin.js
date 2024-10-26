@@ -16,7 +16,9 @@ const ReservationAdmin = () => {
     const {reissueToken} = useAuth();
 
     useEffect(() => {
-        axiosInstance.get(`/api/admin/reservations/?page=${page}&size=${pageSize}&status=${sortType}&type=${searchType}&keyword=${searchKeyword}`)
+        axiosInstance.get(
+            `/api/admin/reservations?page=${page}&size=${pageSize}&status=${sortType}&type=${searchType}&keyword=${searchKeyword}`
+        )
             .then(res => {
                 refreshToken(res.data, reissueToken);
                 setData(res.data.results.content);
@@ -30,7 +32,10 @@ const ReservationAdmin = () => {
         if (!confirmCancel) {
             return;
         }
-        axiosInstance.patch(`/api/admin/reservations/${id}`, {status: 14})
+        axiosInstance.patch(
+            `/api/admin/reservations/${id}`,
+            {status: 14}
+        )
             .then(res => {
                 alert("예약이 정상적으로 취소되었습니다.")
                 setSortType('13');
@@ -100,7 +105,8 @@ const ReservationAdmin = () => {
                                     <h3>예약 ID: {row.id}</h3>
                                     <p>
                                         고객 이름: {row.userName}
-                                        <span className={`status ${row.reservationStatus}`}>{row.reservationStatus}</span>
+                                        <span
+                                            className={`status ${row.reservationStatus}`}>{row.reservationStatus}</span>
                                     </p>
                                     {row.reservationStatus === '대기' && (
                                         <button className="cancel-button" onClick={(e) => {
