@@ -29,10 +29,8 @@ const TopReservation = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(baseUrl);
         const response = await axios.get(`${baseUrl}/api/restaurant/top`);
         const data = response.data;
-
         if (Array.isArray(data)) {
           setRatings(data.slice(0, 10)); 
           setFilteredRatings(data.slice(0, 10)); 
