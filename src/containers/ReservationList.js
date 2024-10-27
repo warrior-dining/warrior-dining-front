@@ -6,6 +6,7 @@ import '../css/default.css';
 import '../css/myPageReservationList.css';
 import MypageSidebar from "../components/MypageSidebar";
 import axiosInstance from '../context/AxiosInstance';
+import noDataImg from "../image/noData.png";
 
 
 const ReservationList = () => {
@@ -54,72 +55,81 @@ const ReservationList = () => {
             <section id="orders">
                 <h1>예약 내역</h1>
                 <div className="myorder-list">
-                    {data.map((row) => (
-                        <div className="myorder-item" key={row.id}>
-                            <div className="reservation-info">
-                                <h2 className="reservation-number">예약 번호: {row.id}</h2>
-                                <p className="reservation-date">예약일: {row.reservationDate}</p>
-                                <p className="reservation-status">상태: {row.reservationStatus}</p>
-                                <ul className="myreservation-details">
-                                    <li>음식점 : {row.placeName}</li>
-                                    <li>인원 수 : {row.count}명</li>
-                                    <li>예약 시간 : {row.reservationTime}</li>
-                                    <li>특별 요청 : {row.orderNote}</li>
-                                </ul>
-                                {row.reservationStatus === "대기" ?
-                                    <button
-                                        className="myreservationList-button"
-                                        onClick={() => navigate(`/mypage/reservationdetail/${row.id}`)}> 예약 수정/취소 </button>
-                                    : ""
-                                }
-                                {row.reservationStatus === "완료" ? (
-                                 row.reviewExists ? (  // 리뷰 작성 여부에 따라 버튼 텍스트 변경
-                                    <button className="myreservationList-button" disabled> 리뷰 작성 완료 </button>
-                                ) : (
-                                <button
-                                    className="myreservationList-button"
-                                    onClick={() => navigate(`/reviewcomment/${row.id}`)}> 리뷰 작성하기 </button>
-                                     )) : null}
-                                {row.reservationStatus === "완료" && !row.bookMark ?
-                                    <button
-                                        className="myreservationList-button"
-                                        onClick={() => { bookMark(row.placeId);}}> 즐겨찾기 등록 </button>
-                                    : ""
-                                }
+                    {data.length === 0 ? (
+                    <div className="reservation-noData">
+                        <div className="image-container">
+                            <img src={noDataImg} />
+                            <p className="noReservation">예약 내역이 없습니다.</p> 
+                        </div>
+                    </div>    
+                    ) : (
+                        data.map((row) => (
+                            <div className="myorder-item" key={row.id}>
+                                <div className="reservation-info">
+                                    <h2 className="reservation-number">예약 번호: {row.id}</h2>
+                                    <p className="reservation-date">예약일: {row.reservationDate}</p>
+                                    <p className="reservation-status">상태: {row.reservationStatus}</p>
+                                    <ul className="myreservation-details">
+                                        <li>음식점 : {row.placeName}</li>
+                                        <li>인원 수 : {row.count}명</li>
+                                        <li>예약 시간 : {row.reservationTime}</li>
+                                        <li>특별 요청 : {row.orderNote}</li>
+                                    </ul>
+                                    {row.reservationStatus === "대기" ? (
+                                        <button
+                                            className="myreservationList-button"
+                                            onClick={() => navigate(`/mypage/reservationdetail/${row.id}`)}> 예약 수정/취소 </button>
+                                    ) : null}
+                                    {row.reservationStatus === "완료" ? (
+                                        row.reviewExists ? (
+                                        <button className="myreservationList-button" disabled> 리뷰 작성 완료 </button>
+                                    ) : (
+                                        <button
+                                            className="myreservationList-button"
+                                            onClick={() => navigate(`/reviewcomment/${row.id}`)}> 리뷰 작성하기 </button>
+                                        )
+                                    ) : null}
+                                    {row.reservationStatus === "완료" && !row.bookMark ? (
+                                        <button
+                                            className="myreservationList-button"
+                                            onClick={() => { bookMark(row.placeId); }}> 즐겨찾기 등록 </button>
+                                    ) : null}
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                    <div className="reservation-pagination-container">
-                        <div className="reservation-pagination">
-                            <a href="#"
+                        ))
+                    )}
+                </div>
+                <div className="reservation-pagination-container">
+                    <div className="reservation-pagination">
+                        <a href="#"
+                           onClick={(e) => {
+                               e.preventDefault();
+                               if (page > 0) {
+                                   setPage(page - 1);
+                               }
+                           }}
+                           disabled={page === 0}> 이전 </a>
+                        {paginationNumbers.map((num) => (
+                            <a key={num} href="#" className={num === page ? "active" : ""}
                                onClick={(e) => {
                                    e.preventDefault();
-                                   if (page > 0) {
-                                       setPage(page - 1);
-                                   }
-                               }}
-                               disabled={page === 0}> 이전 </a>
-                            {paginationNumbers.map((num) => (
-                                <a key={num} href="#" className={num === page ? "active" : ""}
-                                   onClick={(e) => {
-                                       e.preventDefault();
-                                       setPage(num);
-                                   }}> {num + 1} </a>
-                            ))}
-                            <a href="#"
-                               onClick={(e) => {
-                                   e.preventDefault();
-                                   if (page < totalPages - 1) {
-                                       setPage(page + 1);
-                                   }
-                               }}
-                               disabled={page >= totalPages - 1}> 다음 </a>
-                        </div>
+                                   setPage(num);
+                               }}> {num + 1} </a>
+                        ))}
+                        <a href="#"
+                           onClick={(e) => {
+                               e.preventDefault();
+                               if (page < totalPages - 1) {
+                                   setPage(page + 1);
+                               }
+                           }}
+                           disabled={page >= totalPages - 1}> 다음 </a>
                     </div>
                 </div>
             </section>
         </main>
     );
+    
 };
 
 export default ReservationList;

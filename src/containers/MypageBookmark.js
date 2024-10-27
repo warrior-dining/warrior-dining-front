@@ -5,6 +5,7 @@ import '../css/myPageBookmark.css';
 import MypageSidebar from "../components/MypageSidebar";
 import {refreshToken,useAuth} from "../context/AuthContext";
 import axiosInstance from "../context/AxiosInstance";
+import noDataImg from "../image/noData.png";
 
 
 const MypageBookmark = () => {
@@ -46,24 +47,32 @@ const MypageBookmark = () => {
     };
     const paginationNumbers = getPaginationNumbers();
 
-return (
-    <>
+    return (
         <main className="mypage-container">
             <MypageSidebar />
             <div className="bookmark-content">
                 <h1>즐겨찾기</h1>
                 <div className="favorite-list">
-                    {data.map((row) => (
-                        <div className="favorite-item" key={row.placeId}>
-                            <h2>{row.placeName}</h2>
-                            <p>위치: {row.addressNew}</p>
-                            <p>평점: {row.avgRating}</p>
-                            <p>전화: {row.phone}</p>
-                            <button className="remove-favorite-button"
-                                onClick={() => removeBookmark(row.placeId)}> 즐겨찾기 해제
-                            </button>
+                    {data.length === 0 ? (
+                    <div className="bookMark-noData">
+                        <div className="image-container">
+                            <img src={noDataImg} />
+                            <p className="noBookmark">즐겨찾기 내역이 없습니다.</p>
                         </div>
-                    ))}
+                    </div>
+                    ) : (
+                        data.map((row) => (
+                            <div className="favorite-item" key={row.placeId}>
+                                <h2>{row.placeName}</h2>
+                                <p>위치: {row.addressNew}</p>
+                                <p>평점: {row.avgRating}</p>
+                                <p>전화: {row.phone}</p>
+                                <button className="remove-favorite-button"
+                                    onClick={() => removeBookmark(row.placeId)}> 즐겨찾기 해제
+                                </button>
+                            </div>
+                        ))
+                    )}
                 </div>
                 <div className="bookmark-pagination-container">
                     <div className="bookmark-pagination">
@@ -94,8 +103,8 @@ return (
                 </div>
             </div>
         </main>
-    </>
-);
+    );
+    
 }
 
 export default MypageBookmark
