@@ -270,17 +270,27 @@ const ReservationForm = ({ restaurant }) => {
     const [error, setError] = useState('');
     const [count, setCount] = useState(1);
     const [orderNote, setOrderNote] = useState('');
-    const [startHours, startMinutes] = restaurantData.startTime.split(':').map(Number);
-    const [endHours, endMinutes] = restaurantData.endTime.split(':').map(Number);
-    const timeOptions = [];
-    const startInMinutes = startHours * 60 + startMinutes;
-    const endInMinutes = endHours * 60 + endMinutes;
+    const [timeOptions, setTimeOptions] = useState([]);
 
-    for (let time = startInMinutes; time <= endInMinutes; time += 30) {
-        const hours = String(Math.floor(time / 60)).padStart(2, '0');
-        const minutes = String(time % 60).padStart(2, '0');
-        timeOptions.push(`${hours}:${minutes}`); // 'HH:mm' 형식으로 변환
-    }
+    useEffect(() => {
+        generateTimeOptions(restaurantData.startTime, restaurantData.endTime);
+    }, [restaurantData.startTime, restaurantData.endTime]);
+
+    const generateTimeOptions = (startTime, endTime) => {
+        const options = [];
+        const [startHours, startMinutes] = startTime.split(':').map(Number);
+        const [endHours, endMinutes] = endTime.split(':').map(Number);
+
+        const startInMinutes = startHours * 60 + startMinutes;
+        const endInMinutes = endHours * 60 + endMinutes + (endHours < startHours ? 24 * 60 : 0); // 다음 날로 넘어가는 경우 처리
+
+        for (let time = startInMinutes; time <= endInMinutes; time += 30) {
+            const hours = String(Math.floor(time / 60) % 24).padStart(2, '0');
+            const minutes = String(time % 60).padStart(2, '0');
+            options.push(`${hours}:${minutes}`);
+        }
+        setTimeOptions(options);
+    };
 
     const getMinMaxDate = () => {
         const today = new Date();
@@ -289,7 +299,7 @@ const ReservationForm = ({ restaurant }) => {
         const day = String(today.getDate()).padStart(2, '0');
         const minDate = `${year}-${month}-${day}`;
 
-        // 최대 날짜 설정 (현재 날짜 + 7일)
+        // 최대 날짜 설정 (현재 날짜 + 30일)
         today.setDate(today.getDate() + 30);
         const maxYear = today.getFullYear();
         const maxMonth = String(today.getMonth() + 1).padStart(2, '0');
@@ -304,18 +314,21 @@ const ReservationForm = ({ restaurant }) => {
     const submitEvent = (e) => {
         e.preventDefault();
         const reservationData = {
-            placeId : restaurantData.id,
-            reservationDate : reservationDate,
-            reservationTime : reservationDate + " " + reservationTime,
-            count : count,
-            orderNote : orderNote
-        }
+            placeId: restaurantData.id,
+            reservationDate: reservationDate,
+            reservationTime: reservationDate + " " + reservationTime,
+            count: count,
+            orderNote: orderNote,
+        };
+
         axiosInstance.post("/api/member/reservation/", reservationData)
             .then(res => {
-                alert("예약이 완료 되었습니다.");
+                alert("예약이 완료되었습니다.");
                 navigate("/mypage/reservationlist");
             }).catch(error => {
-            if (error.response) { setError(error.response.data.message);}
+            if (error.response) {
+                setError(error.response.data.message);
+            }
         });
     };
 
@@ -324,12 +337,12 @@ const ReservationForm = ({ restaurant }) => {
             <div className="form-group date-time-group">
                 <div className="form-group half">
                     <label htmlFor="date">예약 날짜</label>
-                    <input type="date" id="date" name="date" min={minDate} max={maxDate} onChange={(e)=> setReservationDate(e.target.value)} required />
+                    <input type="date" id="date" name="date" min={minDate} max={maxDate} onChange={(e) => setReservationDate(e.target.value)} required />
                 </div>
                 <div className="form-group half">
                     <label htmlFor="time">예약 시간</label>
                     <select id="time" name="time" onChange={(e) => setReservationTime(e.target.value)} required>
-                        <option>선택하세요.</option>
+                        <option value="">선택하세요.</option>
                         {timeOptions.map((row, index) => (
                             <option key={index} value={row}>{row}</option>
                         ))}
@@ -338,7 +351,7 @@ const ReservationForm = ({ restaurant }) => {
             </div>
             <div className="form-group">
                 <label htmlFor="guests">인원 수</label>
-                <select id="guests" name="guests" onChange={e=> setCount(e.target.value)} required>
+                <select id="guests" name="guests" onChange={e => setCount(e.target.value)} required>
                     {[...Array(10)].map((_, index) => (
                         <option key={index} value={index + 1}>{index + 1}명</option>
                     ))}
@@ -346,7 +359,7 @@ const ReservationForm = ({ restaurant }) => {
             </div>
             <div className="form-group">
                 <label htmlFor="special-requests">요청 사항</label>
-                <textarea id="special-requests" name="special-requests" rows="4" onChange={e=> setOrderNote(e.target.value)}></textarea>
+                <textarea id="special-requests" name="special-requests" rows="4" onChange={e => setOrderNote(e.target.value)}></textarea>
             </div>
             {error && <div className="error">{error}</div>}
             <div className="form-group">
@@ -355,5 +368,6 @@ const ReservationForm = ({ restaurant }) => {
         </form>
     );
 };
+
 
 export default Detail;
