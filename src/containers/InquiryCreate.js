@@ -15,7 +15,7 @@ const InquiryCreate = () => {
         e.preventDefault();
 
         const createData = {title: title, content: content, email: sub};
-        axiosInstance.post(`/api/member/inquiries/`, createData)
+        axiosInstance.post(`/api/user/inquiries`, createData)
             .then(res => {
                 refreshToken(reissueToken);
                 navigate(`/mypage/inquiry`);

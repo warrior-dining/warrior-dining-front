@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth, refreshToken } from '../context/AuthContext';
+import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {refreshToken, useAuth} from '../context/AuthContext';
 import '../css/default.css';
 import '../css/mypageMutual.css';
 import '../css/myReview.css';
@@ -15,11 +15,11 @@ const MypageReviewlist = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [pageSize, setPageSize] = useState(5);
     const [reload, setReload] = useState(true);
-    const { reissueToken } = useAuth();
+    const {reissueToken} = useAuth();
 
     useEffect(() => {
         const fetchData = async () => {
-            await axiosInstance.get(`/api/member/reviews/?page=${page}&size=${pageSize}`)
+            await axiosInstance.get(`/api/user/reviews?page=${page}&size=${pageSize}`)
                 .then(res => {
                     refreshToken(reissueToken);
                     setData(res.data.results.content);
@@ -47,10 +47,10 @@ const MypageReviewlist = () => {
 
     const handleUpdateStatus = (id) => {
         setData(prevData => prevData.map(item =>
-            item.id === id ? { ...item, isDeleted: true } : item
+            item.id === id ? {...item, isDeleted: true} : item
         ));
         confirmDelete();
-        axiosInstance.patch(`/api/member/reviews/${id}`)
+        axiosInstance.patch(`/api/user/reviews/${id}`)
             .then(res => {
                 setReload(!reload);
             })
@@ -66,7 +66,7 @@ const MypageReviewlist = () => {
         const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
         const endPage = Math.min(totalPages, startPage + maxPagesToShow);
 
-        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+        return Array.from({length: endPage - startPage}, (_, index) => startPage + index);
     };
 
     const paginationNumbers = getPaginationNumbers();
@@ -74,18 +74,18 @@ const MypageReviewlist = () => {
     return (
         <>
             <main className="mypage-container">
-                <MypageSidebar />
+                <MypageSidebar/>
                 <div className="content">
                     <section className="myReview">
                         <h1>리뷰 관리</h1>
                         <div className="review-list">
                             {data.length === 0 ? (
-                            <div className="review-noData">
-                                <div className="image-container">
-                                    <img src={noDataImg}/>
-                                    <p className="noReview">작성된 리뷰가 없습니다.</p>
+                                <div className="review-noData">
+                                    <div className="image-container">
+                                        <img src={noDataImg}/>
+                                        <p className="noReview">작성된 리뷰가 없습니다.</p>
+                                    </div>
                                 </div>
-                            </div>
                             ) : (
                                 data.map((review) => (
                                     <div className="review-item-container" key={review.id}>
@@ -94,11 +94,13 @@ const MypageReviewlist = () => {
                                             <p>별점: {getStars(review.rating)}</p>
                                             <p>작성일: {review.createdAt}</p>
                                             <p>리뷰 내용: {review.content}</p>
-                                            <button className="edit-review-button" onClick={() => handleEdit(review.id)}>수정</button>
+                                            <button className="edit-review-button"
+                                                    onClick={() => handleEdit(review.id)}>수정
+                                            </button>
                                             {review.status === '0' ? '1' :
                                                 <button className="delete-review-button"
-                                                    style={{ display: review.deleted ? 'none' : '' }}
-                                                    onClick={() => handleUpdateStatus(review.id)}>삭제</button>
+                                                        style={{display: review.deleted ? 'none' : ''}}
+                                                        onClick={() => handleUpdateStatus(review.id)}>삭제</button>
                                             }
                                         </div>
                                     </div>
@@ -109,24 +111,28 @@ const MypageReviewlist = () => {
                     <div className="review-pagination-container">
                         <div className="review-pagination">
                             <a href="#"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    if (page > 0) { setPage(page - 1); }
-                                }}
-                                disabled={page === 0}> 이전 </a>
+                               onClick={(e) => {
+                                   e.preventDefault();
+                                   if (page > 0) {
+                                       setPage(page - 1);
+                                   }
+                               }}
+                               disabled={page === 0}> 이전 </a>
                             {paginationNumbers.map((num) => (
                                 <a key={num} href="#" className={num === page ? "active" : ""}
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        setPage(num);
-                                    }}> {num + 1} </a>
+                                   onClick={(e) => {
+                                       e.preventDefault();
+                                       setPage(num);
+                                   }}> {num + 1} </a>
                             ))}
                             <a href="#"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    if (page < totalPages - 1) { setPage(page + 1); }
-                                }}
-                                disabled={page >= totalPages - 1}> 다음 </a>
+                               onClick={(e) => {
+                                   e.preventDefault();
+                                   if (page < totalPages - 1) {
+                                       setPage(page + 1);
+                                   }
+                               }}
+                               disabled={page >= totalPages - 1}> 다음 </a>
                         </div>
                     </div>
                 </div>
