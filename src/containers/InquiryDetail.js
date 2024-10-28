@@ -27,6 +27,7 @@ const InquiryDetail = () => {
         const updateData = {"title": title, "content": content}
         axiosInstance.put(`/api/member/inquiries/${id}`, updateData)
         .then(res => {
+            navigate('/mypage/inquiry');
         })
         .catch(error => console.log(error));
     };
