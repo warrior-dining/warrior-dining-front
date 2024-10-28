@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import '../css/default.css';
 import '../css/detail.css';
@@ -7,6 +7,7 @@ import axiosInstance from '../context/AxiosInstance';
 import axios from "axios";
 import {Map, MapMarker , useKakaoLoader} from "react-kakao-maps-sdk";
 import markerImage from '../image/warriors_dining_marker.png';
+import copyButton from '../image/free-icon-copy.png';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -140,6 +141,7 @@ const RestaurantDetails = ({ restaurant, onOpenModal }) => {
 };
 
 const LocationSection = ({ restaurant }) => {
+    const textRef = useRef('');
     const { kakao } = window;
     const { loading, error } = useKakaoLoader({
         appkey: process.env.REACT_APP_KAKAO_MAP_APP_KEY,
@@ -167,27 +169,36 @@ const LocationSection = ({ restaurant }) => {
         }
     }, [loading, restaurant.addressNew, kakao]);
 
+    const copyToClipboard = () => {
+        const text = textRef.current.innerText; // <p>의 내용 가져오기
+        navigator.clipboard.writeText(text) // 클립보드에 복사
+            .then(() => {
+                alert('내용이 클립보드에 복사되었습니다!');
+            })
+            .catch(err => {
+                console.error('클립보드 복사 실패:', err);
+            });
+    };
+
     return (
         <section className="location-detail">
             <h2 className="section-title">위치</h2>
             <div className="location-content">
-                <Map center={state.center} isPanto={state.isPanto} style={{ width: "100%", height: "450px" }} level={3}>
+                <Map center={state.center} isPanto={state.isPanto} style={{width: "100%", height: "450px"}} level={3}>
                     <MapMarker position={state.center}
                                image={{
                                    src: markerImage,
-                                   size: {
-                                       width: 64,
-                                       height: 69,
-                                   },
-                                   options: {
-                                       offset: {
-                                           x: 27,
-                                           y: 69,
-                                       },
-                                   },
+                                   size: {width: 64, height: 69,},
+                                   options: {offset: {x: 27, y: 69,},},
                                }}
                     ></MapMarker>
                 </Map>
+                <div className="location-text">
+                    <p ref={textRef}>{restaurant.addressNew}</p>
+                    <button className="location-text-button" onClick={copyToClipboard} style={{}}>
+                        <img src={copyButton}/>
+                    </button>
+                </div>
             </div>
         </section>
     );
