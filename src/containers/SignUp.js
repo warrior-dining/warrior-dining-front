@@ -113,6 +113,7 @@ const SignUp = () => {
                                     id="birth"
                                     value={birth}
                                     onChange={(e) => setBirth(e.target.value)}
+                                    placeholder="생년월일은 년(4자리)월(2자리)일(2자리) 형식으로 입력하세요"
                                     required
                                 />
                             </div>
