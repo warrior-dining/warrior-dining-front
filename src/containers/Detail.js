@@ -1,11 +1,10 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import '../css/default.css';
 import '../css/detail.css';
-import {useAuth } from '../context/AuthContext';
 import axiosInstance from '../context/AxiosInstance';
 import axios from "axios";
-import {Map, MapMarker , useKakaoLoader} from "react-kakao-maps-sdk";
+import {Map, MapMarker, useKakaoLoader} from "react-kakao-maps-sdk";
 import markerImage from '../image/warriors_dining_marker.png';
 import copyButton from '../image/free-icon-copy.png';
 
@@ -18,13 +17,13 @@ const Detail = () => {
     const [visibleReviews, setVisibleReviews] = useState(3); // 초기 보여줄 리뷰 개수
     const [showMoreMenus, setShowMoreMenus] = useState(true); // 메뉴 더보기 상태
     const [showMoreReviews, setShowMoreReviews] = useState(true); // 리뷰 더보기 상태
-    const { id } = useParams(); // URL에서 placeId 가져오기
+    const {id} = useParams(); // URL에서 placeId 가져오기
 
     useEffect(() => {
         const fetchData = async () => {
             await axios.get(`${baseUrl}/api/restaurant/${id}`)
                 .then(res => {
-                    if(res.data.content && res.data.content.length > 0) {
+                    if (res.data.content && res.data.content.length > 0) {
                         setRestaurantDetail(res.data.content[0]);
                     }
                 })
@@ -78,8 +77,8 @@ const Detail = () => {
 
     return (
         <div className="container">
-            <RestaurantDetails restaurant={restaurantDetail} onOpenModal={handleOpenModal} />
-            <LocationSection restaurant={restaurantDetail} />
+            <RestaurantDetails restaurant={restaurantDetail} onOpenModal={handleOpenModal}/>
+            <LocationSection restaurant={restaurantDetail}/>
             <MenuSection
                 menus={restaurantDetail.placeMenus}
                 visibleMenus={visibleMenus}
@@ -94,12 +93,12 @@ const Detail = () => {
                 showMoreReviews={showMoreReviews}
                 toggleReviews={toggleReviews}
             />
-            {isModalOpen && <ReservationModal restaurant={restaurantDetail} onClose={handleCloseModal} />}
+            {isModalOpen && <ReservationModal restaurant={restaurantDetail} onClose={handleCloseModal}/>}
         </div>
     );
 };
 
-const RestaurantDetails = ({ restaurant, onOpenModal }) => {
+const RestaurantDetails = ({restaurant, onOpenModal}) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const handleNextImage = () => {
@@ -140,16 +139,16 @@ const RestaurantDetails = ({ restaurant, onOpenModal }) => {
     );
 };
 
-const LocationSection = ({ restaurant }) => {
+const LocationSection = ({restaurant}) => {
     const textRef = useRef('');
-    const { kakao } = window;
-    const { loading, error } = useKakaoLoader({
+    const {kakao} = window;
+    const {loading, error} = useKakaoLoader({
         appkey: process.env.REACT_APP_KAKAO_MAP_APP_KEY,
         libraries: ["services"]
     });
 
     const [state, setState] = useState({
-        center: { lat: 37.49676871972202, lng: 127.02474726969814 },
+        center: {lat: 37.49676871972202, lng: 127.02474726969814},
         isPanto: true,
     });
 
@@ -160,7 +159,7 @@ const LocationSection = ({ restaurant }) => {
                 if (status === kakao.maps.services.Status.OK) {
                     const newSearch = result[0];
                     setState({
-                        center: { lat: newSearch.y, lng: newSearch.x },
+                        center: {lat: newSearch.y, lng: newSearch.x},
                         isPanto: true,
                     });
                 }
@@ -249,10 +248,10 @@ const ReviewsSection = ({reviews, visibleReviews, loadMoreReviews, showMoreRevie
     </section>
 );
 
-const ReviewCard = ({ review }) => (
+const ReviewCard = ({review}) => (
     <div className="RD-review-card">
         <div className="RD-review-content">
-            <img src="https://via.placeholder.com/60" alt="리뷰어 사진" />
+            <img src="https://via.placeholder.com/60" alt="리뷰어 사진"/>
             <div>
                 <p className="reviewer-name">{review.user.name}</p>
                 <p className="review-text">{review.content}</p>
@@ -261,9 +260,9 @@ const ReviewCard = ({ review }) => (
     </div>
 );
 
-const ReservationModal = ({restaurant ,onClose }) => {
+const ReservationModal = ({restaurant, onClose}) => {
     return (
-        <div className="modal" style={{ display: 'flex' }}>
+        <div className="modal" style={{display: 'flex'}}>
             <div className="modal-content">
                 <button className="modal-close" onClick={onClose}>&times;</button>
                 <h1>레스토랑 예약</h1>
@@ -273,7 +272,7 @@ const ReservationModal = ({restaurant ,onClose }) => {
     );
 };
 
-const ReservationForm = ({ restaurant }) => {
+const ReservationForm = ({restaurant}) => {
     const navigate = useNavigate();
     const restaurantData = restaurant;
     const [reservationDate, setReservationDate] = useState(null);
@@ -317,10 +316,10 @@ const ReservationForm = ({ restaurant }) => {
         const maxDay = String(today.getDate()).padStart(2, '0');
         const maxDate = `${maxYear}-${maxMonth}-${maxDay}`;
 
-        return { minDate, maxDate };
+        return {minDate, maxDate};
     };
 
-    const { minDate, maxDate } = getMinMaxDate();
+    const {minDate, maxDate} = getMinMaxDate();
 
     const submitEvent = (e) => {
         e.preventDefault();
@@ -332,7 +331,7 @@ const ReservationForm = ({ restaurant }) => {
             orderNote: orderNote,
         };
 
-        axiosInstance.post("/api/member/reservation/", reservationData)
+        axiosInstance.post("/api/user/reservation", reservationData)
             .then(res => {
                 alert("예약이 완료되었습니다.");
                 navigate("/mypage/reservationlist");
@@ -348,7 +347,8 @@ const ReservationForm = ({ restaurant }) => {
             <div className="form-group date-time-group">
                 <div className="form-group half">
                     <label htmlFor="date">예약 날짜</label>
-                    <input type="date" id="date" name="date" min={minDate} max={maxDate} onChange={(e) => setReservationDate(e.target.value)} required />
+                    <input type="date" id="date" name="date" min={minDate} max={maxDate}
+                           onChange={(e) => setReservationDate(e.target.value)} required/>
                 </div>
                 <div className="form-group half">
                     <label htmlFor="time">예약 시간</label>
@@ -370,11 +370,12 @@ const ReservationForm = ({ restaurant }) => {
             </div>
             <div className="form-group">
                 <label htmlFor="special-requests">요청 사항</label>
-                <textarea id="special-requests" name="special-requests" rows="4" onChange={e => setOrderNote(e.target.value)}></textarea>
+                <textarea id="special-requests" name="special-requests" rows="4"
+                          onChange={e => setOrderNote(e.target.value)}></textarea>
             </div>
             {error && <div className="error">{error}</div>}
             <div className="form-group">
-                <button type="submit" style={{ float: 'right' }}>예약 확인</button>
+                <button type="submit" style={{float: 'right'}}>예약 확인</button>
             </div>
         </form>
     );

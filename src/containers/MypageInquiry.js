@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { refreshToken, useAuth } from '../context/AuthContext';
+import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {refreshToken, useAuth} from '../context/AuthContext';
 import '../css/default.css';
 import '../css/mypageMutual.css';
 import '../css/inquiry.css';
@@ -15,10 +15,10 @@ const MypageInquiry = () => {
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [pageSize, setPageSize] = useState(10);
-    const { reissueToken } = useAuth();
+    const {reissueToken} = useAuth();
 
     useEffect(() => {
-        axiosInstance.get(`/api/member/inquiries/?page=${page}&size=${pageSize}`)
+        axiosInstance.get(`/api/user/inquiries?page=${page}&size=${pageSize}`)
             .then(res => {
                 refreshToken(reissueToken);
                 setData(res.data.results.content);
@@ -36,7 +36,7 @@ const MypageInquiry = () => {
         const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
         const endPage = Math.min(totalPages, startPage + maxPagesToShow);
 
-        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+        return Array.from({length: endPage - startPage}, (_, index) => startPage + index);
     };
 
     const paginationNumbers = getPaginationNumbers();
@@ -44,40 +44,40 @@ const MypageInquiry = () => {
     return (
         <>
             <main className="mypage-container">
-                <MypageSidebar />
+                <MypageSidebar/>
                 <div className="content">
                     <section className="myReview">
                         <h1>내 문의내역</h1>
                         <div className="inquiries-container">
                             <div className="inquiry-list">
-                                {data.length === 0 ? ( 
+                                {data.length === 0 ? (
                                     <div className="inquiry-noData">
                                         <div className="image-container">
-                                            <img src={noDataImg} alt="No Data" />
+                                            <img src={noDataImg} alt="No Data"/>
                                             <p className="noInquiry">문의내역이 없습니다.</p>
                                         </div>
                                     </div>
                                 ) : (
                                     <table>
                                         <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>문의 제목</th>
-                                                <th>문의 날짜</th>
-                                                <th>상태</th>
-                                            </tr>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>문의 제목</th>
+                                            <th>문의 날짜</th>
+                                            <th>상태</th>
+                                        </tr>
                                         </thead>
                                         <tbody>
-                                            {data.map((inquiry) => (
-                                                <tr key={inquiry.id} onClick={() => handleEdit(inquiry.id)}>
-                                                    <td>{inquiry.id}</td>
-                                                    <td>{inquiry.title}</td>
-                                                    <td>{inquiry.createdAt}</td>
-                                                    <td className={`status ${inquiry.status}`}>
-                                                        {inquiry.code.value}
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                        {data.map((inquiry) => (
+                                            <tr key={inquiry.id} onClick={() => handleEdit(inquiry.id)}>
+                                                <td>{inquiry.id}</td>
+                                                <td>{inquiry.title}</td>
+                                                <td>{inquiry.createdAt}</td>
+                                                <td className={`status ${inquiry.status}`}>
+                                                    {inquiry.code.value}
+                                                </td>
+                                            </tr>
+                                        ))}
                                         </tbody>
                                     </table>
                                 )}
@@ -89,7 +89,9 @@ const MypageInquiry = () => {
                             <a href="#"
                                onClick={(e) => {
                                    e.preventDefault();
-                                   if (page > 0) { setPage(page - 1); }
+                                   if (page > 0) {
+                                       setPage(page - 1);
+                                   }
                                }}
                                disabled={page === 0}> 이전 </a>
                             {paginationNumbers.map((num) => (
@@ -102,7 +104,9 @@ const MypageInquiry = () => {
                             <a href="#"
                                onClick={(e) => {
                                    e.preventDefault();
-                                   if (page < totalPages - 1) { setPage(page + 1); }
+                                   if (page < totalPages - 1) {
+                                       setPage(page + 1);
+                                   }
                                }}
                                disabled={page >= totalPages - 1}> 다음 </a>
                         </div>

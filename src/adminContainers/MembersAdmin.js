@@ -24,7 +24,7 @@ const MemberList = ({list}) => {
                 {
                     list.map((row, index) => (
                         <tr key={index} onClick={() => {
-                            navigate(`/admin/members/info/${row.id}`);
+                            navigate(`/admin/users/${row.id}`);
                         }}>
                             <td>{index + 1}</td>
                             <td>{row.email}</td>
@@ -60,7 +60,7 @@ const MembersAdmin = () => {
     // 검색어가 있을 때는 FindByKeyword, 없을 때는 FindByAll 사용
     useEffect(() => {
         const fetchData = async () => {
-            await axiosInstance.get(`/api/admin/members/?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`)
+            await axiosInstance.get(`/api/admin/users?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`)
                 .then(res => {
                     refreshToken(res.data, reissueToken);
                     setList(res.data.status ? res.data.results.content : []);
@@ -79,12 +79,12 @@ const MembersAdmin = () => {
             alert("검색어를 입력하세요.");
             return;
         }
-        setPage(0); 
+        setPage(0);
         setSearchKeyword(searchKeywordRef.current.value);
     };
 
     const getPaginationNumbers = () => {
-        const maxPagesToShow = 5; 
+        const maxPagesToShow = 5;
         const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
         const endPage = Math.min(totalPages, startPage + maxPagesToShow);
 

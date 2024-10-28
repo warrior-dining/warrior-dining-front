@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { useNavigate} from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import {useNavigate} from 'react-router-dom';
+import {useAuth} from '../context/AuthContext';
 import '../css/mypageMutual.css';
 import '../css/default.css';
 import '../css/myPageReservationList.css';
@@ -21,9 +21,9 @@ const ReservationList = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axiosInstance.get(`/api/member/reservation/?page=${page}&size=${pageSize}`)
+            await axiosInstance.get(`/api/user/reservation?page=${page}&size=${pageSize}`)
                 .then(res => {
-                    setData( res.data.status ? res.data.results.content : [] );
+                    setData(res.data.status ? res.data.results.content : []);
                     setTotalPages(res.data.status ? res.data.results.totalPages : 0);
                 })
                 .catch(error => console.log(error))
@@ -32,7 +32,7 @@ const ReservationList = () => {
     }, [page, pageSize]);
 
     const bookMark = (placeId) => {
-        axiosInstance.put("/api/member/bookmarks/", {"placeId": placeId})
+        axiosInstance.put("/api/user/bookmarks", {"placeId": placeId})
             .then(res => {
                 alert("즐겨찾기 등록 완료");
                 navigate("/mypage/bookmark");
@@ -44,24 +44,24 @@ const ReservationList = () => {
         const startPage = Math.max(0, page - Math.floor(maxPagesToShow / 2));
         const endPage = Math.min(totalPages, startPage + maxPagesToShow);
 
-        return Array.from({ length: endPage - startPage }, (_, index) => startPage + index);
+        return Array.from({length: endPage - startPage}, (_, index) => startPage + index);
     };
 
     const paginationNumbers = getPaginationNumbers();
 
     return (
         <main className="mypage-container">
-            <MypageSidebar />
+            <MypageSidebar/>
             <section id="orders">
                 <h1>예약 내역</h1>
                 <div className="myorder-list">
                     {data.length === 0 ? (
-                    <div className="reservation-noData">
-                        <div className="image-container">
-                            <img src={noDataImg} />
-                            <p className="noReservation">예약 내역이 없습니다.</p> 
+                        <div className="reservation-noData">
+                            <div className="image-container">
+                                <img src={noDataImg}/>
+                                <p className="noReservation">예약 내역이 없습니다.</p>
+                            </div>
                         </div>
-                    </div>    
                     ) : (
                         data.map((row) => (
                             <div className="myorder-item" key={row.id}>
@@ -78,21 +78,24 @@ const ReservationList = () => {
                                     {row.reservationStatus === "대기" ? (
                                         <button
                                             className="myreservationList-button"
-                                            onClick={() => navigate(`/mypage/reservationdetail/${row.id}`)}> 예약 수정/취소 </button>
+                                            onClick={() => navigate(`/mypage/reservationdetail/${row.id}`)}> 예약
+                                            수정/취소 </button>
                                     ) : null}
                                     {row.reservationStatus === "완료" ? (
                                         row.reviewExists ? (
-                                        <button className="myreservationList-button" disabled> 리뷰 작성 완료 </button>
-                                    ) : (
-                                        <button
-                                            className="myreservationList-button"
-                                            onClick={() => navigate(`/reviewcomment/${row.id}`)}> 리뷰 작성하기 </button>
+                                            <button className="myreservationList-button" disabled> 리뷰 작성 완료 </button>
+                                        ) : (
+                                            <button
+                                                className="myreservationList-button"
+                                                onClick={() => navigate(`/reviewcomment/${row.id}`)}> 리뷰 작성하기 </button>
                                         )
                                     ) : null}
                                     {row.reservationStatus === "완료" && !row.bookMark ? (
                                         <button
                                             className="myreservationList-button"
-                                            onClick={() => { bookMark(row.placeId); }}> 즐겨찾기 등록 </button>
+                                            onClick={() => {
+                                                bookMark(row.placeId);
+                                            }}> 즐겨찾기 등록 </button>
                                     ) : null}
                                 </div>
                             </div>
@@ -129,7 +132,7 @@ const ReservationList = () => {
             </section>
         </main>
     );
-    
+
 };
 
 export default ReservationList;
