@@ -61,7 +61,7 @@ const SignUp = () => {
                             <div className="signup-form-group">
                                 <label htmlFor="email">아이디</label>
                                 <input
-                                    type="email"
+                                    type="text"
                                     id="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
