@@ -59,13 +59,13 @@ const SignUp = () => {
                         <h2>회원가입</h2>
                         <form id="signup-form" onSubmit={submit}>
                             <div className="signup-form-group">
-                                <label htmlFor="email">이메일</label>
+                                <label htmlFor="email">아이디</label>
                                 <input
                                     type="email"
                                     id="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="이메일을 입력하세요"
+                                    placeholder="아이디를 입력하세요"
                                     required
                                 />
                             </div>
