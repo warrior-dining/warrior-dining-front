@@ -55,8 +55,8 @@ export const AuthProvider = ({children}) => {
         const refreshToken = grantType + newRefreshToken;
         setAccessToken(accessToken);
         setRefreshToken(refreshToken);
-        Cookies.set('accessToken', accessToken, {secure: true, sameSite: 'strict'});
-        Cookies.set('refreshToken', refreshToken, {secure: true, sameSite: 'strict'});
+        Cookies.set('accessToken', accessToken, { secure: false, sameSite: 'lax' });
+        Cookies.set('refreshToken', refreshToken, { secure: false, sameSite: 'lax' });
 
         try {
             const decodedToken = jwtDecode(accessToken);

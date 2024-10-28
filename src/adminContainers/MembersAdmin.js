@@ -60,7 +60,7 @@ const MembersAdmin = () => {
     // 검색어가 있을 때는 FindByKeyword, 없을 때는 FindByAll 사용
     useEffect(() => {
         const fetchData = async () => {
-            await axiosInstance.get(`/api/admin/members/?type=${searchType}&keyword=${searchKeyword}&page=${0}&size=${pageSize}`)
+            await axiosInstance.get(`/api/admin/members/?type=${searchType}&keyword=${searchKeyword}&page=${page}&size=${pageSize}`)
                 .then(res => {
                     refreshToken(res.data, reissueToken);
                     setList(res.data.status ? res.data.results.content : []);
