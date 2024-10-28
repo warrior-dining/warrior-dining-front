@@ -24,7 +24,7 @@ const MemberList = ({list}) => {
                 {
                     list.map((row, index) => (
                         <tr key={index} onClick={() => {
-                            navigate(`/admin/members/info/${row.id}`);
+                            navigate(`/admin/users/${row.id}`);
                         }}>
                             <td>{index + 1}</td>
                             <td>{row.email}</td>
