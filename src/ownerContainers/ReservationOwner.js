@@ -28,7 +28,7 @@ const ReservationOwner = () => {
         if (!confirmCancel) {
             return;
         }
-        axiosInstance.patch(`/api/admin/reservations/${id}`, {status: 14})
+        axiosInstance.patch(`/api/owner/${id}`, {status: 14})
             .then(res => {
                 alert("예약이 정상적으로 취소되었습니다.")
                 setSortType('13');
