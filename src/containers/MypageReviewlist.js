@@ -50,7 +50,7 @@ const MypageReviewlist = () => {
             item.id === id ? {...item, isDeleted: true} : item
         ));
         confirmDelete();
-        axiosInstance.patch(`/api/user/reviews/${id}`)
+        axiosInstance.delete(`/api/user/reviews/${id}`)
             .then(res => {
                 setReload(!reload);
             })

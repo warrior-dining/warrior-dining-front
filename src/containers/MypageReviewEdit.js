@@ -40,7 +40,7 @@ const MypageReviewEdit = () => {
     };
 
     const handleUpdateStatus = (id) => {
-        axiosInstance.delete(`/api/user/reviews/${reviewId}`)
+        axiosInstance.delete(`/api/user/reviews/${id}`)
             .then(res => {
                 window.location.reload();
             })

@@ -32,7 +32,7 @@ const ReservationList = () => {
     }, [page, pageSize]);
 
     const bookMark = (placeId) => {
-        axiosInstance.put("/api/user/bookmarks", {"placeId": placeId})
+        axiosInstance.post("/api/user/bookmarks", {"placeId": placeId})
             .then(res => {
                 alert("즐겨찾기 등록 완료");
                 navigate("/mypage/bookmark");
