@@ -99,7 +99,7 @@ const RestaurantList = () => {
     };
 
     const resDetailClick = (id) => {
-        navigate(`/restaurant/${id}`);
+        navigate(`/place/${id}`);
     };
 
     const scrollToTop = () => {
@@ -157,7 +157,7 @@ const RestaurantList = () => {
     const handleReset = () => {
         setCategoryFilter('none');
         setPriceFilter('none');
-        navigate('/restaurantlist');
+        navigate('/placelist');
     };
 
     return (

@@ -9,7 +9,7 @@ const HeroSection = () => {
     const navigate = useNavigate();
 
     const RestaurantListClick = () => {
-        navigate('/restaurantlist');
+        navigate('/placelist');
     };
 
     return (
@@ -24,7 +24,7 @@ const HeroSection = () => {
 const RestaurantSection = ({title, items, onMoreClick, id}) => {
     const navigate = useNavigate(id);
     const detailClick = (id) => {
-        navigate(`/restaurant/${id}`);
+        navigate(`/place/${id}`);
     }
 
     return (

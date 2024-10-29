@@ -57,7 +57,7 @@ const TopReservation = () => {
     }, [selectedCategory, ratings]); // 카테고리 선택이나 데이터 변경 시 필터링
 
     const resDetailClick = (id) => {
-        navigate(`/restaurant/${id}`);
+        navigate(`/place/${id}`);
     };
 
     const CategoryClick = (category) => {
