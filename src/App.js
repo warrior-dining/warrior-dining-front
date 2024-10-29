@@ -102,14 +102,13 @@ function App() {
                             <Route path="/admin/places/edit/:id" element={<PlaceEdit/>}/>
                             <Route path="/topreservation" element={<TopReservation/>}/>
                             <Route path="/monthbest" element={<MonthBest/>}/>
-                            <Route path="/restaurantlist" element={<RestaurantList/>}/>
                             <Route path="/inquiryfaq" element={<InquiryFaq/>}/>
                             <Route path="/inquirycreate" element={<InquiryCreate/>}/>
                             <Route path="/admin" element={<MainAdmin/>}/>
                             <Route path="/mypage" element={<Mypage/>}/>
                             <Route path="/topreservation" element={<TopReservation/>}/>
                             <Route path="/monthbest" element={<MonthBest/>}/>
-                            <Route path="/restaurantlist" element={<RestaurantList/>}/>
+                            <Route path="/placelist" element={<RestaurantList/>}/>
                             <Route path="/inquiryfaq" element={<InquiryFaq/>}/>
                             <Route path="/inquirycreate" element={<InquiryCreate/>}/>
                             <Route path="/admin" element={<MainAdmin/>}/>
@@ -124,7 +123,7 @@ function App() {
                             <Route path="/mypage/bookmark" element={<MypageBookmark/>}/>
                             <Route path="/mypage/inquiry" element={<MypageInquiry/>}/>
                             <Route path="/inquiry/detail/:id" element={<InquiryDetail/>}/>
-                            <Route path="/restaurant/:id" element={<Detail/>}/>
+                            <Route path="/place/:id" element={<Detail/>}/>
                             <Route path="/" element={<Main/>}/>
                         </Routes>
                         <Footer/>

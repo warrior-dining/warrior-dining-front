@@ -21,7 +21,7 @@ const Detail = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get(`${baseUrl}/api/restaurant/${id}`)
+            await axios.get(`${baseUrl}/api/place/${id}`)
                 .then(res => {
                     if (res.data.content && res.data.content.length > 0) {
                         setRestaurantDetail(res.data.content[0]);

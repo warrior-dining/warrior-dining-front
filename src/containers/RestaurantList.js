@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import React, {useEffect, useState} from 'react';
+import {useInfiniteQuery} from '@tanstack/react-query';
+import {useLocation, useNavigate} from 'react-router-dom';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faArrowRotateLeft} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import '../css/default.css';
 import '../css/home.css';
@@ -10,14 +10,14 @@ import '../css/restaurantList.css';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
-const fetchRestaurants = async ({ pageParam = 0, queryKey }) => {
+const fetchRestaurants = async ({pageParam = 0, queryKey}) => {
     const [, search, category, price] = queryKey;
     let endpoint = search ? `/search?keyword=${encodeURIComponent(search)}&page=${pageParam}` : `?page=${pageParam}`;
-    
+
     if (category && category !== 'none') {
         endpoint += `&categoryId=${category}`;
     }
-    
+
     if (price && price !== 'none') {
         const [minPrice, maxPrice] = getPriceRange(price);
         if (minPrice !== null) endpoint += `&minPrice=${minPrice}`;
@@ -25,7 +25,7 @@ const fetchRestaurants = async ({ pageParam = 0, queryKey }) => {
     }
 
     try {
-        const response = await axios.get(`${baseUrl}/api/restaurant${endpoint}`);
+        const response = await axios.get(`${baseUrl}/api/place${endpoint}`);
         return response.data;
     } catch (error) {
         throw new Error(`서버 연결 불가능: ${error.response?.status || error.message}`); // 오류처리
@@ -50,7 +50,7 @@ const getPriceRange = (priceFilter) => {
     }
 };
 
-const RestaurantSidebar = ({ onFilterChange, onReset, categoryFilter, priceFilter }) => {
+const RestaurantSidebar = ({onFilterChange, onReset, categoryFilter, priceFilter}) => {
     return (
         <aside className="sidebar">
             <form action="">
@@ -76,7 +76,7 @@ const RestaurantSidebar = ({ onFilterChange, onReset, categoryFilter, priceFilte
                     <option value="superhigh">110,000원 이상</option>
                 </select>
                 <button type="button" onClick={onReset} className="reset-button">
-                    <FontAwesomeIcon icon={faArrowRotateLeft} /> 초기화
+                    <FontAwesomeIcon icon={faArrowRotateLeft}/> 초기화
                 </button>
             </form>
         </aside>
@@ -99,11 +99,11 @@ const RestaurantList = () => {
     };
 
     const resDetailClick = (id) => {
-        navigate(`/restaurant/${id}`);
+        navigate(`/place/${id}`);
     };
 
     const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({top: 0, behavior: 'smooth'});
     };
 
     const {
@@ -128,7 +128,7 @@ const RestaurantList = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
+            const {scrollHeight, scrollTop, clientHeight} = document.documentElement;
             const isBottom = scrollTop + clientHeight >= scrollHeight - 10;
 
             if (isBottom && hasNextPage && !isFetchingNextPage) {
@@ -145,7 +145,7 @@ const RestaurantList = () => {
     const restaurants = data?.pages.flatMap(page => page.content) || [];
 
     const handleFilterChange = (event) => {
-        const { name, value } = event.target;
+        const {name, value} = event.target;
         if (name === 'category') {
             setCategoryFilter(value);
         } else if (name === 'price') {
@@ -157,17 +157,17 @@ const RestaurantList = () => {
     const handleReset = () => {
         setCategoryFilter('none');
         setPriceFilter('none');
-        navigate('/restaurantlist');
+        navigate('/placelist');
     };
 
     return (
         <section className="restaurant-list-container">
             <div className="restaurant-wrapper">
-                <RestaurantSidebar 
-                    onFilterChange={handleFilterChange} 
-                    onReset={handleReset} 
-                    categoryFilter={categoryFilter} 
-                    priceFilter={priceFilter} 
+                <RestaurantSidebar
+                    onFilterChange={handleFilterChange}
+                    onReset={handleReset}
+                    categoryFilter={categoryFilter}
+                    priceFilter={priceFilter}
                 />
                 <div className="restaurant-list">
                     <h1>{searchTerm ? `검색 결과: ${searchTerm}` : '맛집 전체 리스트'}</h1>
@@ -175,13 +175,16 @@ const RestaurantList = () => {
                     {restaurants.length > 0 ? (
                         <ul>
                             {restaurants.map((restaurant) => (
-                                <li key={restaurant.id} className="restaurant-item2" onClick={() => resDetailClick(restaurant.id)}>
-                                    <img 
-                                        src={searchTerm ? (restaurant.url && restaurant.url.length > 0 ? 
+                                <li key={restaurant.id} className="restaurant-item2"
+                                    onClick={() => resDetailClick(restaurant.id)}>
+                                    <img
+                                        src={searchTerm ? (restaurant.url && restaurant.url.length > 0 ?
                                             restaurant.url[0] : "https://via.placeholder.com/200x150") : (
                                             restaurant.placeFiles[0]?.url || "https://via.placeholder.com/200x150")}
-                                        alt={`${restaurant.name} 이미지`} 
-                                        onError={(e) => { e.target.src = "https://via.placeholder.com/200x150"; }} 
+                                        alt={`${restaurant.name} 이미지`}
+                                        onError={(e) => {
+                                            e.target.src = "https://via.placeholder.com/200x150";
+                                        }}
                                     />
                                     <div className="restaurant-details2">
                                         <h2>{restaurant.name}</h2>
