@@ -27,6 +27,7 @@ export const AuthProvider = ({children}) => {
                 setSub(decodedToken.sub);
                 setIsAdminNav(decodedToken.auth.includes('ADMIN'));
                 setFlag(decodedToken.flag);
+                setIsLoggedIn(true);
             } catch (error) {
                 console.error('토큰 디코딩 오류:', error);
             }
